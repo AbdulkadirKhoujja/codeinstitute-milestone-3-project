@@ -6,7 +6,7 @@ from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Category, Post
+from .models import Category, Comment, Post
 
 
 class CategoryModelTests(TestCase):
@@ -132,3 +132,76 @@ class PostModelTests(TestCase):
 
         self.assertTrue(Category.objects.filter(pk=self.category.pk).exists())
         self.assertEqual(Post.objects.filter(category=self.category).count(), 2)
+
+
+class CommentModelTests(TestCase):
+    """Verify comment relationships, moderation default, order, and cascade."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
+            username="comment-author",
+            password="test-password-123",
+        )
+        cls.category = Category.objects.create(
+            name="Cybersecurity",
+            slug="cybersecurity",
+            description="Security news and research.",
+        )
+        cls.post = Post.objects.create(
+            title="Security story",
+            summary="A security summary.",
+            article_url="https://example.com/security",
+            content="Security context.",
+            author=cls.user,
+            category=cls.category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.older_comment = Comment.objects.create(
+            post=cls.post,
+            author=cls.user,
+            body="First contribution.",
+        )
+        cls.newer_comment = Comment.objects.create(
+            post=cls.post,
+            author=cls.user,
+            body="Second contribution.",
+            is_approved=True,
+        )
+        now = timezone.now()
+        Comment.objects.filter(pk=cls.older_comment.pk).update(
+            created_at=now - timedelta(days=1),
+        )
+        Comment.objects.filter(pk=cls.newer_comment.pk).update(created_at=now)
+
+    def test_string_representation_identifies_author_and_post(self):
+        self.assertEqual(
+            str(self.older_comment),
+            "Comment by comment-author on Security story",
+        )
+
+    def test_default_ordering_is_oldest_first(self):
+        self.assertQuerySetEqual(
+            Comment.objects.all(),
+            [self.older_comment, self.newer_comment],
+        )
+
+    def test_comments_are_unapproved_by_default(self):
+        self.assertFalse(self.older_comment.is_approved)
+        self.assertTrue(self.newer_comment.is_approved)
+
+    def test_post_relationship_is_required(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Comment.objects.create(author=self.user, body="Missing post.")
+
+    def test_author_relationship_is_required(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Comment.objects.create(post=self.post, body="Missing author.")
+
+    def test_post_deletion_cascades_to_comments(self):
+        post_pk = self.post.pk
+
+        self.post.delete()
+
+        self.assertFalse(Post.objects.filter(pk=post_pk).exists())
+        self.assertEqual(Comment.objects.count(), 0)
