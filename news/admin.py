@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Post
+from .models import Category, Comment, Post
 
 
 @admin.register(Category)
@@ -26,3 +26,19 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
     list_select_related = ("author", "category")
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        "post",
+        "author",
+        "is_approved",
+        "created_at",
+        "updated_at",
+    )
+    search_fields = ("body", "post__title", "author__username")
+    list_filter = ("is_approved", "created_at")
+    date_hierarchy = "created_at"
+    ordering = ("created_at",)
+    list_select_related = ("post", "author")
