@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" role="img" aria-labelledby="title description">
+  <title id="title">ByteBoard mobile home page wireframe</title>
+  <desc id="description">Planning wireframe showing a compact header, search, horizontally compact category control, stacked story feed, submit action, and footer.</desc>
+  <style>
+    .page { fill: #fff; stroke: #222; stroke-width: 2; }
+    .region { fill: #f2f2f2; stroke: #555; stroke-width: 2; }
+    .card { fill: #fff; stroke: #777; stroke-width: 2; }
+    .line { stroke: #888; stroke-width: 8; stroke-linecap: round; }
+    .label { fill: #111; font: 700 15px Arial, sans-serif; }
+    .note { fill: #333; font: 12px Arial, sans-serif; }
+  </style>
+  <rect class="page" x="1" y="1" width="388" height="842"/>
+  <text class="note" x="16" y="20">PLANNING WIREFRAME — NOT FINAL</text>
+
+  <rect class="region" x="12" y="32" width="366" height="64"/>
+  <text class="label" x="28" y="70">BYTEBOARD</text>
+  <rect class="card" x="285" y="48" width="73" height="32"/>
+  <text class="note" x="299" y="68">Menu</text>
+
+  <rect class="card" x="12" y="108" width="366" height="42"/>
+  <text class="note" x="28" y="134">Search stories</text>
+  <rect class="region" x="12" y="162" width="366" height="42"/>
+  <text class="note" x="26" y="188">Category: All stories ▾</text>
+
+  <text class="label" x="16" y="236">Latest stories</text>
+  <g transform="translate(12 250)">
+    <rect class="card" width="366" height="145"/>
+    <text class="label" x="16" y="30">Story title wraps if needed</text>
+    <line class="line" x1="16" y1="55" x2="335" y2="55"/>
+    <line class="line" x1="16" y1="77" x2="285" y2="77"/>
+    <text class="note" x="16" y="105">Category · author · date</text>
+    <text class="note" x="16" y="128">Score · comments</text>
+  </g>
+  <g transform="translate(12 410)">
+    <rect class="card" width="366" height="145"/>
+    <text class="label" x="16" y="30">Story title wraps if needed</text>
+    <line class="line" x1="16" y1="55" x2="335" y2="55"/>
+    <line class="line" x1="16" y1="77" x2="260" y2="77"/>
+    <text class="note" x="16" y="105">Category · author · date</text>
+    <text class="note" x="16" y="128">Score · comments</text>
+  </g>
+  <g transform="translate(12 570)">
+    <rect class="card" width="366" height="145"/>
+    <text class="label" x="16" y="30">Story title wraps if needed</text>
+    <line class="line" x1="16" y1="55" x2="335" y2="55"/>
+    <line class="line" x1="16" y1="77" x2="300" y2="77"/>
+    <text class="note" x="16" y="105">Category · author · date</text>
+    <text class="note" x="16" y="128">Score · comments</text>
+  </g>
+
+  <rect class="region" x="12" y="730" width="366" height="45"/>
+  <text class="label" x="128" y="758">Submit a story</text>
+  <rect class="region" x="12" y="788" width="366" height="40"/>
+  <text class="note" x="96" y="813">Project info · Accessibility</text>
+</svg>
