@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1100" viewBox="0 0 1440 1100" role="img" aria-labelledby="title description">
+  <title id="title">ByteBoard desktop post detail wireframe</title>
+  <desc id="description">Planning wireframe showing post metadata, article link, voting, owner actions, content, comment form, and discussion on desktop.</desc>
+  <style>
+    .page { fill: #fff; stroke: #222; stroke-width: 2; }
+    .region { fill: #f2f2f2; stroke: #555; stroke-width: 2; }
+    .card { fill: #fff; stroke: #777; stroke-width: 2; }
+    .line { stroke: #888; stroke-width: 10; stroke-linecap: round; }
+    .label { fill: #111; font: 700 20px Arial, sans-serif; }
+    .note { fill: #333; font: 16px Arial, sans-serif; }
+  </style>
+  <rect class="page" x="1" y="1" width="1438" height="1098"/>
+  <text class="note" x="32" y="30">PLANNING WIREFRAME — NOT A FINAL SCREENSHOT</text>
+  <rect class="region" x="30" y="50" width="1380" height="85"/>
+  <text class="label" x="60" y="100">BYTEBOARD</text>
+  <text class="note" x="1040" y="100">Search · Account · Submit</text>
+
+  <main>
+    <text class="note" x="130" y="180">Home / Category / Story</text>
+    <rect class="region" x="110" y="205" width="1220" height="345"/>
+    <text class="label" x="145" y="255">Post title spanning the reading column</text>
+    <text class="note" x="145" y="292">Category · author · created date · updated date</text>
+    <rect class="card" x="145" y="320" width="150" height="55"/>
+    <text class="note" x="170" y="353">↑ 42 ↓</text>
+    <rect class="card" x="980" y="320" width="130" height="55"/>
+    <rect class="card" x="1125" y="320" width="150" height="55"/>
+    <text class="note" x="1018" y="353">Edit</text>
+    <text class="note" x="1162" y="353">Delete</text>
+    <line class="line" x1="145" y1="420" x2="1260" y2="420"/>
+    <line class="line" x1="145" y1="450" x2="1210" y2="450"/>
+    <line class="line" x1="145" y1="480" x2="1120" y2="480"/>
+    <rect class="card" x="145" y="505" width="260" height="35"/>
+    <text class="note" x="165" y="529">Read original article ↗</text>
+
+    <text class="label" x="110" y="600">Join the discussion</text>
+    <rect class="region" x="110" y="620" width="1220" height="145"/>
+    <rect class="card" x="140" y="650" width="1160" height="65"/>
+    <rect class="card" x="1140" y="725" width="160" height="30"/>
+    <text class="note" x="1175" y="747">Add comment</text>
+
+    <text class="label" x="110" y="815">Comments (oldest first)</text>
+    <rect class="card" x="110" y="835" width="1220" height="90"/>
+    <text class="note" x="140" y="868">Comment author · date</text>
+    <line class="line" x1="140" y1="895" x2="1190" y2="895"/>
+    <rect class="card" x="110" y="945" width="1220" height="90"/>
+    <text class="note" x="140" y="978">Comment author · date · owner actions</text>
+    <line class="line" x1="140" y1="1005" x2="1110" y2="1005"/>
+  </main>
+</svg>
