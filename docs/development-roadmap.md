@@ -11,7 +11,7 @@ ByteBoard is planned in four phases so that data integrity and documented user n
 
 ## Phase 1 — Planning and Data Foundation
 
-Status: **Current** while this phase is being completed.
+Status: **Completed**. The planning artefacts, four migrated domain models, database constraints, Django Admin registrations, automated model/admin tests, and initial README are present. Phase 2 remains planned and has not started.
 
 Scope:
 
