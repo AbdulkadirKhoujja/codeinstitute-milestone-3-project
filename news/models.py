@@ -76,3 +76,39 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author} on {self.post}"
+
+
+class Vote(models.Model):
+    """One user's positive or negative ranking signal for one post."""
+
+    class Value(models.IntegerChoices):
+        DOWNVOTE = -1, "Downvote"
+        UPVOTE = 1, "Upvote"
+
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="votes",
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="votes",
+    )
+    value = models.SmallIntegerField(choices=Value.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(value__in=(-1, 1)),
+                name="vote_value_valid",
+            ),
+            models.UniqueConstraint(
+                fields=("post", "user"),
+                name="one_vote_per_user_per_post",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.user}: {self.value} on {self.post}"
