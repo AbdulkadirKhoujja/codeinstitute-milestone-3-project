@@ -6,7 +6,7 @@ from django.db.models.deletion import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import Category, Comment, Post
+from .models import Category, Comment, Post, Vote
 
 
 class CategoryModelTests(TestCase):
@@ -205,3 +205,77 @@ class CommentModelTests(TestCase):
 
         self.assertFalse(Post.objects.filter(pk=post_pk).exists())
         self.assertEqual(Comment.objects.count(), 0)
+
+
+class VoteModelTests(TestCase):
+    """Verify vote relationships and database-enforced integrity."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(
+            username="vote-user",
+            password="test-password-123",
+        )
+        cls.category = Category.objects.create(
+            name="Fintech",
+            slug="fintech",
+            description="Financial technology stories.",
+        )
+        cls.post = Post.objects.create(
+            title="Vote story",
+            summary="A story that can be ranked.",
+            article_url="https://example.com/vote-story",
+            content="Voting context.",
+            author=cls.user,
+            category=cls.category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.vote = Vote.objects.create(
+            post=cls.post,
+            user=cls.user,
+            value=Vote.Value.UPVOTE,
+        )
+
+    def test_string_representation_identifies_vote(self):
+        self.assertEqual(str(self.vote), "vote-user: 1 on Vote story")
+
+    def test_value_choices_are_upvote_and_downvote(self):
+        value_field = Vote._meta.get_field("value")
+
+        self.assertEqual(
+            list(value_field.choices),
+            [(-1, "Downvote"), (1, "Upvote")],
+        )
+
+    def test_database_rejects_invalid_vote_value(self):
+        other_user = get_user_model().objects.create_user(
+            username="invalid-vote-user",
+            password="test-password-123",
+        )
+
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Vote.objects.create(post=self.post, user=other_user, value=0)
+
+    def test_database_rejects_duplicate_user_post_vote(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Vote.objects.create(
+                post=self.post,
+                user=self.user,
+                value=Vote.Value.DOWNVOTE,
+            )
+
+    def test_post_relationship_is_required(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Vote.objects.create(user=self.user, value=Vote.Value.UPVOTE)
+
+    def test_user_relationship_is_required(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Vote.objects.create(post=self.post, value=Vote.Value.UPVOTE)
+
+    def test_post_deletion_cascades_to_votes(self):
+        post_pk = self.post.pk
+
+        self.post.delete()
+
+        self.assertFalse(Post.objects.filter(pk=post_pk).exists())
+        self.assertEqual(Vote.objects.count(), 0)
