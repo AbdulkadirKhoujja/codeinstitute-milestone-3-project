@@ -51,6 +51,7 @@ class HomePageFoundationTests(TestCase):
         self.assertContains(response, f'href="{reverse("news:home")}"')
         self.assertContains(response, f'href="{reverse("accounts:register")}"')
         self.assertContains(response, f'href="{reverse("accounts:login")}"')
+        self.assertNotContains(response, f'href="{reverse("news:post-create")}"')
         self.assertNotContains(response, reverse("accounts:logout"))
 
     def test_member_navigation_shows_profile_and_post_logout(self):
@@ -62,6 +63,10 @@ class HomePageFoundationTests(TestCase):
 
         response = self.client.get(reverse("news:home"))
 
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-create")}"',
+        )
         self.assertContains(
             response,
             f'href="{reverse("accounts:profile", args=[member.username])}"',
