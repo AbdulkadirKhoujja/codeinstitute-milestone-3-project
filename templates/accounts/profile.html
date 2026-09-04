@@ -2,7 +2,7 @@
 
 {% block title %}{{ profile_user.username }}'s profile | ByteBoard{% endblock %}
 
-{% block meta_description %}Published technology stories submitted by {{ profile_user.username }} on ByteBoard.{% endblock %}
+{% block meta_description %}Technology stories submitted by {{ profile_user.username }} on ByteBoard.{% endblock %}
 
 {% block content %}
   <section class="container py-5" aria-labelledby="profile-heading">
@@ -13,20 +13,25 @@
     </header>
 
     <section aria-labelledby="profile-posts-heading">
-      <h2 id="profile-posts-heading">Published stories</h2>
+      <h2 id="profile-posts-heading">{% if is_owner %}Your stories{% else %}Published stories{% endif %}</h2>
       {% if posts %}
         <div class="profile-posts">
           {% for post in posts %}
             <article class="profile-post">
               <p class="eyebrow">{{ post.category.name }}</p>
               <h3>{{ post.title }}</h3>
+              {% if is_owner %}<p><span class="badge text-bg-secondary">{{ post.get_status_display }}</span></p>{% endif %}
               <p>{{ post.summary }}</p>
               <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
             </article>
           {% endfor %}
         </div>
       {% else %}
-        <p>{{ profile_user.username }} has not published any stories yet.</p>
+        {% if is_owner %}
+          <p>You have not submitted any stories yet.</p>
+        {% else %}
+          <p>{{ profile_user.username }} has not published any stories yet.</p>
+        {% endif %}
       {% endif %}
     </section>
   </section>
