@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} | ByteBoard{% endblock %}
+
+{% block meta_description %}{{ post.summary|truncatechars:155 }}{% endblock %}
+
+{% block content %}
+  <article class="container py-5 story-detail" aria-labelledby="story-heading">
+    <header class="story-detail__header">
+      <p class="eyebrow">{{ post.category.name }}</p>
+      <h1 id="story-heading">{{ post.title }}</h1>
+      <p class="story-detail__summary">{{ post.summary }}</p>
+      <p class="story-meta">
+        Submitted by
+        <a href="{% url 'accounts:profile' post.author.username %}">{{ post.author.username }}</a>
+        on <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
+      </p>
+      <a
+        class="btn btn-primary"
+        href="{{ post.article_url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Read the original article <span class="visually-hidden">(opens in a new tab)</span></a>
+    </header>
+
+    <section class="story-detail__content" aria-labelledby="context-heading">
+      <h2 id="context-heading">Why this story matters</h2>
+      {{ post.content|linebreaks }}
+      {% if post.updated_at != post.created_at %}
+        <p class="story-meta">Updated <time datetime="{{ post.updated_at|date:'c' }}">{{ post.updated_at|date:"j F Y" }}</time></p>
+      {% endif %}
+    </section>
+  </article>
+{% endblock %}
