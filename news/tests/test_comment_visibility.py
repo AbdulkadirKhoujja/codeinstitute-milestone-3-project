@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from news.models import Category
 from news.models import Comment
@@ -87,3 +90,41 @@ class ApprovedCommentVisibilityTests(TestCase):
         )
         self.assertContains(owner_response, update_url)
         self.assertContains(owner_response, delete_url)
+
+    def test_edited_comment_displays_updated_indication(self):
+        Comment.objects.filter(pk=self.approved.pk).update(
+            updated_at=timezone.now() + timedelta(minutes=1)
+        )
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertContains(response, "Edited")
+
+
+class EmptyCommentStateTests(TestCase):
+    def test_story_without_comments_has_clear_empty_state(self):
+        author = get_user_model().objects.create_user(
+            username="empty-discussion-author",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Empty discussion",
+            slug="empty-discussion",
+            description="Stories awaiting discussion.",
+        )
+        post = Post.objects.create(
+            title="Story awaiting its first comment",
+            summary="Empty discussion summary.",
+            article_url="https://example.com/empty-discussion",
+            content="Empty discussion context.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+
+        response = self.client.get(reverse("news:post-detail", args=[post.pk]))
+
+        self.assertContains(response, "No comments yet")
+        self.assertContains(response, "Start the discussion")

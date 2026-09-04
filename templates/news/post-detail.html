@@ -59,6 +59,11 @@
       <div class="comment-list">
         {% for comment in comments %}
           {% include "includes/comment-card.html" %}
+        {% empty %}
+          <div class="empty-state">
+            <h3>No comments yet</h3>
+            <p>Start the discussion with a useful observation or question.</p>
+          </div>
         {% endfor %}
       </div>
     </section>

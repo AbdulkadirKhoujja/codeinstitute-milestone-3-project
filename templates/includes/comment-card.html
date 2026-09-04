@@ -2,6 +2,7 @@
   <header class="comment-card__header">
     <a href="{% url 'accounts:profile' comment.author.username %}">{{ comment.author.username }}</a>
     <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"j F Y, H:i" }}</time>
+    {% if comment.was_edited %}<span>Edited <time datetime="{{ comment.updated_at|date:'c' }}">{{ comment.updated_at|date:"j F Y, H:i" }}</time></span>{% endif %}
     {% if not comment.is_approved %}<span class="badge text-bg-secondary">Awaiting moderation</span>{% endif %}
   </header>
   <div class="comment-card__body">{{ comment.body|linebreaks }}</div>

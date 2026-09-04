@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 
@@ -76,6 +78,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author} on {self.post}"
+
+    @property
+    def was_edited(self):
+        """Distinguish user edits from near-identical creation timestamps."""
+        return self.updated_at - self.created_at >= timedelta(seconds=1)
 
 
 class Vote(models.Model):
