@@ -9,6 +9,7 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 
 from .forms import PostForm
 from .models import Category
@@ -92,6 +93,7 @@ def post_detail(request, pk):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def post_create(request):
     """Create a story owned by the authenticated member."""
     if request.method == "POST":
@@ -115,6 +117,7 @@ def post_create(request):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def post_update(request, pk):
     """Update a story only when requested by its owner."""
     post = get_object_or_404(Post, pk=pk, author=request.user)
@@ -140,6 +143,7 @@ def post_update(request, pk):
 
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def post_delete(request, pk):
     """Ask a story owner to confirm a destructive action."""
     post = get_object_or_404(Post, pk=pk, author=request.user)

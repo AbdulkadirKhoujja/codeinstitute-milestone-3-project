@@ -64,6 +64,15 @@ class PostUpdatePageTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_owner_cannot_use_unsupported_method(self):
+        self.client.force_login(self.owner)
+
+        response = self.client.put(
+            reverse("news:post-update", args=[self.post.pk])
+        )
+
+        self.assertEqual(response.status_code, 405)
+
 
 class PostUpdateSubmissionTests(TestCase):
     def setUp(self):

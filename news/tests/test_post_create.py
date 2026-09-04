@@ -39,6 +39,17 @@ class PostCreatePageTests(TestCase):
         ):
             self.assertContains(response, f'for="id_{field_name}"')
 
+    def test_member_cannot_use_unsupported_method(self):
+        member = get_user_model().objects.create_user(
+            username="method-creator",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(member)
+
+        response = self.client.put(reverse("news:post-create"))
+
+        self.assertEqual(response.status_code, 405)
+
 
 class PostCreateSubmissionTests(TestCase):
     def setUp(self):
