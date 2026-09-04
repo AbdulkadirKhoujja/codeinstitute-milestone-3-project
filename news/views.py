@@ -210,15 +210,28 @@ def comment_create(request, post_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def comment_update(request, post_id, comment_id):
-    """Present an edit form only to the comment owner."""
+    """Update comment content only for its owner."""
     comment = get_object_or_404(
         Comment.objects.select_related("post"),
         pk=comment_id,
         post_id=post_id,
         author=request.user,
     )
+    form = CommentForm(request.POST or None, instance=comment)
+    if request.method == "POST" and form.is_valid():
+        comment = form.save(commit=False)
+        comment.is_approved = False
+        comment.save()
+        messages.success(
+            request,
+            "Your updated comment is awaiting moderation.",
+        )
+        return redirect(
+            f"{reverse('news:post-detail', args=[post_id])}"
+            f"#comment-{comment.pk}"
+        )
     return render(
         request,
         "news/comment-form.html",
-        {"comment": comment, "form": CommentForm(instance=comment)},
+        {"comment": comment, "form": form},
     )

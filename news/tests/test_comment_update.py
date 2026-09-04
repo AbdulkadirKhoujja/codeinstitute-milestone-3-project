@@ -51,3 +51,49 @@ class CommentUpdatePageTests(TestCase):
         self.assertContains(response, "Edit your comment")
         self.assertContains(response, self.comment.body)
         self.assertContains(response, 'name="csrfmiddlewaretoken"')
+
+    def test_owner_update_preserves_relationships_and_returns_to_moderation(self):
+        replacement_post = Post.objects.create(
+            title="Tampered post",
+            summary="Tampered summary.",
+            article_url="https://example.com/tampered",
+            content="Tampered context.",
+            author=self.owner,
+            category=self.post.category,
+            status=Post.Status.PUBLISHED,
+        )
+        submitted_author = get_user_model().objects.create_user(
+            username="submitted-comment-author",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(self.owner)
+
+        response = self.client.post(
+            reverse(
+                "news:comment-update",
+                args=[self.post.pk, self.comment.pk],
+            ),
+            {
+                "body": "Comment after editing.",
+                "author": submitted_author.pk,
+                "post": replacement_post.pk,
+                "is_approved": True,
+            },
+            follow=True,
+        )
+
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.body, "Comment after editing.")
+        self.assertEqual(self.comment.author, self.owner)
+        self.assertEqual(self.comment.post, self.post)
+        self.assertFalse(self.comment.is_approved)
+        detail_url = reverse("news:post-detail", args=[self.post.pk])
+        self.assertRedirects(
+            response,
+            f"{detail_url}#comment-{self.comment.pk}",
+        )
+        self.assertContains(
+            response,
+            "Your updated comment is awaiting moderation.",
+        )
+        self.assertContains(response, "Comment after editing.")
