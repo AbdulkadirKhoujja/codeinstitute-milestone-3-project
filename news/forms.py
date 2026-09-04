@@ -20,6 +20,14 @@ class PostForm(forms.ModelForm):
             "article_url": "Original article URL",
             "content": "Why this story matters",
         }
+        help_texts = {
+            "title": "Use a clear, specific headline.",
+            "summary": "Summarise the story in a few sentences.",
+            "article_url": "Link to the original reporting or source.",
+            "content": "Explain why the story is useful to the community.",
+            "category": "Choose the closest topic.",
+            "status": "Publish now or keep the story private as a draft.",
+        }
         widgets = {
             "summary": forms.Textarea(attrs={"rows": 3}),
             "content": forms.Textarea(attrs={"rows": 8}),
