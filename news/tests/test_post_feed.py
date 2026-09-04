@@ -79,6 +79,10 @@ class PublishedPostFeedTests(TestCase):
             response,
             f'href="{reverse("accounts:profile", args=[self.newer_post.author.username])}"',
         )
+        self.assertContains(
+            response,
+            f'href="{reverse("news:category-feed", args=[self.newer_post.category.slug])}"',
+        )
         self.assertContains(response, '<time datetime="')
         content = response.content.decode()
         self.assertLess(
@@ -135,6 +139,22 @@ class CategoryFilterTests(TestCase):
         self.assertContains(response, self.startup_post.title)
         self.assertNotContains(response, self.ai_post.title)
         self.assertContains(response, f'href="{reverse("news:home")}"')
+
+    def test_named_category_route_filters_by_slug(self):
+        response = self.client.get(
+            reverse("news:category-feed", args=[self.ai_category.slug])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerySetEqual(response.context["posts"], [self.ai_post])
+        self.assertEqual(response.context["active_category"], self.ai_category)
+
+    def test_unknown_category_route_returns_not_found(self):
+        response = self.client.get(
+            reverse("news:category-feed", args=["missing-category"])
+        )
+
+        self.assertEqual(response.status_code, 404)
 
     def test_feed_exposes_categories_in_alphabetical_order(self):
         response = self.client.get(reverse("news:home"))
@@ -455,7 +475,7 @@ class CombinedFeedControlTests(TestCase):
         self.assertQuerySetEqual(response.context["posts"], [self.matching_post])
         self.assertContains(
             response,
-            "/?category=networks&amp;q=shared%20systems&amp;sort=oldest",
+            "/categories/networks/?q=shared%20systems&amp;sort=oldest",
         )
         self.assertContains(
             response,

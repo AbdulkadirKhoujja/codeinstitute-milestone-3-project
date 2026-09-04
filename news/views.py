@@ -29,13 +29,13 @@ SORT_OPTIONS = (
 )
 
 
-def post_list(request):
+def post_list(request, category_slug=None):
     """Render ByteBoard's public home page."""
     posts = Post.objects.filter(
         status=Post.Status.PUBLISHED,
     ).select_related("author", "category")
     active_category = None
-    category_slug = request.GET.get("category")
+    category_slug = category_slug or request.GET.get("category")
     if category_slug:
         active_category = get_object_or_404(Category, slug=category_slug)
         posts = posts.filter(category=active_category)

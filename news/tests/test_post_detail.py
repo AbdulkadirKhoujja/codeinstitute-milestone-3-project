@@ -39,6 +39,10 @@ class PublishedPostDetailTests(TestCase):
         self.assertContains(response, "Second context paragraph.")
         self.assertContains(response, self.author.username)
         self.assertContains(response, self.category.name)
+        self.assertContains(
+            response,
+            f'href="{reverse("news:category-feed", args=[self.category.slug])}"',
+        )
         self.assertContains(response, self.post.article_url)
         self.assertContains(response, 'rel="noopener noreferrer"')
         self.assertContains(response, '<time datetime="')

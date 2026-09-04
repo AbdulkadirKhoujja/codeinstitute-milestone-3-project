@@ -1,6 +1,6 @@
 <article class="story-card">
   <div class="story-card__body">
-    <p class="eyebrow">{{ post.category.name }}</p>
+    <p class="eyebrow"><a href="{% url 'news:category-feed' post.category.slug %}">{{ post.category.name }}</a></p>
     <h3 class="story-card__title">
       <a href="{% url 'news:post-detail' post.pk %}">{{ post.title }}</a>
     </h3>

@@ -7,7 +7,7 @@
 {% block content %}
   <article class="container py-5 story-detail" aria-labelledby="story-heading">
     <header class="story-detail__header">
-      <p class="eyebrow">{{ post.category.name }}</p>
+      <p class="eyebrow"><a href="{% url 'news:category-feed' post.category.slug %}">{{ post.category.name }}</a></p>
       <h1 id="story-heading">{{ post.title }}</h1>
       {% if post.status == "draft" %}
         <p><span class="badge text-bg-secondary">Draft preview</span></p>

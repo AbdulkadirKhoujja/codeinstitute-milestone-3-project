@@ -8,11 +8,10 @@
   <section class="container py-5" aria-labelledby="home-heading">
     <h1 id="home-heading">Technology news, shaped by the community</h1>
     <p>Discover thoughtful stories about technology, software, security, finance, gadgets, and the people building what comes next.</p>
-    <form class="story-search" method="get" action="{% url 'news:home' %}" role="search">
+    <form class="story-search" method="get" action="{% if active_category %}{% url 'news:category-feed' active_category.slug %}{% else %}{% url 'news:home' %}{% endif %}" role="search">
       <label for="story-search">Search stories</label>
       <div class="input-group">
         <input class="form-control" id="story-search" name="q" type="search" value="{{ search_query }}">
-        {% if active_category %}<input name="category" type="hidden" value="{{ active_category.slug }}">{% endif %}
         {% if active_sort != "newest" %}<input name="sort" type="hidden" value="{{ active_sort }}">{% endif %}
         <button class="btn btn-primary" type="submit">Search</button>
       </div>
@@ -26,7 +25,7 @@
       </li>
       {% for category in categories %}
         <li>
-          <a href="{% url 'news:home' %}?category={{ category.slug }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}{% if active_sort != 'newest' %}&amp;sort={{ active_sort }}{% endif %}"{% if active_category == category %} aria-current="page"{% endif %}>{{ category.name }}</a>
+          <a href="{% url 'news:category-feed' category.slug %}{% if search_query or active_sort != 'newest' %}?{% endif %}{% if search_query %}q={{ search_query|urlencode }}{% if active_sort != 'newest' %}&amp;{% endif %}{% endif %}{% if active_sort != 'newest' %}sort={{ active_sort }}{% endif %}"{% if active_category == category %} aria-current="page"{% endif %}>{{ category.name }}</a>
         </li>
       {% endfor %}
     </ul>
@@ -39,9 +38,8 @@
         {% if search_query %}Search results for "{{ search_query }}"{% elif active_category %}{{ active_category.name }} stories{% else %}Latest stories{% endif %}
       </h2>
     </div>
-    <form class="story-sort" method="get" action="{% url 'news:home' %}">
+    <form class="story-sort" method="get" action="{% if active_category %}{% url 'news:category-feed' active_category.slug %}{% else %}{% url 'news:home' %}{% endif %}">
       {% if search_query %}<input name="q" type="hidden" value="{{ search_query }}">{% endif %}
-      {% if active_category %}<input name="category" type="hidden" value="{{ active_category.slug }}">{% endif %}
       <label for="story-sort">Sort stories</label>
       <select class="form-select" id="story-sort" name="sort">
         {% for value, label in sort_options %}
