@@ -11,7 +11,7 @@ ByteBoard is planned in four phases so that data integrity and documented user n
 
 ## Phase 1 — Planning and Data Foundation
 
-Status: **Completed**. The planning artefacts, four migrated domain models, database constraints, Django Admin registrations, automated model/admin tests, and initial README are present. Phase 2 remains planned and has not started.
+Status: **Completed**. The planning artefacts, four migrated domain models, database constraints, Django Admin registrations, automated model/admin tests, and initial README are present.
 
 Scope:
 
@@ -38,13 +38,14 @@ Explicitly not in this phase: authentication pages, post CRUD views, templates, 
 
 ## Phase 2 — Core Application
 
-Status: **Planned**.
+Status: **Completed**. The core visitor and member journeys are implemented, covered by isolated tests, and documented without representing later community or deployment work as complete.
 
 Scope:
 
 - add public URL patterns, views, and templates;
 - implement registration, sign-in, and sign-out with the selected Django authentication approach;
 - build a published-post feed and category filtering;
+- add text search, score/date/title sorting, pagination, and contextual empty states;
 - build post detail and safe external-article linking;
 - implement authenticated post create, read, update, and delete journeys;
 - enforce post ownership and permission handling on the server;
@@ -52,7 +53,7 @@ Scope:
 - introduce the base responsive layout and reusable components; and
 - test views, forms, URLs, authentication, permissions, and primary templates.
 
-Exit criteria include working core journeys for visitors and authors, without representing the later community feature set as complete.
+Exit criteria met: visitors can discover and read published stories; members can register, sign in, sign out, manage only their own stories, and keep drafts private; the shared responsive interface is present; and the Phase 2 automated suite, Django check, and migration drift check pass. Community interactions and deployment remain explicitly separate.
 
 ## Phase 3 — Community and UX
 
@@ -64,10 +65,10 @@ Scope:
 - add owner-restricted comment edit and delete journeys;
 - add upvote/downvote behaviour without duplicate votes;
 - expose accurate vote scores and user vote state;
-- implement story search and useful empty/no-result states;
 - refine moderation workflow and feedback;
-- complete the responsive visual design, navigation, focus states, and interaction feedback; and
-- extend automated tests for community, search, moderation, and accessibility-sensitive behaviour.
+- add the approved custom JavaScript enhancement and external-news integration with caching and failure handling;
+- add custom navigable error pages and community-specific interface refinements; and
+- extend automated tests for comments, voting, integration, moderation, and accessibility-sensitive behaviour.
 
 ## Phase 4 — Testing, Documentation and Deployment
 
@@ -83,7 +84,7 @@ Scope:
 - harden deployment settings, allowed hosts, static assets, and error handling;
 - deploy to the selected host and verify production data/migrations;
 - add real deployment, testing, validation, and defect-resolution evidence to the README; and
-- complete credits, attribution, and AI-assistance disclosure required by the course.
+- complete credits and attribution required by the course.
 
 Exit criteria include a reproducible deployment and accurate evidence. No live URL, score, validator result, or browser result should be documented before it exists.
 

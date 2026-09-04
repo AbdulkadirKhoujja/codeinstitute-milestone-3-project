@@ -1,16 +1,16 @@
 # Page Specification
 
-These are implementation-ready page requirements, not completed-page claims. Routes are indicative until URL configuration is built in later phases.
+This document describes the implemented Phase 2 pages and identifies community elements that remain reserved for Phase 3.
 
 ## Home and story feed
 
 Purpose: help visitors discover published stories quickly.
 
-Planned content and behaviour:
+Implemented content and behaviour:
 
 - site identity, primary navigation, account state, and search entry point;
 - category navigation for the six initial topics;
-- repeatable story summaries with title, summary, category, author, date, score, and comment count;
+- repeatable story summaries with title, summary, category, author, date, and aggregate score;
 - newest-first default ordering with a clear empty state;
 - pagination when the result set grows; and
 - a prominent story-submission action for authenticated members.
@@ -21,7 +21,7 @@ Responsive intent: use a single-column feed on small screens; introduce a suppor
 
 Purpose: narrow the story feed while retaining context.
 
-Planned content and behaviour:
+Implemented content and behaviour:
 
 - a heading that states the active category or search term;
 - the same accessible story-summary pattern as the home feed;
@@ -32,14 +32,13 @@ Planned content and behaviour:
 
 Purpose: present one submission, connect to its source, and host community activity.
 
-Planned content and behaviour:
+Implemented in Phase 2:
 
 - title, summary, longer commentary, category, author, created/updated dates, and external article URL;
-- vote score and authenticated voting controls;
 - owner-only edit and delete actions;
-- approved comments in oldest-first order;
-- an authenticated comment form and owner-only comment actions; and
 - clear sign-in guidance where an anonymous visitor reaches a restricted action.
+
+Reserved for Phase 3: approved comments, comment creation and owner actions, and authenticated voting controls with user vote state.
 
 Responsive intent: keep the primary reading column at a comfortable line length. Metadata and actions may wrap or stack, but source, ownership, and destructive-action labels remain explicit.
 
@@ -47,7 +46,7 @@ Responsive intent: keep the primary reading column at a comfortable line length.
 
 Purpose: let authenticated members submit or revise owned stories.
 
-Planned content and behaviour:
+Implemented content and behaviour:
 
 - labelled inputs for title, summary, article URL, content, category, and status;
 - required-field indicators explained in text;
@@ -62,9 +61,9 @@ Responsive intent: one column by default, with controls sized for touch and no d
 
 Purpose: prevent accidental removal of owned content.
 
-Planned content and behaviour:
+Implemented content and behaviour for post deletion:
 
-- identify the post or comment being deleted;
+- identify the post being deleted;
 - explain that related deletion may be irreversible;
 - make confirm and cancel actions unambiguous; and
 - keep the non-destructive action easy to reach by keyboard.
@@ -73,7 +72,7 @@ Planned content and behaviour:
 
 Purpose: help a member understand their account activity and manage submissions.
 
-Planned content and behaviour:
+Implemented content and behaviour:
 
 - username and non-sensitive account information;
 - owned posts, including visible draft/published status;
@@ -86,19 +85,19 @@ Responsive intent: transform multi-column metadata into labelled stacked values 
 
 Purpose: support registration, sign-in, and sign-out through a consistent account journey.
 
-Planned content and behaviour:
+Implemented content and behaviour:
 
 - concise headings and explanations;
 - autocomplete-compatible, properly labelled fields;
 - safe validation and authentication feedback;
 - links between registration and sign-in; and
-- explicit sign-out confirmation where required by the chosen authentication package.
+- a POST sign-out control with success feedback.
 
 ## Administration
 
 Purpose: let authorised staff organise and moderate relational content.
 
-Phase 1 provides Django Admin model registrations with useful columns, search, filters, date navigation, and slug prepopulation. Public-facing moderation screens are not planned for Phase 1.
+Phase 1 provides Django Admin model registrations with useful columns, search, filters, date navigation, and slug prepopulation. Public-facing moderation screens remain later work.
 
 ## Shared states and content rules
 

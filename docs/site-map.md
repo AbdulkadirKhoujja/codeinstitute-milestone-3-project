@@ -1,8 +1,8 @@
 # Site Map and Information Flow
 
-This planning document describes the intended application structure. Routes and pages beyond Django Admin have not yet been implemented.
+This document distinguishes the implemented Phase 2 application structure from the Phase 3 community branches.
 
-## Planned site map
+## Site map
 
 ```text
 ByteBoard
@@ -11,8 +11,8 @@ ByteBoard
 |   |-- Search results
 |   `-- Post detail
 |       |-- External article
-|       |-- Comments
-|       `-- Voting controls
+|       |-- Comments [Phase 3]
+|       `-- Voting controls [Phase 3]
 |-- Account
 |   |-- Register
 |   |-- Sign in
@@ -22,8 +22,8 @@ ByteBoard
 |   |-- My posts
 |   |-- Create post
 |   `-- Edit/delete own post
-|-- Comment actions
-|   `-- Edit/delete own comment
+|-- Comment actions [Phase 3]
+|   `-- Edit/delete own comment [Phase 3]
 `-- Administration
     |-- Categories
     |-- Posts
@@ -38,7 +38,7 @@ ByteBoard
 3. Post detail connects the ByteBoard summary and discussion to the original external article.
 4. Registration and sign-in turn a visitor into an authenticated member.
 5. A member can create a story, then reach permitted edit or delete actions from the post or profile area.
-6. A member can comment and vote from post detail; ownership rules govern later edits and deletion.
+6. In Phase 3, a member will be able to comment and vote from post detail; ownership rules will govern later comment edits and deletion.
 7. Staff use Django Admin to organise categories and moderate posts, comments, and votes.
 
 ## Navigation planning
@@ -54,12 +54,12 @@ ByteBoard
 | Destination or action | Visitor | Member | Staff |
 | --- | --- | --- | --- |
 | Browse published posts | Yes | Yes | Yes |
-| Read approved comments | Yes | Yes | Yes |
+| Read approved comments (Phase 3) | Yes | Yes | Yes |
 | Register or sign in | Yes | When signed out | When signed out |
 | Create posts | No | Yes | Yes |
 | Edit/delete a post | No | Own only | Moderation policy |
-| Add comments or votes | No | Yes | Yes |
-| Edit/delete a comment | No | Own only | Moderation policy |
+| Add comments or votes (Phase 3) | No | Yes | Yes |
+| Edit/delete a comment (Phase 3) | No | Own only | Moderation policy |
 | Django Admin | No | No | Authorised staff only |
 
 ## Error and empty-state paths

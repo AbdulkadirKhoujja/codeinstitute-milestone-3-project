@@ -15,7 +15,7 @@ Acceptance criteria:
 - Results use newest-first ordering by default.
 - The list remains usable at mobile and desktop widths.
 
-Delivery: Phase 2.
+Delivery: Phase 2 (implemented).
 
 ### Filter and search
 
@@ -25,10 +25,12 @@ Acceptance criteria:
 
 - The six initial categories are available as navigation or filter options.
 - Search matches clearly documented post fields.
+- Users can order results by newest or aggregate rating.
+- Longer result sets are paginated without dropping active controls.
 - Empty and no-result states explain what happened.
 - Filters and search terms can be cleared without reloading unrelated state.
 
-Delivery: Phase 2 for categories; Phase 3 for search.
+Delivery: Phase 2 (implemented).
 
 ### Read a story and discussion
 
@@ -41,7 +43,7 @@ Acceptance criteria:
 - The external article link is distinguishable from internal navigation.
 - Missing or unavailable posts return an appropriate not-found response.
 
-Delivery: Phase 2 for post details; Phase 3 for comments.
+Delivery: Phase 2 for post details (implemented); Phase 3 for comments.
 
 ### Register and sign in
 
@@ -54,7 +56,7 @@ Acceptance criteria:
 - Signing out ends the authenticated session.
 - Restricted actions redirect or guide unauthenticated visitors to sign in.
 
-Delivery: Phase 2.
+Delivery: Phase 2 (implemented).
 
 ### Submit and manage stories
 
@@ -67,7 +69,7 @@ Acceptance criteria:
 - The interface distinguishes drafts from published posts.
 - Destructive actions require explicit confirmation.
 
-Delivery: Phase 2.
+Delivery: Phase 2 (implemented).
 
 ### Comment and manage comments
 
