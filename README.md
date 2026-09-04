@@ -1,111 +1,126 @@
 # ByteBoard
 
-ByteBoard is a Code Institute Backend Development Milestone Project: a community-driven technology and startup news platform where users will be able to submit stories, discover developments, discuss posts, and rank stories through votes.
+ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phase 1 establishes the planning and relational data foundation. The public application, authentication journeys, community interfaces, styling, and production deployment are intentionally planned for later phases and are not represented as complete.
+Phase 2 delivers the complete core application. Comment interactions, voting interactions, production configuration, deployment, and final cross-browser validation remain intentionally scheduled for later phases.
 
-## Project goals
+## Purpose and audience
 
-External users need a focused place to browse technology and startup news, locate relevant stories, identify authors and dates, and—after authentication—submit, discuss, and rank contributions.
+Technology reporting is spread across many sources. ByteBoard gives developers, founders, students, investors, and interested readers a focused place to find useful stories and the community context behind each submission.
 
-The site owner needs to encourage relevant discussion, organise stories by topic, moderate contributions, preserve content ownership, and protect relational data integrity.
+The core experience supports two goals:
 
-The intended audience includes technology professionals, founders, developers, students, investors, enthusiasts, and readers interested in community-curated technology news.
+- visitors can locate relevant reporting quickly and understand who submitted it; and
+- members can publish, revise, privately draft, or remove their own story records without gaining control of another member's content.
 
-## Current development status
+## Implemented features
 
-Phase 1 — Planning and Data Foundation includes:
+### Story discovery
 
-- project goals, user stories, acceptance criteria, page requirements, and responsive planning;
-- sitemap and logical information flow;
-- six clearly labelled SVG planning wireframes;
-- accessibility requirements and testing intentions;
-- relational database design and Mermaid ERD;
-- migrated `Category`, `Post`, `Comment`, and `Vote` Django models;
-- database-enforced vote value and one-vote-per-user/post constraints;
-- protected category deletion and cascading dependent comment/vote deletion;
-- useful Django Admin registrations for all four domain models; and
-- isolated model and admin tests.
+- A public feed containing published stories only, newest first by default.
+- Dedicated category URLs and a category query-string filter.
+- Case-insensitive search across title, summary, and member commentary.
+- Newest, highest-rated, oldest, and title sorting with deterministic tie-breakers.
+- Aggregate vote scores calculated from existing vote records without exposing Phase 3 voting controls.
+- Ten stories per page with active search, category, and sort settings preserved between pages.
+- Contextual empty states for an empty platform, category, or search result.
+- Reusable story cards showing category, author, date, summary, and score.
 
-Not yet implemented: public views or templates, authentication pages, post CRUD interfaces, comments UI, voting UI, search, site styling, PostgreSQL production configuration, or deployment. See the [development roadmap](docs/development-roadmap.md) for the agreed sequence.
+### Accounts and profiles
 
-## Planned core features
+- Registration using Django's password validation and built-in user model.
+- Sign-in with safe internal redirects and a generic invalid-credentials response.
+- POST-only sign-out with confirmation feedback.
+- Navigation that changes appropriately for visitors and signed-in members.
+- Public profiles containing a username, join date, and published stories without exposing email addresses.
+- An owner-only private-drafts section and story-management links.
 
-- Browse published stories newest first.
-- Navigate the initial Artificial Intelligence, Startups, Software Development, Cybersecurity, Gadgets, and Fintech categories.
-- Search for stories.
-- Register, sign in, and sign out.
-- Submit, edit, and delete owned stories.
-- Read and manage owned comments.
-- Upvote or downvote once per user and post.
-- Review authors, dates, categories, scores, and discussion.
-- Moderate categories, posts, comments, and votes.
+### Story management
 
-These are planned product requirements; only the Phase 1 foundation described above currently exists.
+- Authenticated create, detail, update, and delete journeys.
+- A model form restricted to member-editable fields with persistent labels and field-specific help.
+- Server-assigned authorship; submitted author values are ignored.
+- Draft or published status selection with clear feedback.
+- Owner-filtered edit and delete queries returning `404` for another member's records.
+- Explicit deletion confirmation and POST-only mutation.
+- Published story detail for everyone and private draft preview for its owner only.
+- Safe external article links that announce a new tab to assistive technology.
 
-## Data model summary
+### Interface foundation
 
-ByteBoard uses Django's built-in user model:
+- Semantic shared templates with consistent header, navigation, main, and footer landmarks.
+- Keyboard skip link, visible focus styles, labelled forms, message announcements, and plain-language states.
+- Mobile-first custom CSS for feeds, forms, profiles, story detail, and account journeys.
+- Bootstrap components used as a responsive foundation, extended by the project's own visual system.
+- Reduced-motion support and flexible layouts without fixed content heights.
 
-- one user can author many posts and comments and cast many votes;
-- one category organises many posts, and categories in use are protected from deletion;
-- one post can receive many comments and votes;
-- deleting a post cascades to its comments and votes;
-- votes accept only `-1` or `1`; and
-- a user can have only one vote per post.
+## Features reserved for later phases
 
-The complete field design, deletion rules, constraints, and ERD are in [database design](docs/database-design.md).
+The relational foundations for comments and votes already exist, but Phase 2 deliberately does not include comment CRUD, public comment display, or voting actions. Phase 3 will implement and test those community interactions. Phase 4 covers production settings, PostgreSQL, deployment, and formal browser, accessibility, and validation evidence.
+
+No live deployment is claimed at this stage.
+
+## Data model
+
+ByteBoard uses Django's built-in user model with four domain models:
+
+- `Category` organises posts and cannot be deleted while a post refers to it.
+- `Post` belongs to one author and one category and records draft/published state and timestamps.
+- `Comment` belongs to one post and author, retains moderation state, and is deleted with its post.
+- `Vote` belongs to one post and user, accepts only `-1` or `1`, and is unique per user/post pair.
+
+These relationships provide ownership and integrity at the database layer. The complete Mermaid ERD, field table, constraints, and deletion rules are documented in [database design](docs/database-design.md).
+
+## Application architecture
+
+The project uses Django's model-template-view structure:
+
+- `byteboard/` contains project settings and root URL routing;
+- `accounts/` contains registration, authentication presentation, profiles, and their tests;
+- `news/` contains the domain models, model form, story queries, CRUD views, URLs, admin configuration, migrations, and tests;
+- `templates/` contains the shared layout, reusable includes, account pages, and story pages; and
+- `static/css/style.css` contains the mobile-first ByteBoard visual system.
+
+Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering, `select_related`, and pagination. Django messages carry success feedback across post/redirect/get journeys.
+
+## Routes
+
+| Route | Purpose | Access |
+| --- | --- | --- |
+| `/` | Published story feed, search, filtering, sorting, pagination | Public |
+| `/categories/<slug>/` | Named category feed | Public |
+| `/posts/<id>/` | Published detail or an owner's draft preview | Public/owner |
+| `/posts/new/` | Create a story | Signed-in member |
+| `/posts/<id>/edit/` | Edit an owned story | Owner only |
+| `/posts/<id>/delete/` | Confirm and delete an owned story | Owner only |
+| `/accounts/register/` | Create and enter an account | Signed-out visitor |
+| `/accounts/login/` | Sign in | Signed-out visitor |
+| `/accounts/logout/` | Sign out via POST | Signed-in member |
+| `/accounts/profile/<username>/` | Public submissions and owner-only drafts | Public/owner |
+| `/admin/` | Manage application records | Authorised staff |
 
 ## Technology stack
 
-The planned full-stack product uses HTML, CSS, JavaScript, Python, Django, and a relational database.
+- Python and Django 5.2.17 for routing, forms, authentication, ORM, migrations, admin, and tests.
+- HTML5 and Django templates for server-rendered pages and reusable components.
+- Custom CSS and Bootstrap 5.3.8 for the responsive interface.
+- SQLite for local development.
+- Git and GitHub for incremental version control.
 
-Current Python dependencies are recorded exactly in `requirements.txt`:
-
-- Django 5.2.17 — web framework, ORM, migrations, authentication model, admin, and test framework;
-- asgiref — Django's ASGI support dependency;
-- sqlparse — SQL parsing used by Django;
-- tzdata — time-zone data on platforms that require it;
-- gunicorn — production WSGI server planned for deployment; and
-- packaging — version and packaging utilities.
-
-SQLite is used for local development. PostgreSQL is planned for production but is not configured in Phase 1.
-
-## Documentation index
-
-- [Project brief](docs/project-brief.md)
-- [User stories and acceptance criteria](docs/user-stories.md)
-- [Site map and information flow](docs/site-map.md)
-- [Page and responsive specifications](docs/page-specification.md)
-- [Database design and ERD](docs/database-design.md)
-- [Accessibility requirements](docs/accessibility-requirements.md)
-- [Development roadmap](docs/development-roadmap.md)
-- Wireframes:
-  - [Home — desktop](docs/wireframes/home-desktop.svg)
-  - [Home — mobile](docs/wireframes/home-mobile.svg)
-  - [Post detail — desktop](docs/wireframes/post-detail-desktop.svg)
-  - [Post detail — mobile](docs/wireframes/post-detail-mobile.svg)
-  - [Post form](docs/wireframes/post-form.svg)
-  - [Profile](docs/wireframes/profile.svg)
-
-The SVG files are low-fidelity planning artefacts, not final screenshots or completed interface designs.
+All Python package versions are pinned in `requirements.txt`. PostgreSQL and a production WSGI configuration are later-phase work.
 
 ## Local setup
 
-Prerequisites:
+Prerequisites are Python 3 with `venv` and `pip`, Git, and a local repository clone.
 
-- Python 3 with `venv` and `pip`;
-- Git; and
-- a local clone of this repository.
-
-1. Clone the repository and enter its directory:
+1. Clone and enter the repository:
 
    ```shell
    git clone https://github.com/AbdulkadirKhoujja/codeinstitute-milestone-3-project.git
    cd codeinstitute-milestone-3-project
    ```
 
-2. Create and activate a virtual environment. For example, on Windows PowerShell:
+2. Create and activate a virtual environment. On Windows PowerShell:
 
    ```powershell
    python -m venv .venv
@@ -118,7 +133,7 @@ Prerequisites:
    python -m pip install -r requirements.txt
    ```
 
-4. Provide a local Django secret key. The project reads `SECRET_KEY` from the environment. One local option is an ignored `env.py` file in the repository root:
+4. Set a unique local `SECRET_KEY` environment variable. An ignored `env.py` may be used locally:
 
    ```python
    import os
@@ -126,55 +141,78 @@ Prerequisites:
    os.environ.setdefault("SECRET_KEY", "replace-with-a-unique-local-secret")
    ```
 
-   `env.py`, `.env`, local database files, credentials, and production secrets must never be committed. Confirm ignore behaviour before staging changes.
+   Never commit the real key, `env.py`, `.env`, credentials, or the local database.
 
-5. Apply migrations and check the project:
+5. Prepare and run the application:
 
    ```shell
    python manage.py migrate
-   python manage.py check
-   python manage.py test
-   ```
-
-6. Optionally create a local superuser to inspect the configured Django Admin, then start the development server:
-
-   ```shell
-   python manage.py createsuperuser
    python manage.py runserver
    ```
 
-At this phase, the only configured route is Django Admin at `/admin/`; no public ByteBoard pages have been built.
+6. Open `http://127.0.0.1:8000/`. Categories are staff-managed records; create the planned categories in Django Admin before testing story submission in a new local database.
 
-## Testing intentions
+## Using ByteBoard
 
-Phase 1 tests exercise model display strings, default ordering, relationship requirements, category uniqueness, post status choices, category deletion protection, comment and vote cascades, vote constraints, and admin registration/configuration. Tests use Django's isolated test database and do not depend on manually created SQLite records.
+A visitor can search, choose a category, change sorting, move between result pages, open a member profile, read a story, and follow its clearly identified source link. Registration signs the new member in immediately.
 
-Later phases will add view, URL, form, template, authentication, authorisation, community-feature, responsive, accessibility, browser, and deployment tests. Results and defects will be documented only after the corresponding checks are actually run.
+A signed-in member can use **Submit story**, choose **Draft** to keep work private or **Published** to add it to public feeds, then manage the record from its detail page or their profile. Sign-out is submitted as a POST form from the navigation. Attempting to view another member's draft or mutate another member's story returns a not-found response rather than disclosing protected data.
 
-## Accessibility and responsive planning
+## Testing
 
-The project plans semantic landmarks and headings, keyboard-operable controls, visible focus, persistent form labels, connected validation feedback, text alternatives, sufficient contrast, zoom support, and mobile-first reflow. See [accessibility requirements](docs/accessibility-requirements.md) for acceptance and test intentions. No conformance claim is made before the implemented interface is evaluated.
+The automated suite creates isolated test records and does not depend on `db.sqlite3`. It covers models, admin, forms, routes, authentication, safe redirects, profiles, draft privacy, published feeds, detail visibility, story CRUD, ownership, filtering, search, sorting, vote-score aggregation, pagination, feedback, and method restrictions.
 
-## Deployment intentions
+Run the quality checks with:
 
-Phase 4 plans PostgreSQL, environment-provided production secrets, deployment-safe Django settings, static asset handling, migrations, and verification on a selected hosting provider. A live-site URL and deployment instructions will be added only after a deployment exists and has been tested.
+```shell
+python manage.py test
+python manage.py check
+python manage.py makemigrations --check --dry-run
+```
 
-## Future improvements
+The development approach and observed Phase 2 results are recorded in [testing](docs/testing.md). Later formal accessibility, compatibility, and deployment validation must not be inferred from these local checks.
 
-Potential post-milestone ideas include personalised feeds, follows or bookmarks, notifications, social login, reputation features, email digests, media uploads, public APIs, and native mobile clients. These ideas are outside the agreed four-phase milestone scope unless explicitly reprioritised.
+## Accessibility and responsive design
+
+The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, screen-reader message announcements, descriptive links, machine-readable dates, and text-based draft/filter/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
+
+Phase 2 browser checks provide implementation feedback, while the formal multi-browser, assistive-technology, contrast, zoom, and validator matrix remains Phase 4 work. See [accessibility requirements](docs/accessibility-requirements.md).
+
+## Documentation
+
+- [Project brief](docs/project-brief.md)
+- [User stories and acceptance criteria](docs/user-stories.md)
+- [Site map and information flow](docs/site-map.md)
+- [Page and responsive specifications](docs/page-specification.md)
+- [Database design and ERD](docs/database-design.md)
+- [Accessibility requirements](docs/accessibility-requirements.md)
+- [Testing](docs/testing.md)
+- [Assessment criteria tracker](docs/assessment-criteria.md)
+- [Development roadmap](docs/development-roadmap.md)
+- [Planning wireframes](docs/wireframes/)
+
+The wireframes are low-fidelity planning artefacts, not final screenshots.
+
+## Security
+
+- `SECRET_KEY` is read from the environment rather than stored in tracked source.
+- Django CSRF tokens protect every local POST form.
+- Standard password validators and authentication views handle credentials.
+- Login redirects accept safe internal destinations and reject external destinations.
+- Registration and login redirect already-authenticated members.
+- Logout and story mutations require POST; unsupported mutation methods return `405`.
+- Ownership is enforced in server-side queries and authorship comes from the session.
+- Draft queries restrict non-public records to their owner.
+- `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
+
+Production `DEBUG`, hosts, database, and static settings are not Phase 2 deployment claims and must be hardened in Phase 4.
 
 ## Credits and attribution
 
-- The project was created for Code Institute's Backend Development milestone requirements.
-- Django-generated project/application scaffolding was used as the starting structure.
-- Django's official documentation informs framework, model, migration, admin, and testing usage.
-- Phase 1 planning, model implementation, tests, and documentation were reviewed through repository diffs, Django checks, migrations, and automated tests.
+- The project is created for Code Institute's Backend Development milestone requirements.
+- [Django documentation](https://docs.djangoproject.com/en/5.2/) informs the framework, authentication, forms, ORM, migrations, admin, and testing implementation. Django is distributed under the BSD 3-Clause licence.
+- [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/) informs the responsive component foundation. Bootstrap is loaded from jsDelivr with integrity attributes and is distributed under the MIT licence.
+- Django project and application scaffolding supplied the conventional starting file structure.
+- No third-party images, icon sets, or fonts are included in Phase 2.
 
-Any later external code, design assets, images, icons, fonts, data, or learning resources must be credited with their source and licence where required. No third-party visual assets are included in the current wireframes.
-
-## Repository security
-
-- `SECRET_KEY` is loaded from the environment rather than hard-coded in tracked settings.
-- `env.py`, `.env`, `db.sqlite3`, and other local environment/database files are ignored.
-- Contributors should review staged file names and diffs before every commit.
-- Production credentials must be stored in the hosting provider's environment configuration, never in Git.
+Any later external code, media, data, or learning resource must be credited with its source and licence where required.
