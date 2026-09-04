@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from news.models import Category
 from news.models import Post
+from news.models import Vote
 
 
 class PublishedPostFeedTests(TestCase):
@@ -273,6 +274,81 @@ class StorySortingTests(TestCase):
         self.assertEqual(response.context["active_sort"], "oldest")
         self.assertContains(response, '<label for="story-sort"')
         self.assertContains(response, '<option value="oldest" selected>')
+
+
+class HighestRatedSortingTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.author = get_user_model().objects.create_user(
+            username="rating-author",
+            password="Existing-passphrase-284!",
+        )
+        cls.voters = [
+            get_user_model().objects.create_user(
+                username=f"rating-voter-{index}",
+                password="Existing-passphrase-284!",
+            )
+            for index in range(3)
+        ]
+        category = Category.objects.create(
+            name="Ratings",
+            slug="ratings",
+            description="Rated technology stories.",
+        )
+        cls.high_post = cls.create_post("High-rated story", category)
+        cls.negative_post = cls.create_post("Negative-rated story", category)
+        cls.unrated_post = cls.create_post("Unrated story", category)
+        Vote.objects.create(
+            post=cls.high_post,
+            user=cls.voters[0],
+            value=Vote.Value.UPVOTE,
+        )
+        Vote.objects.create(
+            post=cls.high_post,
+            user=cls.voters[1],
+            value=Vote.Value.UPVOTE,
+        )
+        Vote.objects.create(
+            post=cls.negative_post,
+            user=cls.voters[0],
+            value=Vote.Value.UPVOTE,
+        )
+        Vote.objects.create(
+            post=cls.negative_post,
+            user=cls.voters[1],
+            value=Vote.Value.DOWNVOTE,
+        )
+        Vote.objects.create(
+            post=cls.negative_post,
+            user=cls.voters[2],
+            value=Vote.Value.DOWNVOTE,
+        )
+
+    @classmethod
+    def create_post(cls, title, category):
+        return Post.objects.create(
+            title=title,
+            summary=f"Summary for {title}.",
+            article_url="https://example.com/rated-story",
+            content="Rated story context.",
+            author=cls.author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_highest_rated_aggregates_positive_negative_and_empty_scores(self):
+        response = self.client.get(reverse("news:home"), {"sort": "highest"})
+
+        self.assertQuerySetEqual(
+            response.context["posts"],
+            [self.high_post, self.unrated_post, self.negative_post],
+        )
+        self.assertEqual(
+            [post.score for post in response.context["posts"]],
+            [2, 0, -1],
+        )
+        self.assertContains(response, '<option value="highest" selected>')
+        self.assertContains(response, "Score 2")
 
 
 class StoryPaginationTests(TestCase):

@@ -1,7 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import IntegerField
 from django.db.models import Q
+from django.db.models import Sum
+from django.db.models import Value
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -13,11 +17,13 @@ from .models import Post
 
 SORT_ORDERS = {
     "newest": ("-created_at", "-pk"),
+    "highest": ("-score", "-created_at", "-pk"),
     "oldest": ("created_at", "pk"),
     "title": ("title", "pk"),
 }
 SORT_OPTIONS = (
     ("newest", "Newest first"),
+    ("highest", "Highest rated"),
     ("oldest", "Oldest first"),
     ("title", "Title A–Z"),
 )
@@ -43,6 +49,14 @@ def post_list(request):
     active_sort = request.GET.get("sort", "newest")
     if active_sort not in SORT_ORDERS:
         active_sort = "newest"
+    if active_sort == "highest":
+        posts = posts.annotate(
+            score=Coalesce(
+                Sum("votes__value"),
+                Value(0),
+                output_field=IntegerField(),
+            )
+        )
     posts = posts.order_by(*SORT_ORDERS[active_sort])
     page_obj = Paginator(posts, 10).get_page(request.GET.get("page"))
     pagination_parameters = request.GET.copy()
