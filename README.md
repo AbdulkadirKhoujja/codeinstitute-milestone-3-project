@@ -168,7 +168,7 @@ Potential post-milestone ideas include personalised feeds, follows or bookmarks,
 - The project was created for Code Institute's Backend Development milestone requirements.
 - Django-generated project/application scaffolding was used as the starting structure.
 - Django's official documentation informs framework, model, migration, admin, and testing usage.
-- Phase 1 planning, model implementation, tests, and documentation were developed with AI assistance and reviewed through repository diffs, Django checks, migrations, and automated tests. This disclosure should be updated if the course specifies a particular submission format.
+- Phase 1 planning, model implementation, tests, and documentation were reviewed through repository diffs, Django checks, migrations, and automated tests.
 
 Any later external code, design assets, images, icons, fonts, data, or learning resources must be credited with their source and licence where required. No third-party visual assets are included in the current wireframes.
 

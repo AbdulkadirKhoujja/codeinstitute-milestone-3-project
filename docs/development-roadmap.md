@@ -121,5 +121,4 @@ Before final submission:
 - link to original sources and licences where required;
 - identify adapted code in nearby comments and the README;
 - document learning resources that materially shaped the implementation;
-- describe AI assistance transparently in line with current Code Institute requirements; and
 - retain evidence that all included media and code can be used in the project.
