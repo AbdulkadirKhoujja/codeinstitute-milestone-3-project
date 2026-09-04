@@ -56,13 +56,24 @@ def post_create(request):
 
 @login_required
 def post_update(request, pk):
-    """Show a pre-populated edit form only to the story owner."""
+    """Update a story only when requested by its owner."""
     post = get_object_or_404(Post, pk=pk, author=request.user)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+            if post.status == Post.Status.PUBLISHED:
+                messages.success(request, "Your story changes are now published.")
+            else:
+                messages.success(request, "Your changes were saved as a draft.")
+            return redirect("news:post-detail", pk=post.pk)
+    else:
+        form = PostForm(instance=post)
     return render(
         request,
         "news/post-form.html",
         {
-            "form": PostForm(instance=post),
+            "form": form,
             "post": post,
         },
     )
