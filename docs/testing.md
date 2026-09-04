@@ -65,9 +65,9 @@ The duration is machine-specific. The meaningful result is that all discovered t
 
 ## Manual Phase 2 browser checks
 
-The local browser pass is recorded only after it is performed. Its scope is to inspect the implemented visitor and member journeys, narrow and wide responsive states, keyboard focus, navigation state, forms, feedback, CRUD ownership, draft privacy, filters, search, sorting, pagination, console errors, and failed requests.
+On 4 September 2026, the local Django development server started successfully at `http://127.0.0.1:8000/` and reported no system-check issue. The available in-app browser control was then initialized for the planned visitor/member and responsive pass, but browser discovery returned an empty list. No interactive page, viewport, keyboard, console, or network inspection could therefore be performed in that environment. The server was stopped cleanly and no browser result is claimed.
 
-This Phase 2 pass is not a substitute for the formal Phase 4 matrix across supported browsers, screen readers, validators, contrast tools, zoom levels, performance tooling, or a deployed environment.
+The unexecuted scope remains visitor and member journeys, narrow and wide responsive states, keyboard focus, navigation state, forms, feedback, CRUD ownership, draft privacy, filters, search, sorting, pagination, console errors, and failed requests. This also does not replace the formal Phase 4 matrix across supported browsers, screen readers, validators, contrast tools, zoom levels, performance tooling, or a deployed environment.
 
 ## Later testing
 

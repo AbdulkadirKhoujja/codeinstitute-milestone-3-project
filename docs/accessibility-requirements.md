@@ -1,6 +1,14 @@
 # Accessibility Requirements
 
-ByteBoard will treat accessibility as an implementation requirement throughout development, not a final visual check. The target is a robust experience aligned with WCAG 2.2 Level AA where applicable. Conformance must not be claimed until the implemented application has been tested.
+ByteBoard treats accessibility as an implementation requirement throughout development, not a final visual check. The target is a robust experience aligned with WCAG 2.2 Level AA where applicable. Conformance is not claimed before the formal Phase 4 evaluation.
+
+## Phase 2 implementation status
+
+The core interface now provides semantic page landmarks, one primary heading per page, a skip link, native keyboard-operable controls, visible focus styling, mobile-first reflow, and reduced-motion handling. Navigation exposes account state in text, selected category links use `aria-current`, external story links include a new-tab announcement, and dates use machine-readable `time` elements.
+
+Registration, login, and story forms use persistent labels and autocomplete where relevant. Story fields have task-specific instructions. Invalid controls expose `aria-invalid` through Django and reference both their help text and field error; submitted non-sensitive values remain present after validation. Success messages use a live status region, while destructive actions identify the affected story and require an explicit POST confirmation.
+
+No content image is used in Phase 2, so image alternative-text requirements are not yet exercised. Comments and voting controls are Phase 3 work. Contrast measurement, keyboard journey recording, screen-reader spot checks, zoom/reflow evidence, markup/style validation, and cross-browser checks remain Phase 4 tasks; their absence prevents a conformance claim at this point.
 
 ## Structure and navigation
 
@@ -66,7 +74,7 @@ ByteBoard will treat accessibility as an implementation requirement throughout d
 
 ## Testing intentions
 
-Testing in Phase 4 should include:
+Testing in Phase 4 will include:
 
 - keyboard-only journeys for browsing, authentication, posting, commenting, voting, and ownership actions;
 - screen-reader spot checks for page structure, forms, feedback, and stateful controls;
