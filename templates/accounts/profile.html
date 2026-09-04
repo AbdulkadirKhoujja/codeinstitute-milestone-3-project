@@ -14,23 +14,11 @@
     </header>
 
     <section aria-labelledby="profile-posts-heading">
-      <h2 id="profile-posts-heading">{% if is_owner %}Your stories{% else %}Published stories{% endif %}</h2>
+      <h2 id="profile-posts-heading">{% if is_owner %}Your published stories{% else %}Published stories{% endif %}</h2>
       {% if posts %}
         <div class="profile-posts">
           {% for post in posts %}
-            <article class="profile-post">
-              <p class="eyebrow">{{ post.category.name }}</p>
-              <h3><a href="{% url 'news:post-detail' post.pk %}">{{ post.title }}</a></h3>
-              {% if is_owner %}<p><span class="badge text-bg-secondary">{{ post.get_status_display }}</span></p>{% endif %}
-              <p>{{ post.summary }}</p>
-              <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
-              {% if is_owner %}
-                <div class="owner-actions" aria-label="Manage {{ post.title }}">
-                  <a href="{% url 'news:post-update' post.pk %}">Edit</a>
-                  <a href="{% url 'news:post-delete' post.pk %}">Delete</a>
-                </div>
-              {% endif %}
-            </article>
+            {% include "includes/profile-post-card.html" %}
           {% endfor %}
         </div>
       {% else %}
@@ -41,5 +29,21 @@
         {% endif %}
       {% endif %}
     </section>
+
+    {% if is_owner %}
+      <section class="private-drafts" aria-labelledby="profile-drafts-heading">
+        <p class="eyebrow">Visible only to you</p>
+        <h2 id="profile-drafts-heading">Private drafts</h2>
+        {% if draft_posts %}
+          <div class="profile-posts">
+            {% for post in draft_posts %}
+              {% include "includes/profile-post-card.html" %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>You have no private drafts.</p>
+        {% endif %}
+      </section>
+    {% endif %}
   </section>
 {% endblock %}

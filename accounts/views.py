@@ -42,15 +42,20 @@ def profile(request, username):
     """Show public account details and published submissions."""
     profile_user = get_object_or_404(get_user_model(), username=username)
     is_owner = request.user.is_authenticated and request.user == profile_user
-    posts = profile_user.posts.all()
-    if not is_owner:
-        posts = posts.filter(status=Post.Status.PUBLISHED)
-    posts = posts.select_related("category")
+    posts = profile_user.posts.filter(
+        status=Post.Status.PUBLISHED,
+    ).select_related("category")
+    draft_posts = profile_user.posts.none()
+    if is_owner:
+        draft_posts = profile_user.posts.filter(
+            status=Post.Status.DRAFT,
+        ).select_related("category")
     return render(
         request,
         "accounts/profile.html",
         {
             "profile_user": profile_user,
+            "draft_posts": draft_posts,
             "is_owner": is_owner,
             "posts": posts,
         },

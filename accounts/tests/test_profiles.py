@@ -53,6 +53,7 @@ class PublicProfileTests(TestCase):
             f'href="{reverse("news:post-detail", args=[self.published_post.pk])}"',
         )
         self.assertNotContains(response, self.draft_post.title)
+        self.assertNotContains(response, "Private drafts")
         self.assertNotContains(response, self.member.email)
 
     def test_unknown_member_returns_not_found(self):
@@ -96,7 +97,7 @@ class ProfileDraftPrivacyTests(TestCase):
             reverse("accounts:profile", args=[self.member.username])
         )
 
-        self.assertContains(response, "Your stories")
+        self.assertContains(response, "Private drafts")
         self.assertContains(response, self.draft_post.title)
         self.assertContains(response, "Draft")
         self.assertContains(
