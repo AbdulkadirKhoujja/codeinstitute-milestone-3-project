@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.messages import constants as message_constants
 from django.contrib.messages.storage.base import Message
 from django.test import TestCase
@@ -51,3 +52,25 @@ class HomePageFoundationTests(TestCase):
         self.assertContains(response, f'href="{reverse("accounts:register")}"')
         self.assertContains(response, f'href="{reverse("accounts:login")}"')
         self.assertNotContains(response, reverse("accounts:logout"))
+
+    def test_member_navigation_shows_profile_and_post_logout(self):
+        member = get_user_model().objects.create_user(
+            username="navigation-member",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(member)
+
+        response = self.client.get(reverse("news:home"))
+
+        self.assertContains(
+            response,
+            f'href="{reverse("accounts:profile", args=[member.username])}"',
+        )
+        self.assertContains(
+            response,
+            f'action="{reverse("accounts:logout")}"',
+        )
+        self.assertContains(response, 'method="post"')
+        self.assertContains(response, 'name="csrfmiddlewaretoken"')
+        self.assertNotContains(response, f'href="{reverse("accounts:register")}"')
+        self.assertNotContains(response, f'href="{reverse("accounts:login")}"')
