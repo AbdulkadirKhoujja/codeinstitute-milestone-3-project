@@ -7,4 +7,5 @@ app_name = "accounts"
 
 urlpatterns = [
     path("register/", views.register, name="register"),
+    path("login/", views.ByteBoardLoginView.as_view(), name="login"),
 ]

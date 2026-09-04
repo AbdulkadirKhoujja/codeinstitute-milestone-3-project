@@ -1,9 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+from .forms import LoginForm
 from .forms import RegistrationForm
+
+
+class ByteBoardLoginView(LoginView):
+    """Authenticate members using Django's established security controls."""
+
+    authentication_form = LoginForm
+    template_name = "accounts/login.html"
 
 
 def register(request):

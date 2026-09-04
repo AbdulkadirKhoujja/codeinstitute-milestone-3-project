@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Log in | ByteBoard{% endblock %}
+
+{% block meta_description %}Log in to manage your ByteBoard technology stories.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="login-heading">
+    <div class="form-shell">
+      <p class="eyebrow">Welcome back</p>
+      <h1 id="login-heading">Log in to ByteBoard</h1>
+      <p>Continue the conversation and manage your submitted stories.</p>
+
+      <form method="post" action="{% url 'accounts:login' %}" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+          </div>
+        {% endif %}
+        {% for field in form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% for error in field.errors %}
+              <p class="invalid-feedback d-block" id="{{ field.name }}-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        <button class="btn btn-primary" type="submit">Log in</button>
+        <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}
