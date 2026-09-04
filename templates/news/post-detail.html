@@ -42,6 +42,17 @@
 
     <section class="comments-section" aria-labelledby="comments-heading">
       <h2 id="comments-heading">Discussion</h2>
+      {% if user.is_authenticated %}
+        <form class="comment-form" method="post" action="{% url 'news:comment-create' post.pk %}" novalidate>
+          {% csrf_token %}
+          {{ comment_form.body.label_tag }}
+          {{ comment_form.body }}
+          <div class="form-text" id="body-help">{{ comment_form.body.help_text }}</div>
+          <button class="btn btn-primary mt-3" type="submit">Add comment</button>
+        </form>
+      {% else %}
+        <p class="comment-sign-in"><a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in to join the discussion</a>.</p>
+      {% endif %}
       <div class="comment-list">
         {% for comment in comments %}
           {% include "includes/comment-card.html" %}

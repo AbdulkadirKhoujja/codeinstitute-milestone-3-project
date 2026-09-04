@@ -32,6 +32,28 @@ class CommentCreationTests(TestCase):
             status=Post.Status.PUBLISHED,
         )
 
+    def test_detail_shows_member_form_and_visitor_login_guidance(self):
+        visitor_response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+        self.assertNotContains(visitor_response, 'name="body"')
+        self.assertContains(visitor_response, reverse("accounts:login"))
+        self.assertContains(visitor_response, "Log in to join the discussion")
+
+        self.client.force_login(self.member)
+        member_response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+        self.assertEqual(
+            list(member_response.context["comment_form"].fields),
+            ["body"],
+        )
+        self.assertContains(member_response, 'name="body"')
+        self.assertContains(
+            member_response,
+            reverse("news:comment-create", args=[self.post.pk]),
+        )
+
     def test_valid_post_creates_server_owned_pending_comment(self):
         self.client.force_login(self.member)
 

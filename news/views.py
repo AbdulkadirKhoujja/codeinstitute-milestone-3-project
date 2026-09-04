@@ -100,7 +100,13 @@ def post_detail(request, pk):
     return render(
         request,
         "news/post-detail.html",
-        {"comments": comments, "post": post},
+        {
+            "comment_form": CommentForm()
+            if request.user.is_authenticated
+            else None,
+            "comments": comments,
+            "post": post,
+        },
     )
 
 
