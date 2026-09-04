@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account | ByteBoard{% endblock %}
+
+{% block meta_description %}Create a ByteBoard account to submit and manage technology stories.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="register-heading">
+    <div class="form-shell">
+      <p class="eyebrow">Join the conversation</p>
+      <h1 id="register-heading">Create your ByteBoard account</h1>
+      <p>Choose a username and password. We only ask for the details needed to protect your contributions.</p>
+
+      <form method="post" action="{% url 'accounts:register' %}" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.help_text %}
+              <div id="{{ field.name }}-help" class="form-text">{{ field.help_text|safe }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="invalid-feedback d-block" id="{{ field.name }}-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Create account</button>
+        <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}
