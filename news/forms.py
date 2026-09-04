@@ -7,6 +7,18 @@ from .models import Post
 class CommentForm(forms.ModelForm):
     """Collect comment content without exposing ownership or moderation."""
 
+    body = forms.CharField(
+        help_text="Add up to 2,000 characters of relevant discussion.",
+        max_length=2000,
+        widget=forms.Textarea(
+            attrs={
+                "aria-describedby": "body-help",
+                "class": "form-control",
+                "rows": 5,
+            }
+        ),
+    )
+
     class Meta:
         model = Comment
         fields = ["body"]
