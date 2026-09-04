@@ -20,6 +20,38 @@ class RegistrationPageTests(TestCase):
         self.assertContains(response, '<label for="id_password2"')
         self.assertContains(response, "Your password must contain")
 
+    def test_authenticated_member_is_redirected_from_registration_page(self):
+        user = get_user_model().objects.create_user(
+            username="existing-member",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("accounts:register"))
+
+        self.assertRedirects(response, reverse("news:home"))
+
+    def test_authenticated_member_cannot_submit_registration(self):
+        user = get_user_model().objects.create_user(
+            username="existing-member",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("accounts:register"),
+            {
+                "username": "second-account",
+                "password1": "Distinctive-passphrase-284!",
+                "password2": "Distinctive-passphrase-284!",
+            },
+        )
+
+        self.assertRedirects(response, reverse("news:home"))
+        self.assertFalse(
+            get_user_model().objects.filter(username="second-account").exists()
+        )
+
 
 class RegistrationSubmissionTests(TestCase):
     def test_valid_registration_creates_and_signs_in_user(self):

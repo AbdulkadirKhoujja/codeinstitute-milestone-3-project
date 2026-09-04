@@ -68,16 +68,17 @@ class LoginRedirectTests(TestCase):
         )
 
     def test_internal_next_destination_is_respected(self):
+        internal_destination = f'{reverse("news:home")}?sort=new'
         response = self.client.post(
             reverse("accounts:login"),
             {
                 "username": "redirect-member",
                 "password": "Existing-passphrase-284!",
-                "next": reverse("accounts:register"),
+                "next": internal_destination,
             },
         )
 
-        self.assertRedirects(response, reverse("accounts:register"))
+        self.assertRedirects(response, internal_destination)
 
     def test_external_next_destination_is_rejected(self):
         response = self.client.post(

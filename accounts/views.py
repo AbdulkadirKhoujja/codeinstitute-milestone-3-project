@@ -36,6 +36,9 @@ class ByteBoardLogoutView(LogoutView):
 
 def register(request):
     """Create an account and begin an authenticated session."""
+    if request.user.is_authenticated:
+        return redirect("news:home")
+
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
