@@ -1,0 +1,15 @@
+<article class="story-card">
+  <div class="story-card__body">
+    <p class="eyebrow">{{ post.category.name }}</p>
+    <h3 class="story-card__title">
+      <a href="{% url 'news:post-detail' post.pk %}">{{ post.title }}</a>
+    </h3>
+    <p>{{ post.summary }}</p>
+    <p class="story-meta">
+      Submitted by
+      <a href="{% url 'accounts:profile' post.author.username %}">{{ post.author.username }}</a>
+      on <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
+    </p>
+  </div>
+  <a class="story-card__action" href="{% url 'news:post-detail' post.pk %}" aria-label="Read {{ post.title }}">Read story</a>
+</article>

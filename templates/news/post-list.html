@@ -9,4 +9,16 @@
     <h1 id="home-heading">Technology news, shaped by the community</h1>
     <p>Discover thoughtful stories about technology, software, security, finance, gadgets, and the people building what comes next.</p>
   </section>
+
+  <section class="container story-feed" aria-labelledby="latest-stories-heading">
+    <div class="section-heading">
+      <p class="eyebrow">Community picks</p>
+      <h2 id="latest-stories-heading">Latest stories</h2>
+    </div>
+    <div class="story-feed__list">
+      {% for post in posts %}
+        {% include "includes/post-card.html" %}
+      {% endfor %}
+    </div>
+  </section>
 {% endblock %}

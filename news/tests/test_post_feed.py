@@ -61,3 +61,26 @@ class PublishedPostFeedTests(TestCase):
             response.context["posts"],
             [self.newer_post, self.older_post],
         )
+
+    def test_feed_renders_accessible_story_cards_with_metadata(self):
+        response = self.client.get(reverse("news:home"))
+
+        self.assertTemplateUsed(response, "includes/post-card.html")
+        self.assertContains(response, self.newer_post.title)
+        self.assertContains(response, self.newer_post.summary)
+        self.assertContains(response, self.newer_post.category.name)
+        self.assertContains(response, self.newer_post.author.username)
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-detail", args=[self.newer_post.pk])}"',
+        )
+        self.assertContains(
+            response,
+            f'href="{reverse("accounts:profile", args=[self.newer_post.author.username])}"',
+        )
+        self.assertContains(response, '<time datetime="')
+        content = response.content.decode()
+        self.assertLess(
+            content.index(self.newer_post.title),
+            content.index(self.older_post.title),
+        )
