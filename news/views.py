@@ -89,7 +89,10 @@ def post_detail(request, pk):
         visible_posts.select_related("author", "category"),
         pk=pk,
     )
-    comments = post.comments.filter(is_approved=True).select_related("author")
+    visible_comments = Q(is_approved=True)
+    if request.user.is_authenticated:
+        visible_comments |= Q(author=request.user)
+    comments = post.comments.filter(visible_comments).select_related("author")
     return render(
         request,
         "news/post-detail.html",

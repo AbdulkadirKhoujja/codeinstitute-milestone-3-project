@@ -51,3 +51,17 @@ class ApprovedCommentVisibilityTests(TestCase):
         self.assertContains(response, self.author.username)
         self.assertContains(response, 'datetime="')
         self.assertNotContains(response, self.unapproved.body)
+
+    def test_author_sees_own_unapproved_comment_with_clear_label(self):
+        self.client.force_login(self.author)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertQuerySetEqual(
+            response.context["comments"],
+            [self.approved, self.unapproved],
+        )
+        self.assertContains(response, self.unapproved.body)
+        self.assertContains(response, "Awaiting moderation")
