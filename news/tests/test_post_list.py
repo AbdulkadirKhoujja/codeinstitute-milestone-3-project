@@ -35,3 +35,10 @@ class HomePageFoundationTests(TestCase):
         self.assertIn('role="status"', rendered)
         self.assertIn('aria-live="polite"', rendered)
         self.assertIn("Your story was saved.", rendered)
+
+    def test_home_uses_shared_site_footer(self):
+        response = self.client.get(reverse("news:home"))
+
+        self.assertTemplateUsed(response, "includes/footer.html")
+        self.assertContains(response, '<footer class="site-footer"')
+        self.assertContains(response, "Community-curated technology news")
