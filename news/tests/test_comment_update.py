@@ -97,3 +97,31 @@ class CommentUpdatePageTests(TestCase):
             "Your updated comment is awaiting moderation.",
         )
         self.assertContains(response, "Comment after editing.")
+
+    def test_invalid_update_preserves_input_and_existing_comment(self):
+        self.client.force_login(self.owner)
+        excessive_body = "x" * 2001
+
+        response = self.client.post(
+            reverse(
+                "news:comment-update",
+                args=[self.post.pk, self.comment.pk],
+            ),
+            {"body": excessive_body},
+        )
+
+        self.comment.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response.context["form"],
+            "body",
+            "Ensure this value has at most 2000 characters (it has 2001).",
+        )
+        self.assertContains(response, excessive_body)
+        self.assertContains(response, 'aria-invalid="true"')
+        self.assertContains(
+            response,
+            'aria-describedby="body-help body-error"',
+        )
+        self.assertContains(response, 'id="body-error"')
+        self.assertEqual(self.comment.body, "Comment before editing.")

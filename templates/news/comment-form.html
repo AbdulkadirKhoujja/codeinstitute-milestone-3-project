@@ -14,6 +14,9 @@
         {{ form.body.label_tag }}
         {{ form.body }}
         <div class="form-text" id="body-help">{{ form.body.help_text }}</div>
+        {% for error in form.body.errors %}
+          <p class="invalid-feedback d-block" id="body-error">{{ error }}</p>
+        {% endfor %}
         <button class="btn btn-primary mt-3" type="submit">Update comment</button>
         <a class="btn btn-link" href="{% url 'news:post-detail' comment.post_id %}#comment-{{ comment.pk }}">Cancel</a>
       </form>
