@@ -7,5 +7,6 @@ app_name = "news"
 
 urlpatterns = [
     path("", views.post_list, name="home"),
+    path("posts/new/", views.post_create, name="post-create"),
     path("posts/<int:pk>/", views.post_detail, name="post-detail"),
 ]

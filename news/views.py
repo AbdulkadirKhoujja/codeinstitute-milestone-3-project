@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
+from .forms import PostForm
 from .models import Post
 
 
@@ -25,3 +27,13 @@ def post_detail(request, pk):
         pk=pk,
     )
     return render(request, "news/post-detail.html", {"post": post})
+
+
+@login_required
+def post_create(request):
+    """Show authenticated members the story submission form."""
+    return render(
+        request,
+        "news/post-form.html",
+        {"form": PostForm()},
+    )

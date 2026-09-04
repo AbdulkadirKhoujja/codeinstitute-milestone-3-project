@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Submit a story | ByteBoard{% endblock %}
+
+{% block meta_description %}Submit a technology or startup story to the ByteBoard community.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="post-form-heading">
+    <div class="form-shell form-shell--wide">
+      <p class="eyebrow">Share something useful</p>
+      <h1 id="post-form-heading">Submit a story</h1>
+      <p>All fields are required. Save as a draft if your context is not ready for the public feed.</p>
+
+      <form method="post" action="{% url 'news:post-create' %}" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            <div id="{{ field.name }}-help" class="form-text">
+              {% if field.help_text %}{{ field.help_text }}{% else %}Required field.{% endif %}
+            </div>
+            {% for error in field.errors %}
+              <p class="invalid-feedback d-block" id="{{ field.name }}-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-primary" type="submit">Submit story</button>
+        <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}
