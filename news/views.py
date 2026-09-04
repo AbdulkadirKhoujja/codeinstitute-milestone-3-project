@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -43,6 +44,9 @@ def post_list(request):
     if active_sort not in SORT_ORDERS:
         active_sort = "newest"
     posts = posts.order_by(*SORT_ORDERS[active_sort])
+    page_obj = Paginator(posts, 10).get_page(request.GET.get("page"))
+    pagination_parameters = request.GET.copy()
+    pagination_parameters.pop("page", None)
     return render(
         request,
         "news/post-list.html",
@@ -50,7 +54,9 @@ def post_list(request):
             "active_category": active_category,
             "active_sort": active_sort,
             "categories": Category.objects.all(),
-            "posts": posts,
+            "page_obj": page_obj,
+            "pagination_query": pagination_parameters.urlencode(),
+            "posts": page_obj.object_list,
             "search_query": search_query,
             "sort_options": SORT_OPTIONS,
         },

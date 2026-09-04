@@ -273,3 +273,52 @@ class StorySortingTests(TestCase):
         self.assertEqual(response.context["active_sort"], "oldest")
         self.assertContains(response, '<label for="story-sort"')
         self.assertContains(response, '<option value="oldest" selected>')
+
+
+class StoryPaginationTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        author = get_user_model().objects.create_user(
+            username="pagination-author",
+            password="Existing-passphrase-284!",
+        )
+        cls.category = Category.objects.create(
+            name="Cloud",
+            slug="cloud",
+            description="Cloud technology stories.",
+        )
+        for index in range(12):
+            Post.objects.create(
+                title=f"Page story {index + 1:02d}",
+                summary="A pagination test summary.",
+                article_url=f"https://example.com/page-{index + 1}",
+                content="Pagination test context.",
+                author=author,
+                category=cls.category,
+                status=Post.Status.PUBLISHED,
+            )
+
+    def test_feed_paginates_ten_stories_per_page(self):
+        first_page = self.client.get(reverse("news:home"))
+        second_page = self.client.get(reverse("news:home"), {"page": 2})
+
+        self.assertEqual(len(first_page.context["posts"]), 10)
+        self.assertEqual(len(second_page.context["posts"]), 2)
+        self.assertEqual(first_page.context["page_obj"].paginator.num_pages, 2)
+        self.assertContains(first_page, 'aria-label="Story pages"')
+        self.assertContains(first_page, 'href="?page=2"')
+
+    def test_page_links_preserve_active_feed_controls(self):
+        response = self.client.get(
+            reverse("news:home"),
+            {
+                "q": "Page",
+                "category": self.category.slug,
+                "sort": "oldest",
+            },
+        )
+
+        self.assertContains(
+            response,
+            "?q=Page&amp;category=cloud&amp;sort=oldest&amp;page=2",
+        )
