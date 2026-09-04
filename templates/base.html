@@ -22,6 +22,7 @@
         <a class="site-brand" href="{% url 'news:home' %}">ByteBoard</a>
       </div>
     </header>
+    {% include "includes/messages.html" %}
     <main id="main-content" tabindex="-1">
       {% block content %}{% endblock %}
     </main>
