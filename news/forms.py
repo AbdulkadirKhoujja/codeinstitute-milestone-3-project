@@ -23,6 +23,13 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ["body"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.is_bound and self["body"].errors:
+            self.fields["body"].widget.attrs["aria-describedby"] += (
+                " body-error"
+            )
+
 
 class PostForm(forms.ModelForm):
     """Collect the story data a member is permitted to control."""

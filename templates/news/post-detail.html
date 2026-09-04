@@ -48,6 +48,9 @@
           {{ comment_form.body.label_tag }}
           {{ comment_form.body }}
           <div class="form-text" id="body-help">{{ comment_form.body.help_text }}</div>
+          {% for error in comment_form.body.errors %}
+            <p class="invalid-feedback d-block" id="body-error">{{ error }}</p>
+          {% endfor %}
           <button class="btn btn-primary mt-3" type="submit">Add comment</button>
         </form>
       {% else %}

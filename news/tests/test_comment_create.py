@@ -78,3 +78,25 @@ class CommentCreationTests(TestCase):
         )
         self.assertContains(response, comment.body)
         self.assertContains(response, "Your comment is awaiting moderation.")
+
+    def test_invalid_comment_rerenders_detail_with_accessible_error(self):
+        self.client.force_login(self.member)
+
+        response = self.client.post(
+            reverse("news:comment-create", args=[self.post.pk]),
+            {"body": ""},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "news/post-detail.html")
+        self.assertFormError(
+            response.context["comment_form"],
+            "body",
+            "This field is required.",
+        )
+        self.assertContains(response, 'aria-invalid="true"')
+        self.assertContains(
+            response,
+            'aria-describedby="body-help body-error"',
+        )
+        self.assertEqual(Comment.objects.count(), 0)

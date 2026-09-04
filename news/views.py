@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.db.models import Sum
 from django.db.models import Value
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -32,6 +31,21 @@ SORT_OPTIONS = (
     ("oldest", "Oldest first"),
     ("title", "Title A–Z"),
 )
+
+
+def post_detail_context(request, post, comment_form=None):
+    """Build the discussion context shared by detail and invalid forms."""
+    visible_comments = Q(is_approved=True)
+    if request.user.is_authenticated:
+        visible_comments |= Q(author=request.user)
+        comment_form = comment_form or CommentForm()
+    return {
+        "comment_form": comment_form,
+        "comments": post.comments.filter(visible_comments).select_related(
+            "author"
+        ),
+        "post": post,
+    }
 
 
 def post_list(request, category_slug=None):
@@ -93,20 +107,10 @@ def post_detail(request, pk):
         visible_posts.select_related("author", "category"),
         pk=pk,
     )
-    visible_comments = Q(is_approved=True)
-    if request.user.is_authenticated:
-        visible_comments |= Q(author=request.user)
-    comments = post.comments.filter(visible_comments).select_related("author")
     return render(
         request,
         "news/post-detail.html",
-        {
-            "comment_form": CommentForm()
-            if request.user.is_authenticated
-            else None,
-            "comments": comments,
-            "post": post,
-        },
+        post_detail_context(request, post),
     )
 
 
@@ -187,7 +191,11 @@ def comment_create(request, post_id):
     post = get_object_or_404(visible_posts, pk=post_id)
     form = CommentForm(request.POST)
     if not form.is_valid():
-        return HttpResponseBadRequest("Comment could not be saved.")
+        return render(
+            request,
+            "news/post-detail.html",
+            post_detail_context(request, post, comment_form=form),
+        )
     comment = form.save(commit=False)
     comment.author = request.user
     comment.post = post
