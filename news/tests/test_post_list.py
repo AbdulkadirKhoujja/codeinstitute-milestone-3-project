@@ -42,3 +42,12 @@ class HomePageFoundationTests(TestCase):
         self.assertTemplateUsed(response, "includes/footer.html")
         self.assertContains(response, '<footer class="site-footer"')
         self.assertContains(response, "Community-curated technology news")
+
+    def test_visitor_navigation_shows_public_and_account_links(self):
+        response = self.client.get(reverse("news:home"))
+
+        self.assertTemplateUsed(response, "includes/navigation.html")
+        self.assertContains(response, f'href="{reverse("news:home")}"')
+        self.assertContains(response, f'href="{reverse("accounts:register")}"')
+        self.assertContains(response, f'href="{reverse("accounts:login")}"')
+        self.assertNotContains(response, reverse("accounts:logout"))
