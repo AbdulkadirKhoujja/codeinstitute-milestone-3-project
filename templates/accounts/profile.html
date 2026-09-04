@@ -10,6 +10,7 @@
       <p class="eyebrow">Community member</p>
       <h1 id="profile-heading">{{ profile_user.username }}</h1>
       <p>Member since <time datetime="{{ profile_user.date_joined|date:'Y-m-d' }}">{{ profile_user.date_joined|date:"F Y" }}</time></p>
+      {% if is_owner %}<a class="btn btn-primary" href="{% url 'news:post-create' %}">Submit a new story</a>{% endif %}
     </header>
 
     <section aria-labelledby="profile-posts-heading">
@@ -19,10 +20,16 @@
           {% for post in posts %}
             <article class="profile-post">
               <p class="eyebrow">{{ post.category.name }}</p>
-              <h3>{{ post.title }}</h3>
+              <h3><a href="{% url 'news:post-detail' post.pk %}">{{ post.title }}</a></h3>
               {% if is_owner %}<p><span class="badge text-bg-secondary">{{ post.get_status_display }}</span></p>{% endif %}
               <p>{{ post.summary }}</p>
               <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
+              {% if is_owner %}
+                <div class="owner-actions" aria-label="Manage {{ post.title }}">
+                  <a href="{% url 'news:post-update' post.pk %}">Edit</a>
+                  <a href="{% url 'news:post-delete' post.pk %}">Delete</a>
+                </div>
+              {% endif %}
             </article>
           {% endfor %}
         </div>

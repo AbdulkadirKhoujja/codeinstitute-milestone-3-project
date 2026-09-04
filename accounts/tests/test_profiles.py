@@ -48,6 +48,10 @@ class PublicProfileTests(TestCase):
         self.assertContains(response, "profile-member")
         self.assertContains(response, "Member since")
         self.assertContains(response, self.published_post.title)
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-detail", args=[self.published_post.pk])}"',
+        )
         self.assertNotContains(response, self.draft_post.title)
         self.assertNotContains(response, self.member.email)
 
@@ -95,6 +99,18 @@ class ProfileDraftPrivacyTests(TestCase):
         self.assertContains(response, "Your stories")
         self.assertContains(response, self.draft_post.title)
         self.assertContains(response, "Draft")
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-create")}"',
+        )
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-update", args=[self.draft_post.pk])}"',
+        )
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-delete", args=[self.draft_post.pk])}"',
+        )
 
     def test_other_member_cannot_see_profile_draft(self):
         self.client.force_login(self.other_member)
