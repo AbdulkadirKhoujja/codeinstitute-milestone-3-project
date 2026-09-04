@@ -66,3 +66,51 @@ class PostDeletePageTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 404)
+
+
+class PostDeleteSubmissionTests(TestCase):
+    def setUp(self):
+        self.owner = get_user_model().objects.create_user(
+            username="deletion-owner",
+            password="Existing-passphrase-284!",
+        )
+        self.other_member = get_user_model().objects.create_user(
+            username="deletion-attacker",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Business",
+            slug="business",
+            description="Technology business stories.",
+        )
+        self.post = Post.objects.create(
+            title="Story to delete",
+            summary="Deletion behavior summary.",
+            article_url="https://example.com/delete-behavior",
+            content="Deletion behavior context.",
+            author=self.owner,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_owner_post_deletes_story_with_feedback(self):
+        self.client.force_login(self.owner)
+
+        response = self.client.post(
+            reverse("news:post-delete", args=[self.post.pk]),
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("news:home"))
+        self.assertFalse(Post.objects.filter(pk=self.post.pk).exists())
+        self.assertContains(response, "Story to delete was deleted.")
+
+    def test_non_owner_post_cannot_delete_story(self):
+        self.client.force_login(self.other_member)
+
+        response = self.client.post(
+            reverse("news:post-delete", args=[self.post.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(Post.objects.filter(pk=self.post.pk).exists())

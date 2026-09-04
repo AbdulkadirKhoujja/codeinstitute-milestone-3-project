@@ -83,6 +83,11 @@ def post_update(request, pk):
 def post_delete(request, pk):
     """Ask a story owner to confirm a destructive action."""
     post = get_object_or_404(Post, pk=pk, author=request.user)
+    if request.method == "POST":
+        post_title = post.title
+        post.delete()
+        messages.success(request, f"{post_title} was deleted.")
+        return redirect("news:home")
     return render(
         request,
         "news/post-confirm-delete.html",
