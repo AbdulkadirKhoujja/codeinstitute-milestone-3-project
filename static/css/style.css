@@ -51,6 +51,31 @@ a:hover {
   color: var(--bb-navy-soft);
 }
 
+:focus-visible {
+  outline: 0.2rem solid var(--bb-coral);
+  outline-offset: 0.2rem;
+}
+
+.skip-link {
+  background: #ffffff;
+  border: 0.15rem solid var(--bb-navy);
+  border-radius: 0 0 var(--bb-radius-sm) 0;
+  color: var(--bb-navy);
+  font-weight: 700;
+  left: 0;
+  padding: 0.65rem 1rem;
+  position: fixed;
+  top: 0;
+  transform: translateY(-130%);
+  transition: transform 150ms ease;
+  z-index: 1100;
+}
+
+.skip-link:focus {
+  color: var(--bb-navy);
+  transform: translateY(0);
+}
+
 .container {
   max-width: var(--bb-content-width);
 }
