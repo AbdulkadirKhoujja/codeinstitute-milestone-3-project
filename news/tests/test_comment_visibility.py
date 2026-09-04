@@ -65,3 +65,25 @@ class ApprovedCommentVisibilityTests(TestCase):
         )
         self.assertContains(response, self.unapproved.body)
         self.assertContains(response, "Awaiting moderation")
+
+    def test_comment_management_links_are_visible_only_to_owner(self):
+        update_url = reverse(
+            "news:comment-update",
+            args=[self.post.pk, self.approved.pk],
+        )
+        delete_url = reverse(
+            "news:comment-delete",
+            args=[self.post.pk, self.approved.pk],
+        )
+        visitor_response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+        self.assertNotContains(visitor_response, update_url)
+        self.assertNotContains(visitor_response, delete_url)
+
+        self.client.force_login(self.author)
+        owner_response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+        self.assertContains(owner_response, update_url)
+        self.assertContains(owner_response, delete_url)

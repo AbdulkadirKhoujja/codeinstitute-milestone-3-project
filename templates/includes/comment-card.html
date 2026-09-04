@@ -5,4 +5,10 @@
     {% if not comment.is_approved %}<span class="badge text-bg-secondary">Awaiting moderation</span>{% endif %}
   </header>
   <div class="comment-card__body">{{ comment.body|linebreaks }}</div>
+  {% if user == comment.author %}
+    <div class="owner-actions" aria-label="Manage comment by {{ comment.author.username }}">
+      <a href="{% url 'news:comment-update' comment.post_id comment.pk %}">Edit comment</a>
+      <a href="{% url 'news:comment-delete' comment.post_id comment.pk %}">Delete comment</a>
+    </div>
+  {% endif %}
 </article>
