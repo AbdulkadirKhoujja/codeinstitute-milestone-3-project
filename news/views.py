@@ -247,6 +247,12 @@ def comment_delete(request, post_id, comment_id):
         post_id=post_id,
         author=request.user,
     )
+    if request.method == "POST":
+        comment.delete()
+        messages.success(request, "Your comment was deleted.")
+        return redirect(
+            f"{reverse('news:post-detail', args=[post_id])}#comments-heading"
+        )
     return render(
         request,
         "news/comment-confirm-delete.html",

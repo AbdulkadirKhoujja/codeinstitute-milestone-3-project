@@ -56,3 +56,23 @@ class CommentDeletePageTests(TestCase):
             response,
             f"{detail_url}#comment-{self.comment.pk}",
         )
+
+    def test_owner_post_deletes_comment_and_returns_to_discussion(self):
+        self.client.force_login(self.owner)
+
+        response = self.client.post(
+            reverse(
+                "news:comment-delete",
+                args=[self.post.pk, self.comment.pk],
+            ),
+            follow=True,
+        )
+
+        self.assertFalse(Comment.objects.filter(pk=self.comment.pk).exists())
+        detail_url = reverse("news:post-detail", args=[self.post.pk])
+        self.assertRedirects(
+            response,
+            f"{detail_url}#comments-heading",
+        )
+        self.assertNotContains(response, self.comment.body)
+        self.assertContains(response, "Your comment was deleted.")
