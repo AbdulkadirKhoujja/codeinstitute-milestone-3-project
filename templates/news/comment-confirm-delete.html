@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Delete comment | ByteBoard{% endblock %}
+
+{% block meta_description %}Confirm deletion of your ByteBoard comment.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="delete-comment-heading">
+    <div class="form-shell">
+      <p class="eyebrow">Confirm destructive action</p>
+      <h1 id="delete-comment-heading">Delete comment</h1>
+      <blockquote class="comment-preview">{{ comment.body|truncatechars:240 }}</blockquote>
+      <p>This action cannot be undone.</p>
+      <form method="post" action="{% url 'news:comment-delete' comment.post_id comment.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Delete comment</button>
+        <a class="btn btn-link" href="{% url 'news:post-detail' comment.post_id %}#comment-{{ comment.pk }}">Keep comment</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

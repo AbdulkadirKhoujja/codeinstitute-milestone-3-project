@@ -235,3 +235,20 @@ def comment_update(request, post_id, comment_id):
         "news/comment-form.html",
         {"comment": comment, "form": form},
     )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def comment_delete(request, post_id, comment_id):
+    """Ask the comment owner to confirm deletion."""
+    comment = get_object_or_404(
+        Comment.objects.select_related("post"),
+        pk=comment_id,
+        post_id=post_id,
+        author=request.user,
+    )
+    return render(
+        request,
+        "news/comment-confirm-delete.html",
+        {"comment": comment},
+    )
