@@ -59,3 +59,51 @@ class VoteScoreDisplayTests(TestCase):
         self.assertEqual(response.context["score"], -1)
         self.assertContains(response, 'id="vote-score"')
         self.assertContains(response, "Score -1")
+
+
+class VoteActionTests(TestCase):
+    def setUp(self):
+        self.member = get_user_model().objects.create_user(
+            username="active-voter",
+            password="Existing-passphrase-284!",
+        )
+        author = get_user_model().objects.create_user(
+            username="active-vote-author",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Vote actions",
+            slug="vote-actions",
+            description="Vote action stories.",
+        )
+        self.post = Post.objects.create(
+            title="A story ready for votes",
+            summary="Vote action summary.",
+            article_url="https://example.com/vote-actions",
+            content="Vote action context.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+        self.client.force_login(self.member)
+
+    def test_initial_upvote_and_downvote_create_allowlisted_values(self):
+        for value in (Vote.Value.UPVOTE, Vote.Value.DOWNVOTE):
+            with self.subTest(value=value):
+                Vote.objects.all().delete()
+
+                response = self.client.post(
+                    reverse("news:post-vote", args=[self.post.pk]),
+                    {"value": value},
+                    follow=True,
+                )
+
+                vote = Vote.objects.get(post=self.post, user=self.member)
+                self.assertEqual(vote.value, value)
+                detail_url = reverse("news:post-detail", args=[self.post.pk])
+                self.assertRedirects(
+                    response,
+                    f"{detail_url}#rating-heading",
+                )
+                self.assertContains(response, f"Score {value}")
+                self.assertContains(response, "Your vote was recorded.")

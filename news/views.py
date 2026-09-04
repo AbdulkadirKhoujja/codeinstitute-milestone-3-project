@@ -18,6 +18,7 @@ from .forms import PostForm
 from .models import Category
 from .models import Comment
 from .models import Post
+from .models import Vote
 
 
 SORT_ORDERS = {
@@ -264,4 +265,21 @@ def comment_delete(request, post_id, comment_id):
         request,
         "news/comment-confirm-delete.html",
         {"comment": comment},
+    )
+
+
+@login_required
+@require_POST
+def post_vote(request, post_id):
+    """Record a member's first vote on a published story."""
+    post = get_object_or_404(
+        Post,
+        pk=post_id,
+        status=Post.Status.PUBLISHED,
+    )
+    value = int(request.POST["value"])
+    Vote.objects.create(post=post, user=request.user, value=value)
+    messages.success(request, "Your vote was recorded.")
+    return redirect(
+        f"{reverse('news:post-detail', args=[post.pk])}#rating-heading"
     )
