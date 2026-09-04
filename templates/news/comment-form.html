@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Edit comment | ByteBoard{% endblock %}
+
+{% block meta_description %}Edit your contribution to a ByteBoard discussion.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="comment-form-heading">
+    <div class="form-shell">
+      <p class="eyebrow">Manage your contribution</p>
+      <h1 id="comment-form-heading">Edit your comment</h1>
+      <form method="post" action="{% url 'news:comment-update' comment.post_id comment.pk %}" novalidate>
+        {% csrf_token %}
+        {{ form.body.label_tag }}
+        {{ form.body }}
+        <div class="form-text" id="body-help">{{ form.body.help_text }}</div>
+        <button class="btn btn-primary mt-3" type="submit">Update comment</button>
+        <a class="btn btn-link" href="{% url 'news:post-detail' comment.post_id %}#comment-{{ comment.pk }}">Cancel</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

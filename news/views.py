@@ -16,6 +16,7 @@ from django.views.decorators.http import require_POST
 from .forms import CommentForm
 from .forms import PostForm
 from .models import Category
+from .models import Comment
 from .models import Post
 
 
@@ -203,4 +204,21 @@ def comment_create(request, post_id):
     messages.success(request, "Your comment is awaiting moderation.")
     return redirect(
         f"{reverse('news:post-detail', args=[post.pk])}#comment-{comment.pk}"
+    )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def comment_update(request, post_id, comment_id):
+    """Present an edit form only to the comment owner."""
+    comment = get_object_or_404(
+        Comment.objects.select_related("post"),
+        pk=comment_id,
+        post_id=post_id,
+        author=request.user,
+    )
+    return render(
+        request,
+        "news/comment-form.html",
+        {"comment": comment, "form": CommentForm(instance=comment)},
     )

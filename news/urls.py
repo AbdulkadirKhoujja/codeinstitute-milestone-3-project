@@ -21,4 +21,9 @@ urlpatterns = [
         views.comment_create,
         name="comment-create",
     ),
+    path(
+        "posts/<int:post_id>/comments/<int:comment_id>/edit/",
+        views.comment_update,
+        name="comment-update",
+    ),
 ]
