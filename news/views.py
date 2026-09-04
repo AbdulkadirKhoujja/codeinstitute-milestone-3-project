@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from django.shortcuts import render
 
 from .forms import PostForm
@@ -31,9 +33,22 @@ def post_detail(request, pk):
 
 @login_required
 def post_create(request):
-    """Show authenticated members the story submission form."""
+    """Create a story owned by the authenticated member."""
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            if post.status == Post.Status.PUBLISHED:
+                messages.success(request, "Your story is now published.")
+            else:
+                messages.success(request, "Your story was saved as a draft.")
+            return redirect("news:post-detail", pk=post.pk)
+    else:
+        form = PostForm()
     return render(
         request,
         "news/post-form.html",
-        {"form": PostForm()},
+        {"form": form},
     )
