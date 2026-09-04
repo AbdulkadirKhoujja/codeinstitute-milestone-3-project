@@ -13,6 +13,7 @@
       <div class="input-group">
         <input class="form-control" id="story-search" name="q" type="search" value="{{ search_query }}">
         {% if active_category %}<input name="category" type="hidden" value="{{ active_category.slug }}">{% endif %}
+        {% if active_sort != "newest" %}<input name="sort" type="hidden" value="{{ active_sort }}">{% endif %}
         <button class="btn btn-primary" type="submit">Search</button>
       </div>
     </form>
@@ -20,10 +21,12 @@
 
   <nav class="container category-navigation" aria-label="Story categories">
     <ul class="category-navigation__list">
-      <li><a href="{% url 'news:home' %}"{% if not active_category %} aria-current="page"{% endif %}>All stories</a></li>
+      <li>
+        <a href="{% url 'news:home' %}{% if search_query or active_sort != 'newest' %}?{% endif %}{% if search_query %}q={{ search_query|urlencode }}{% if active_sort != 'newest' %}&amp;{% endif %}{% endif %}{% if active_sort != 'newest' %}sort={{ active_sort }}{% endif %}"{% if not active_category %} aria-current="page"{% endif %}>All stories</a>
+      </li>
       {% for category in categories %}
         <li>
-          <a href="{% url 'news:home' %}?category={{ category.slug }}"{% if active_category == category %} aria-current="page"{% endif %}>{{ category.name }}</a>
+          <a href="{% url 'news:home' %}?category={{ category.slug }}{% if search_query %}&amp;q={{ search_query|urlencode }}{% endif %}{% if active_sort != 'newest' %}&amp;sort={{ active_sort }}{% endif %}"{% if active_category == category %} aria-current="page"{% endif %}>{{ category.name }}</a>
         </li>
       {% endfor %}
     </ul>

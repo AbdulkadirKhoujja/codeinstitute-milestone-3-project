@@ -337,3 +337,52 @@ class FeedEmptyStateTests(TestCase):
         self.assertContains(response, 'No stories matched "missing"')
         self.assertContains(response, "Clear filters")
         self.assertContains(response, f'href="{reverse("news:home")}"')
+
+
+class CombinedFeedControlTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        author = get_user_model().objects.create_user(
+            username="combined-control-author",
+            password="Existing-passphrase-284!",
+        )
+        cls.first_category = Category.objects.create(
+            name="Data",
+            slug="data",
+            description="Data technology stories.",
+        )
+        cls.second_category = Category.objects.create(
+            name="Networks",
+            slug="networks",
+            description="Networking stories.",
+        )
+        cls.matching_post = Post.objects.create(
+            title="Shared systems insight",
+            summary="Combined control summary.",
+            article_url="https://example.com/combined-control",
+            content="Combined control context.",
+            author=author,
+            category=cls.first_category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_controls_preserve_other_active_filters(self):
+        response = self.client.get(
+            reverse("news:home"),
+            {
+                "q": "shared systems",
+                "category": self.first_category.slug,
+                "sort": "oldest",
+            },
+        )
+
+        self.assertQuerySetEqual(response.context["posts"], [self.matching_post])
+        self.assertContains(
+            response,
+            "/?category=networks&amp;q=shared%20systems&amp;sort=oldest",
+        )
+        self.assertContains(
+            response,
+            "/?q=shared%20systems&amp;sort=oldest",
+        )
+        self.assertContains(response, 'name="sort" type="hidden" value="oldest"')
