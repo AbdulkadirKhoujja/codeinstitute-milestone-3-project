@@ -110,5 +110,10 @@ class PostCreateSubmissionTests(TestCase):
             "article_url",
             "Enter a valid URL.",
         )
+        self.assertContains(response, 'aria-invalid="true"')
+        self.assertContains(
+            response,
+            'aria-describedby="article_url-help article_url-error"',
+        )
         self.assertContains(response, "Retained story title")
         self.assertEqual(Post.objects.count(), 0)

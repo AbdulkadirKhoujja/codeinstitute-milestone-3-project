@@ -41,3 +41,7 @@ class PostForm(forms.ModelForm):
             else:
                 field.widget.attrs["class"] = "form-control"
             field.widget.attrs["aria-describedby"] = f"{field_name}-help"
+            if self.is_bound and self[field_name].errors:
+                field.widget.attrs["aria-describedby"] += (
+                    f" {field_name}-error"
+                )

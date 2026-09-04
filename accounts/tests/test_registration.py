@@ -98,6 +98,11 @@ class RegistrationSubmissionTests(TestCase):
             "username",
             "A user with that username already exists.",
         )
+        self.assertContains(response, 'aria-invalid="true"')
+        self.assertContains(
+            response,
+            'aria-describedby="username-help username-error"',
+        )
         self.assertEqual(
             get_user_model().objects.filter(username="existing-member").count(),
             1,

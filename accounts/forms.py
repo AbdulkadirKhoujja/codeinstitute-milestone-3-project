@@ -26,3 +26,10 @@ class RegistrationForm(UserCreationForm):
         self.fields["username"].widget.attrs["autocomplete"] = "username"
         self.fields["password1"].widget.attrs["autocomplete"] = "new-password"
         self.fields["password2"].widget.attrs["autocomplete"] = "new-password"
+
+        if self.is_bound:
+            for field_name, field in self.fields.items():
+                if self[field_name].errors:
+                    field.widget.attrs["aria-describedby"] += (
+                        f" {field_name}-error"
+                    )
