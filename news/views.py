@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
@@ -13,10 +14,14 @@ def post_list(request):
 
 
 def post_detail(request, pk):
-    """Show one published story and its original source."""
+    """Show a public story or its owner's private draft preview."""
+    visible_posts = Post.objects.filter(status=Post.Status.PUBLISHED)
+    if request.user.is_authenticated:
+        visible_posts = Post.objects.filter(
+            Q(status=Post.Status.PUBLISHED) | Q(author=request.user)
+        )
     post = get_object_or_404(
-        Post.objects.select_related("author", "category"),
+        visible_posts.select_related("author", "category"),
         pk=pk,
-        status=Post.Status.PUBLISHED,
     )
     return render(request, "news/post-detail.html", {"post": post})

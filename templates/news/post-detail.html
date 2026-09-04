@@ -9,6 +9,9 @@
     <header class="story-detail__header">
       <p class="eyebrow">{{ post.category.name }}</p>
       <h1 id="story-heading">{{ post.title }}</h1>
+      {% if post.status == "draft" %}
+        <p><span class="badge text-bg-secondary">Draft preview</span></p>
+      {% endif %}
       <p class="story-detail__summary">{{ post.summary }}</p>
       <p class="story-meta">
         Submitted by

@@ -47,3 +47,57 @@ class PublishedPostDetailTests(TestCase):
         response = self.client.get(reverse("news:post-detail", args=[999999]))
 
         self.assertEqual(response.status_code, 404)
+
+
+class DraftPostDetailPrivacyTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.author = get_user_model().objects.create_user(
+            username="draft-detail-author",
+            password="Existing-passphrase-284!",
+        )
+        cls.other_member = get_user_model().objects.create_user(
+            username="draft-detail-visitor",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Fintech",
+            slug="fintech",
+            description="Financial technology stories.",
+        )
+        cls.draft_post = Post.objects.create(
+            title="A private detail draft",
+            summary="A draft detail summary.",
+            article_url="https://example.com/draft-detail",
+            content="Private draft context.",
+            author=cls.author,
+            category=category,
+            status=Post.Status.DRAFT,
+        )
+
+    def test_anonymous_visitor_receives_not_found_for_draft(self):
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.draft_post.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_other_member_receives_not_found_for_draft(self):
+        self.client.force_login(self.other_member)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.draft_post.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_owner_can_preview_draft_with_status(self):
+        self.client.force_login(self.author)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.draft_post.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.draft_post.title)
+        self.assertContains(response, "Draft")
