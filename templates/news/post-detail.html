@@ -39,5 +39,14 @@
         <p class="story-meta">Updated <time datetime="{{ post.updated_at|date:'c' }}">{{ post.updated_at|date:"j F Y" }}</time></p>
       {% endif %}
     </section>
+
+    <section class="comments-section" aria-labelledby="comments-heading">
+      <h2 id="comments-heading">Discussion</h2>
+      <div class="comment-list">
+        {% for comment in comments %}
+          {% include "includes/comment-card.html" %}
+        {% endfor %}
+      </div>
+    </section>
   </article>
 {% endblock %}

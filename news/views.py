@@ -89,7 +89,12 @@ def post_detail(request, pk):
         visible_posts.select_related("author", "category"),
         pk=pk,
     )
-    return render(request, "news/post-detail.html", {"post": post})
+    comments = post.comments.filter(is_approved=True).select_related("author")
+    return render(
+        request,
+        "news/post-detail.html",
+        {"comments": comments, "post": post},
+    )
 
 
 @login_required
