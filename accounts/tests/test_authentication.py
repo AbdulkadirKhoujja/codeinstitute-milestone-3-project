@@ -17,6 +17,8 @@ class LoginPageTests(TestCase):
         self.assertContains(response, 'name="csrfmiddlewaretoken"')
         self.assertContains(response, '<label for="id_username"')
         self.assertContains(response, '<label for="id_password"')
+        self.assertContains(response, reverse("accounts:register"))
+        self.assertContains(response, "Create an account")
 
 
 class LoginSubmissionTests(TestCase):

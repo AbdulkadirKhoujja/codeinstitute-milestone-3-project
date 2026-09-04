@@ -19,6 +19,8 @@ class RegistrationPageTests(TestCase):
         self.assertContains(response, '<label for="id_password1"')
         self.assertContains(response, '<label for="id_password2"')
         self.assertContains(response, "Your password must contain")
+        self.assertContains(response, reverse("accounts:login"))
+        self.assertContains(response, "Already have an account?")
 
     def test_authenticated_member_is_redirected_from_registration_page(self):
         user = get_user_model().objects.create_user(

@@ -31,6 +31,7 @@
         <button class="btn btn-primary" type="submit">Log in</button>
         <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
       </form>
+      <p class="form-alternative">New to ByteBoard? <a href="{% url 'accounts:register' %}">Create an account</a>.</p>
     </div>
   </section>
 {% endblock %}

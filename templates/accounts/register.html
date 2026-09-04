@@ -28,6 +28,7 @@
         <button class="btn btn-primary" type="submit">Create account</button>
         <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
       </form>
+      <p class="form-alternative">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a>.</p>
     </div>
   </section>
 {% endblock %}
