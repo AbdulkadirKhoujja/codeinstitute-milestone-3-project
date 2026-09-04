@@ -50,6 +50,21 @@
     <div class="story-feed__list">
       {% for post in posts %}
         {% include "includes/post-card.html" %}
+      {% empty %}
+        <div class="empty-state">
+          {% if search_query %}
+            <h3>No stories matched "{{ search_query }}"</h3>
+            <p>Try a broader search or remove the active filters.</p>
+            <a class="btn btn-outline-primary" href="{% url 'news:home' %}">Clear filters</a>
+          {% elif active_category %}
+            <h3>No published {{ active_category.name }} stories yet</h3>
+            <p>Choose another category or check back soon.</p>
+            <a class="btn btn-outline-primary" href="{% url 'news:home' %}">View all stories</a>
+          {% else %}
+            <h3>No published stories yet</h3>
+            <p>Check back soon for the first community submissions.</p>
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
     {% if page_obj.paginator.num_pages > 1 %}

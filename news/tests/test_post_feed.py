@@ -322,3 +322,18 @@ class StoryPaginationTests(TestCase):
             response,
             "?q=Page&amp;category=cloud&amp;sort=oldest&amp;page=2",
         )
+
+
+class FeedEmptyStateTests(TestCase):
+    def test_feed_explains_when_no_stories_are_published(self):
+        response = self.client.get(reverse("news:home"))
+
+        self.assertContains(response, "No published stories yet")
+        self.assertContains(response, "Check back soon")
+
+    def test_empty_search_explains_result_and_offers_clear_action(self):
+        response = self.client.get(reverse("news:home"), {"q": "missing"})
+
+        self.assertContains(response, 'No stories matched "missing"')
+        self.assertContains(response, "Clear filters")
+        self.assertContains(response, f'href="{reverse("news:home")}"')
