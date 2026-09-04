@@ -101,3 +101,62 @@ class DraftPostDetailPrivacyTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.draft_post.title)
         self.assertContains(response, "Draft")
+
+
+class PostDetailOwnerActionTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.owner = get_user_model().objects.create_user(
+            username="action-owner",
+            password="Existing-passphrase-284!",
+        )
+        cls.other_member = get_user_model().objects.create_user(
+            username="action-visitor",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Innovation",
+            slug="innovation",
+            description="Technology innovation stories.",
+        )
+        cls.post = Post.objects.create(
+            title="Story with owner actions",
+            summary="Owner controls summary.",
+            article_url="https://example.com/owner-actions",
+            content="Owner controls context.",
+            author=cls.owner,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_owner_sees_edit_and_delete_actions(self):
+        self.client.force_login(self.owner)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-update", args=[self.post.pk])}"',
+        )
+        self.assertContains(
+            response,
+            f'href="{reverse("news:post-delete", args=[self.post.pk])}"',
+        )
+
+    def test_non_owner_does_not_see_edit_or_delete_actions(self):
+        self.client.force_login(self.other_member)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertNotContains(
+            response,
+            reverse("news:post-update", args=[self.post.pk]),
+        )
+        self.assertNotContains(
+            response,
+            reverse("news:post-delete", args=[self.post.pk]),
+        )

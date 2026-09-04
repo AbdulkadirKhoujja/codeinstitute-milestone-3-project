@@ -24,6 +24,12 @@
         target="_blank"
         rel="noopener noreferrer"
       >Read the original article <span class="visually-hidden">(opens in a new tab)</span></a>
+      {% if user == post.author %}
+        <div class="owner-actions" aria-label="Story management">
+          <a class="btn btn-outline-primary" href="{% url 'news:post-update' post.pk %}">Edit story</a>
+          <a class="btn btn-outline-danger" href="{% url 'news:post-delete' post.pk %}">Delete story</a>
+        </div>
+      {% endif %}
     </header>
 
     <section class="story-detail__content" aria-labelledby="context-heading">
