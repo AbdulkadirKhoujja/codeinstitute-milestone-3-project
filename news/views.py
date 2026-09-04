@@ -52,3 +52,17 @@ def post_create(request):
         "news/post-form.html",
         {"form": form},
     )
+
+
+@login_required
+def post_update(request, pk):
+    """Show a pre-populated edit form only to the story owner."""
+    post = get_object_or_404(Post, pk=pk, author=request.user)
+    return render(
+        request,
+        "news/post-form.html",
+        {
+            "form": PostForm(instance=post),
+            "post": post,
+        },
+    )

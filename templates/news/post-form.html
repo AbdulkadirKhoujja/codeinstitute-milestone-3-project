@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Submit a story | ByteBoard{% endblock %}
+{% block title %}{% if post %}Edit {{ post.title }}{% else %}Submit a story{% endif %} | ByteBoard{% endblock %}
 
 {% block meta_description %}Submit a technology or startup story to the ByteBoard community.{% endblock %}
 
 {% block content %}
   <section class="container py-5" aria-labelledby="post-form-heading">
     <div class="form-shell form-shell--wide">
-      <p class="eyebrow">Share something useful</p>
-      <h1 id="post-form-heading">Submit a story</h1>
+      <p class="eyebrow">{% if post %}Manage your submission{% else %}Share something useful{% endif %}</p>
+      <h1 id="post-form-heading">{% if post %}Edit your story{% else %}Submit a story{% endif %}</h1>
       <p>All fields are required. Save as a draft if your context is not ready for the public feed.</p>
 
-      <form method="post" action="{% url 'news:post-create' %}" novalidate>
+      <form method="post" action="{% if post %}{% url 'news:post-update' post.pk %}{% else %}{% url 'news:post-create' %}{% endif %}" novalidate>
         {% csrf_token %}
         {% for field in form %}
           <div class="mb-4">
@@ -25,8 +25,8 @@
             {% endfor %}
           </div>
         {% endfor %}
-        <button class="btn btn-primary" type="submit">Submit story</button>
-        <a class="btn btn-link" href="{% url 'news:home' %}">Cancel</a>
+        <button class="btn btn-primary" type="submit">{% if post %}Update story{% else %}Submit story{% endif %}</button>
+        <a class="btn btn-link" href="{% if post %}{% url 'news:post-detail' post.pk %}{% else %}{% url 'news:home' %}{% endif %}">Cancel</a>
       </form>
     </div>
   </section>
