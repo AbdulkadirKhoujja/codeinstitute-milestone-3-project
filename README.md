@@ -62,14 +62,59 @@ No live deployment is claimed at this stage.
 
 ## Data model
 
-ByteBoard uses Django's built-in user model with four domain models:
+ByteBoard uses Django's built-in `User` model as the identity and authentication source. The application reads `username` for authorship and public profiles and `date_joined` for non-sensitive membership context; passwords are handled by Django's hashed credential system. Reverse relationships expose a user's posts, comments, and votes.
 
-- `Category` organises posts and cannot be deleted while a post refers to it.
-- `Post` belongs to one author and one category and records draft/published state and timestamps.
-- `Comment` belongs to one post and author, retains moderation state, and is deleted with its post.
-- `Vote` belongs to one post and user, accepts only `-1` or `1`, and is unique per user/post pair.
+### Category
 
-These relationships provide ownership and integrity at the database layer. The complete Mermaid ERD, field table, constraints, and deletion rules are documented in [database design](docs/database-design.md).
+| Field | Type and rule | Purpose |
+| --- | --- | --- |
+| `id` | Automatic primary key | Stable record identity |
+| `name` | `CharField(100)`, unique | Human-readable topic |
+| `slug` | `SlugField(120)`, unique | Predictable category URL |
+| `description` | `TextField` | Staff-managed topic context |
+
+Categories sort alphabetically. `Post.category` uses `PROTECT`, preventing deletion of a category that still organises a post.
+
+### Post
+
+| Field | Type and rule | Purpose |
+| --- | --- | --- |
+| `id` | Automatic primary key | Stable route and record identity |
+| `title` | `CharField(200)` | Story headline |
+| `summary` | `TextField` | Concise feed and detail introduction |
+| `article_url` | `URLField(500)` | Original external source |
+| `content` | `TextField` | Member explanation of why the story matters |
+| `author` | `ForeignKey(User)`, cascade | Owning member; their deletion removes authored posts |
+| `category` | `ForeignKey(Category)`, protect | Required organising topic |
+| `status` | `CharField(10)`, draft/published, draft default | Public visibility state |
+| `created_at` | `DateTimeField`, set on creation | Submission time and default ordering |
+| `updated_at` | `DateTimeField`, refreshed on save | Last revision time |
+
+Posts order newest first. Deleting a post cascades to its comments and votes through their foreign keys.
+
+### Comment
+
+| Field | Type and rule | Purpose |
+| --- | --- | --- |
+| `id` | Automatic primary key | Stable record identity |
+| `post` | `ForeignKey(Post)`, cascade | Parent story |
+| `author` | `ForeignKey(User)`, cascade | Owning member |
+| `body` | `TextField` | Discussion content |
+| `is_approved` | `BooleanField`, false default | Moderation state |
+| `created_at` | `DateTimeField`, set on creation | Oldest-first discussion ordering |
+| `updated_at` | `DateTimeField`, refreshed on save | Last revision time |
+
+### Vote
+
+| Field | Type and rule | Purpose |
+| --- | --- | --- |
+| `id` | Automatic primary key | Stable record identity |
+| `post` | `ForeignKey(Post)`, cascade | Ranked story |
+| `user` | `ForeignKey(User)`, cascade | Member casting the vote |
+| `value` | `SmallIntegerField`, `-1` or `1` | Downvote/upvote contribution to aggregate score |
+| `created_at` | `DateTimeField`, set on creation | Vote creation time |
+
+A check constraint rejects values outside `-1` and `1`. A composite unique constraint on `post` and `user` prevents duplicate votes. Together, these relationships provide ownership and integrity at the database layer. The [database design](docs/database-design.md) contains the corresponding Mermaid ERD and relationship rationale.
 
 ## Application architecture
 
