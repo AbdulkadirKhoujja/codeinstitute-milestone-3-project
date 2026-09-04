@@ -10,6 +10,18 @@ from .models import Category
 from .models import Post
 
 
+SORT_ORDERS = {
+    "newest": ("-created_at", "-pk"),
+    "oldest": ("created_at", "pk"),
+    "title": ("title", "pk"),
+}
+SORT_OPTIONS = (
+    ("newest", "Newest first"),
+    ("oldest", "Oldest first"),
+    ("title", "Title A–Z"),
+)
+
+
 def post_list(request):
     """Render ByteBoard's public home page."""
     posts = Post.objects.filter(
@@ -27,14 +39,20 @@ def post_list(request):
             | Q(summary__icontains=search_query)
             | Q(content__icontains=search_query)
         )
+    active_sort = request.GET.get("sort", "newest")
+    if active_sort not in SORT_ORDERS:
+        active_sort = "newest"
+    posts = posts.order_by(*SORT_ORDERS[active_sort])
     return render(
         request,
         "news/post-list.html",
         {
             "active_category": active_category,
+            "active_sort": active_sort,
             "categories": Category.objects.all(),
             "posts": posts,
             "search_query": search_query,
+            "sort_options": SORT_OPTIONS,
         },
     )
 

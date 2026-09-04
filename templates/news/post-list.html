@@ -36,6 +36,17 @@
         {% if search_query %}Search results for "{{ search_query }}"{% elif active_category %}{{ active_category.name }} stories{% else %}Latest stories{% endif %}
       </h2>
     </div>
+    <form class="story-sort" method="get" action="{% url 'news:home' %}">
+      {% if search_query %}<input name="q" type="hidden" value="{{ search_query }}">{% endif %}
+      {% if active_category %}<input name="category" type="hidden" value="{{ active_category.slug }}">{% endif %}
+      <label for="story-sort">Sort stories</label>
+      <select class="form-select" id="story-sort" name="sort">
+        {% for value, label in sort_options %}
+          <option value="{{ value }}"{% if active_sort == value %} selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-outline-primary" type="submit">Apply</button>
+    </form>
     <div class="story-feed__list">
       {% for post in posts %}
         {% include "includes/post-card.html" %}
