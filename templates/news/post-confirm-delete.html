@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ post.title }} | ByteBoard{% endblock %}
+
+{% block meta_description %}Confirm deletion of your ByteBoard story.{% endblock %}
+
+{% block content %}
+  <section class="container py-5" aria-labelledby="delete-heading">
+    <div class="form-shell">
+      <p class="eyebrow">Confirm destructive action</p>
+      <h1 id="delete-heading">Delete story</h1>
+      <p>You are about to permanently delete <strong>{{ post.title }}</strong>.</p>
+      <p>This action cannot be undone. Related discussion data will also be removed.</p>
+
+      <form method="post" action="{% url 'news:post-delete' post.pk %}">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Delete story</button>
+        <a class="btn btn-link" href="{% url 'news:post-detail' post.pk %}">Keep story</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

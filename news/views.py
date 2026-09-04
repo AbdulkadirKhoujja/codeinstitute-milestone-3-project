@@ -77,3 +77,14 @@ def post_update(request, pk):
             "post": post,
         },
     )
+
+
+@login_required
+def post_delete(request, pk):
+    """Ask a story owner to confirm a destructive action."""
+    post = get_object_or_404(Post, pk=pk, author=request.user)
+    return render(
+        request,
+        "news/post-confirm-delete.html",
+        {"post": post},
+    )
