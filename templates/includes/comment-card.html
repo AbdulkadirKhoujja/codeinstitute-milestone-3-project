@@ -1,4 +1,4 @@
-<article class="comment-card">
+<article class="comment-card" id="comment-{{ comment.pk }}">
   <header class="comment-card__header">
     <a href="{% url 'accounts:profile' comment.author.username %}">{{ comment.author.username }}</a>
     <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"j F Y, H:i" }}</time>

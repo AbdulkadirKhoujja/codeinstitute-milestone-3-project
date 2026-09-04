@@ -6,11 +6,15 @@ from django.db.models import Q
 from django.db.models import Sum
 from django.db.models import Value
 from django.db.models.functions import Coalesce
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST
 
+from .forms import CommentForm
 from .forms import PostForm
 from .models import Category
 from .models import Post
@@ -164,4 +168,25 @@ def post_delete(request, pk):
         request,
         "news/post-confirm-delete.html",
         {"post": post},
+    )
+
+
+@login_required
+@require_POST
+def comment_create(request, post_id):
+    """Attach a pending comment to a story visible to the member."""
+    visible_posts = Post.objects.filter(
+        Q(status=Post.Status.PUBLISHED) | Q(author=request.user)
+    )
+    post = get_object_or_404(visible_posts, pk=post_id)
+    form = CommentForm(request.POST)
+    if not form.is_valid():
+        return HttpResponseBadRequest("Comment could not be saved.")
+    comment = form.save(commit=False)
+    comment.author = request.user
+    comment.post = post
+    comment.save()
+    messages.success(request, "Your comment is awaiting moderation.")
+    return redirect(
+        f"{reverse('news:post-detail', args=[post.pk])}#comment-{comment.pk}"
     )
