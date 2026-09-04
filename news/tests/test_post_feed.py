@@ -142,3 +142,74 @@ class CategoryFilterTests(TestCase):
             response.context["categories"],
             [self.ai_category, self.startup_category],
         )
+
+
+class StorySearchTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        author = get_user_model().objects.create_user(
+            username="search-author",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Research",
+            slug="research",
+            description="Technology research stories.",
+        )
+        cls.title_match = Post.objects.create(
+            title="Quantum networking milestone",
+            summary="A scientific update.",
+            article_url="https://example.com/quantum",
+            content="Research context.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.summary_match = Post.objects.create(
+            title="A new processor",
+            summary="Modular hardware reaches production.",
+            article_url="https://example.com/hardware",
+            content="Processor context.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.content_match = Post.objects.create(
+            title="Open standards update",
+            summary="A standards body reports progress.",
+            article_url="https://example.com/standards",
+            content="The ContextNeedle appears in this analysis.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.private_match = Post.objects.create(
+            title="Quantum draft",
+            summary="A private quantum draft.",
+            article_url="https://example.com/quantum-draft",
+            content="Private context.",
+            author=author,
+            category=category,
+            status=Post.Status.DRAFT,
+        )
+
+    def test_search_matches_documented_story_fields_case_insensitively(self):
+        cases = (
+            ("quantum", self.title_match),
+            ("HARDWARE", self.summary_match),
+            ("contextneedle", self.content_match),
+        )
+        for query, expected_post in cases:
+            with self.subTest(query=query):
+                response = self.client.get(reverse("news:home"), {"q": query})
+
+                self.assertQuerySetEqual(response.context["posts"], [expected_post])
+                self.assertNotContains(response, self.private_match.title)
+
+    def test_search_form_and_heading_identify_active_query(self):
+        response = self.client.get(reverse("news:home"), {"q": " quantum "})
+
+        self.assertEqual(response.context["search_query"], "quantum")
+        self.assertContains(response, '<label for="story-search"')
+        self.assertContains(response, 'value="quantum"')
+        self.assertContains(response, 'Search results for "quantum"')

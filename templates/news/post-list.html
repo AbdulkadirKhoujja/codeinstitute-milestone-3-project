@@ -8,6 +8,14 @@
   <section class="container py-5" aria-labelledby="home-heading">
     <h1 id="home-heading">Technology news, shaped by the community</h1>
     <p>Discover thoughtful stories about technology, software, security, finance, gadgets, and the people building what comes next.</p>
+    <form class="story-search" method="get" action="{% url 'news:home' %}" role="search">
+      <label for="story-search">Search stories</label>
+      <div class="input-group">
+        <input class="form-control" id="story-search" name="q" type="search" value="{{ search_query }}">
+        {% if active_category %}<input name="category" type="hidden" value="{{ active_category.slug }}">{% endif %}
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </form>
   </section>
 
   <nav class="container category-navigation" aria-label="Story categories">
@@ -24,7 +32,9 @@
   <section class="container story-feed" aria-labelledby="latest-stories-heading">
     <div class="section-heading">
       <p class="eyebrow">Community picks</p>
-      <h2 id="latest-stories-heading">{% if active_category %}{{ active_category.name }} stories{% else %}Latest stories{% endif %}</h2>
+      <h2 id="latest-stories-heading">
+        {% if search_query %}Search results for "{{ search_query }}"{% elif active_category %}{{ active_category.name }} stories{% else %}Latest stories{% endif %}
+      </h2>
     </div>
     <div class="story-feed__list">
       {% for post in posts %}

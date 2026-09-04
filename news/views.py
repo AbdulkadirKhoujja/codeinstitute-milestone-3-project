@@ -20,6 +20,13 @@ def post_list(request):
     if category_slug:
         active_category = get_object_or_404(Category, slug=category_slug)
         posts = posts.filter(category=active_category)
+    search_query = request.GET.get("q", "").strip()
+    if search_query:
+        posts = posts.filter(
+            Q(title__icontains=search_query)
+            | Q(summary__icontains=search_query)
+            | Q(content__icontains=search_query)
+        )
     return render(
         request,
         "news/post-list.html",
@@ -27,6 +34,7 @@ def post_list(request):
             "active_category": active_category,
             "categories": Category.objects.all(),
             "posts": posts,
+            "search_query": search_query,
         },
     )
 
