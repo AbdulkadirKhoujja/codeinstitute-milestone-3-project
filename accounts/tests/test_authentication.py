@@ -58,3 +58,42 @@ class LoginSubmissionTests(TestCase):
             "Please enter a correct username and password.",
         )
         self.assertNotIn("_auth_user_id", self.client.session)
+
+
+class LoginRedirectTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="redirect-member",
+            password="Existing-passphrase-284!",
+        )
+
+    def test_internal_next_destination_is_respected(self):
+        response = self.client.post(
+            reverse("accounts:login"),
+            {
+                "username": "redirect-member",
+                "password": "Existing-passphrase-284!",
+                "next": reverse("accounts:register"),
+            },
+        )
+
+        self.assertRedirects(response, reverse("accounts:register"))
+
+    def test_external_next_destination_is_rejected(self):
+        response = self.client.post(
+            reverse("accounts:login"),
+            {
+                "username": "redirect-member",
+                "password": "Existing-passphrase-284!",
+                "next": "https://untrusted.example/collect",
+            },
+        )
+
+        self.assertRedirects(response, reverse("news:home"))
+
+    def test_authenticated_member_is_redirected_from_login_page(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("accounts:login"))
+
+        self.assertRedirects(response, reverse("news:home"))

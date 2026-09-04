@@ -12,6 +12,7 @@ class ByteBoardLoginView(LoginView):
     """Authenticate members using Django's established security controls."""
 
     authentication_form = LoginForm
+    redirect_authenticated_user = True
     template_name = "accounts/login.html"
 
     def form_valid(self, form):
