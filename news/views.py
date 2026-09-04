@@ -46,6 +46,13 @@ def post_detail_context(request, post, comment_form=None):
             "author"
         ),
         "post": post,
+        "score": post.votes.aggregate(
+            score=Coalesce(
+                Sum("value"),
+                Value(0),
+                output_field=IntegerField(),
+            )
+        )["score"],
     }
 
 

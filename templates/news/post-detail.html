@@ -32,6 +32,11 @@
       {% endif %}
     </header>
 
+    <section class="vote-panel" aria-labelledby="rating-heading">
+      <h2 class="visually-hidden" id="rating-heading">Community rating</h2>
+      <p class="story-score" id="vote-score" aria-live="polite">Score {{ score }}</p>
+    </section>
+
     <section class="story-detail__content" aria-labelledby="context-heading">
       <h2 id="context-heading">Why this story matters</h2>
       {{ post.content|linebreaks }}
