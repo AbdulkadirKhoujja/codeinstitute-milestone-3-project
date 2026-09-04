@@ -14,6 +14,14 @@ class ByteBoardLoginView(LoginView):
     authentication_form = LoginForm
     template_name = "accounts/login.html"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(
+            self.request,
+            f"Welcome back, {form.get_user().username}.",
+        )
+        return response
+
 
 def register(request):
     """Create an account and begin an authenticated session."""
