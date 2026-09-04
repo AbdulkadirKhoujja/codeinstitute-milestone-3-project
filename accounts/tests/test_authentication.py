@@ -97,3 +97,28 @@ class LoginRedirectTests(TestCase):
         response = self.client.get(reverse("accounts:login"))
 
         self.assertRedirects(response, reverse("news:home"))
+
+
+class LogoutTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="departing-member",
+            password="Existing-passphrase-284!",
+        )
+        self.client.force_login(self.user)
+
+    def test_post_logs_out_member_with_feedback(self):
+        response = self.client.post(reverse("accounts:logout"), follow=True)
+
+        self.assertRedirects(response, reverse("news:home"))
+        self.assertNotIn("_auth_user_id", self.client.session)
+        self.assertContains(response, "You have been logged out.")
+
+    def test_get_does_not_log_out_member(self):
+        response = self.client.get(reverse("accounts:logout"))
+
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(
+            int(self.client.session["_auth_user_id"]),
+            self.user.pk,
+        )

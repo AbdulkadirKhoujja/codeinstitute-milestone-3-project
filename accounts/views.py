@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView
 from django.shortcuts import redirect
 from django.shortcuts import render
 
@@ -21,6 +22,15 @@ class ByteBoardLoginView(LoginView):
             self.request,
             f"Welcome back, {form.get_user().username}.",
         )
+        return response
+
+
+class ByteBoardLogoutView(LogoutView):
+    """End an authenticated session through a POST request."""
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        messages.success(request, "You have been logged out.")
         return response
 
 
