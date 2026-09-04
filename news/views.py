@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 from .forms import PostForm
+from .models import Category
 from .models import Post
 
 
@@ -14,7 +15,20 @@ def post_list(request):
     posts = Post.objects.filter(
         status=Post.Status.PUBLISHED,
     ).select_related("author", "category")
-    return render(request, "news/post-list.html", {"posts": posts})
+    active_category = None
+    category_slug = request.GET.get("category")
+    if category_slug:
+        active_category = get_object_or_404(Category, slug=category_slug)
+        posts = posts.filter(category=active_category)
+    return render(
+        request,
+        "news/post-list.html",
+        {
+            "active_category": active_category,
+            "categories": Category.objects.all(),
+            "posts": posts,
+        },
+    )
 
 
 def post_detail(request, pk):

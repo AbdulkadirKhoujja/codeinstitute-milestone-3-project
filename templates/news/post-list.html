@@ -10,10 +10,21 @@
     <p>Discover thoughtful stories about technology, software, security, finance, gadgets, and the people building what comes next.</p>
   </section>
 
+  <nav class="container category-navigation" aria-label="Story categories">
+    <ul class="category-navigation__list">
+      <li><a href="{% url 'news:home' %}"{% if not active_category %} aria-current="page"{% endif %}>All stories</a></li>
+      {% for category in categories %}
+        <li>
+          <a href="{% url 'news:home' %}?category={{ category.slug }}"{% if active_category == category %} aria-current="page"{% endif %}>{{ category.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
   <section class="container story-feed" aria-labelledby="latest-stories-heading">
     <div class="section-heading">
       <p class="eyebrow">Community picks</p>
-      <h2 id="latest-stories-heading">Latest stories</h2>
+      <h2 id="latest-stories-heading">{% if active_category %}{{ active_category.name }} stories{% else %}Latest stories{% endif %}</h2>
     </div>
     <div class="story-feed__list">
       {% for post in posts %}

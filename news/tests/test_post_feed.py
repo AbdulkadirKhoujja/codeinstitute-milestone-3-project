@@ -84,3 +84,61 @@ class PublishedPostFeedTests(TestCase):
             content.index(self.newer_post.title),
             content.index(self.older_post.title),
         )
+
+
+class CategoryFilterTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        author = get_user_model().objects.create_user(
+            username="category-author",
+            password="Existing-passphrase-284!",
+        )
+        cls.ai_category = Category.objects.create(
+            name="Artificial Intelligence",
+            slug="artificial-intelligence",
+            description="Artificial intelligence stories.",
+        )
+        cls.startup_category = Category.objects.create(
+            name="Startups",
+            slug="startups",
+            description="Startup stories.",
+        )
+        cls.ai_post = Post.objects.create(
+            title="AI category story",
+            summary="An AI story summary.",
+            article_url="https://example.com/ai-category",
+            content="AI category context.",
+            author=author,
+            category=cls.ai_category,
+            status=Post.Status.PUBLISHED,
+        )
+        cls.startup_post = Post.objects.create(
+            title="Startup category story",
+            summary="A startup story summary.",
+            article_url="https://example.com/startup-category",
+            content="Startup category context.",
+            author=author,
+            category=cls.startup_category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_category_query_narrows_feed_and_identifies_active_filter(self):
+        response = self.client.get(
+            reverse("news:home"),
+            {"category": self.startup_category.slug},
+        )
+
+        self.assertQuerySetEqual(response.context["posts"], [self.startup_post])
+        self.assertEqual(response.context["active_category"], self.startup_category)
+        self.assertContains(response, "Startups stories")
+        self.assertContains(response, self.startup_post.title)
+        self.assertNotContains(response, self.ai_post.title)
+        self.assertContains(response, f'href="{reverse("news:home")}"')
+
+    def test_feed_exposes_categories_in_alphabetical_order(self):
+        response = self.client.get(reverse("news:home"))
+
+        self.assertQuerySetEqual(
+            response.context["categories"],
+            [self.ai_category, self.startup_category],
+        )
