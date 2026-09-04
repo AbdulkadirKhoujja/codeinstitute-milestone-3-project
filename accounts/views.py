@@ -1,9 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+
+from news.models import Post
 
 from .forms import LoginForm
 from .forms import RegistrationForm
@@ -32,6 +36,22 @@ class ByteBoardLogoutView(LogoutView):
         response = super().post(request, *args, **kwargs)
         messages.success(request, "You have been logged out.")
         return response
+
+
+def profile(request, username):
+    """Show public account details and published submissions."""
+    profile_user = get_object_or_404(get_user_model(), username=username)
+    posts = profile_user.posts.filter(
+        status=Post.Status.PUBLISHED,
+    ).select_related("category")
+    return render(
+        request,
+        "accounts/profile.html",
+        {
+            "profile_user": profile_user,
+            "posts": posts,
+        },
+    )
 
 
 def register(request):

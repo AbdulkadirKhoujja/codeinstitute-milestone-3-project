@@ -9,4 +9,5 @@ urlpatterns = [
     path("register/", views.register, name="register"),
     path("login/", views.ByteBoardLoginView.as_view(), name="login"),
     path("logout/", views.ByteBoardLogoutView.as_view(), name="logout"),
+    path("profile/<str:username>/", views.profile, name="profile"),
 ]
