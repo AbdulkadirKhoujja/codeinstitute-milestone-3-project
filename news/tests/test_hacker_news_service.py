@@ -5,6 +5,7 @@ from django.conf import settings
 from django.test import SimpleTestCase
 from django.test import override_settings
 
+from news.services.hacker_news import ExternalFeedError
 from news.services.hacker_news import fetch_story
 from news.services.hacker_news import fetch_top_story_ids
 from news.services.hacker_news import get_top_stories
@@ -157,3 +158,32 @@ class HackerNewsFeedTests(SimpleTestCase):
         mocked_story.side_effect = lambda story_id: {"id": story_id}
 
         self.assertEqual(len(get_top_stories()), 50)
+
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_keeps_successful_items_when_one_request_fails(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = [11, 22, 33]
+        mocked_story.side_effect = (
+            {"id": 11},
+            ExternalFeedError("item unavailable"),
+            {"id": 33},
+        )
+
+        self.assertEqual(get_top_stories(), [{"id": 11}, {"id": 33}])
+
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_reports_failure_when_every_item_request_fails(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = [11, 22]
+        mocked_story.side_effect = ExternalFeedError("item unavailable")
+
+        with self.assertRaises(ExternalFeedError):
+            get_top_stories()

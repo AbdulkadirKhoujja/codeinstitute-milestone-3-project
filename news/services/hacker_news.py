@@ -10,6 +10,10 @@ from urllib.request import urlopen
 from django.conf import settings
 
 
+class ExternalFeedError(Exception):
+    """Raised when Hacker News cannot provide usable feed data."""
+
+
 def _request_json(path):
     """Fetch and decode one JSON resource from Hacker News."""
     request = Request(
@@ -97,8 +101,15 @@ def get_top_stories():
     """Fetch a bounded set of stories while preserving HN rank order."""
     story_ids = fetch_top_story_ids()
     stories = []
+    failed_requests = 0
     for story_id in story_ids[: get_story_limit()]:
-        story = fetch_story(story_id)
+        try:
+            story = fetch_story(story_id)
+        except ExternalFeedError:
+            failed_requests += 1
+            continue
         if story is not None:
             stories.append(story)
+    if not stories and failed_requests:
+        raise ExternalFeedError("Hacker News stories are unavailable.")
     return stories
