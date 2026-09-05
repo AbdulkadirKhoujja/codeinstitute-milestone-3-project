@@ -68,7 +68,7 @@ The following commands were run from the repository root after the Phase 3 imple
 
 ```text
 python manage.py test
-Ran 172 tests in 103.698s
+Ran 173 tests in 106.611s
 OK
 
 python manage.py check
@@ -85,7 +85,7 @@ node --check static/js/external-feed.js
 Both commands exited successfully without syntax errors.
 ```
 
-The duration is machine-specific. The meaningful result is that all 98 earlier tests remain present within the 172 passing tests, Django reported no system-check issue, JavaScript syntax checks passed, and the model state had neither an uncreated nor unapplied migration. Every upstream HTTP interaction in the automated suite is mocked; the test run never contacts Hacker News.
+The duration is machine-specific. The meaningful result is that all 98 earlier tests remain present within the 173 passing tests, Django reported no system-check issue, JavaScript syntax checks passed, and the model state had neither an uncreated nor unapplied migration. Every upstream HTTP interaction in the automated suite is mocked; the test run never contacts Hacker News.
 
 ## Manual Phase 3 browser checks
 

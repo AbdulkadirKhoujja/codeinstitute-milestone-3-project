@@ -57,7 +57,7 @@ Exit criteria met: visitors can discover and read published stories; members can
 
 ## Phase 3 — Community and UX
 
-Status: **Completed**. Community discussion, voting, the separate Hacker News discovery experience, custom JavaScript, controlled failures, and custom error pages are implemented and covered by the 172-test suite. The browser capability exposed no usable session, so formal interactive verification remains honestly assigned to Phase 4.
+Status: **Completed**. Community discussion, voting, the separate Hacker News discovery experience, custom JavaScript, controlled failures, and custom error pages are implemented and covered by the 173-test suite. The browser capability exposed no usable session, so formal interactive verification remains honestly assigned to Phase 4.
 
 Scope:
 

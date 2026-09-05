@@ -234,7 +234,7 @@ A signed-in member can submit and manage stories, add/edit/delete their comments
 
 ## Testing
 
-The 172-test automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
+The 173-test automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
 
 Run the quality checks with:
 
