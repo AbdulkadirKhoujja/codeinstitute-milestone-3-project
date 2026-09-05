@@ -20,16 +20,32 @@ def _request_json(path):
         f"{settings.HACKER_NEWS_API_BASE_URL}/{path}",
         headers={"User-Agent": "ByteBoard/1.0"},
     )
-    with urlopen(
-        request,
-        timeout=settings.HACKER_NEWS_REQUEST_TIMEOUT,
-    ) as response:
-        return json.loads(response.read().decode("utf-8"))
+    try:
+        with urlopen(
+            request,
+            timeout=settings.HACKER_NEWS_REQUEST_TIMEOUT,
+        ) as response:
+            if response.status != 200:
+                raise ExternalFeedError("Hacker News returned an error.")
+            return json.loads(response.read().decode("utf-8"))
+    except ExternalFeedError:
+        raise
+    except (OSError, TimeoutError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ExternalFeedError("Hacker News is unavailable.") from error
 
 
 def fetch_top_story_ids():
     """Return Hacker News top-story identifiers in ranked order."""
-    return _request_json("topstories.json")
+    payload = _request_json("topstories.json")
+    if not isinstance(payload, list):
+        raise ExternalFeedError("Hacker News returned invalid story data.")
+    return [
+        story_id
+        for story_id in payload
+        if isinstance(story_id, int)
+        and not isinstance(story_id, bool)
+        and story_id > 0
+    ]
 
 
 def normalise_story(item):

@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 from unittest.mock import patch
+from urllib.error import URLError
 
 from django.conf import settings
 from django.test import SimpleTestCase
@@ -71,6 +72,39 @@ class HackerNewsRequestTests(SimpleTestCase):
                 "discussion_url": "https://news.ycombinator.com/item?id=42",
             },
         )
+
+    @patch("news.services.hacker_news.urlopen")
+    def test_timeout_and_network_errors_are_translated(self, mocked_urlopen):
+        for failure in (TimeoutError(), URLError("offline")):
+            with self.subTest(failure=type(failure).__name__):
+                mocked_urlopen.side_effect = failure
+
+                with self.assertRaises(ExternalFeedError):
+                    fetch_top_story_ids()
+
+    @patch("news.services.hacker_news.urlopen")
+    def test_non_success_and_malformed_json_responses_are_translated(
+        self,
+        mocked_urlopen,
+    ):
+        response = MagicMock()
+        mocked_urlopen.return_value.__enter__.return_value = response
+        for status, body in ((503, b"[]"), (200, b"not-json")):
+            with self.subTest(status=status, body=body):
+                response.status = status
+                response.read.return_value = body
+
+                with self.assertRaises(ExternalFeedError):
+                    fetch_top_story_ids()
+
+    @patch("news.services.hacker_news._request_json")
+    def test_top_story_id_payload_is_validated(self, mocked_request):
+        mocked_request.return_value = {"unexpected": "shape"}
+        with self.assertRaises(ExternalFeedError):
+            fetch_top_story_ids()
+
+        mocked_request.return_value = ["1", 0, True, 3]
+        self.assertEqual(fetch_top_story_ids(), [3])
 
 
 class HackerNewsNormalisationTests(SimpleTestCase):
