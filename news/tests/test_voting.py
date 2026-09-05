@@ -61,6 +61,72 @@ class VoteScoreDisplayTests(TestCase):
         self.assertContains(response, "Score -1")
 
 
+class VoteControlDisplayTests(TestCase):
+    def setUp(self):
+        self.member = get_user_model().objects.create_user(
+            username="control-voter",
+            password="Existing-passphrase-284!",
+        )
+        author = get_user_model().objects.create_user(
+            username="control-author",
+            password="Existing-passphrase-284!",
+        )
+        category = Category.objects.create(
+            name="Vote controls",
+            slug="vote-controls",
+            description="Stories with vote controls.",
+        )
+        self.post = Post.objects.create(
+            title="A story with voting controls",
+            summary="Voting controls summary.",
+            article_url="https://example.com/vote-controls",
+            content="Voting controls context.",
+            author=author,
+            category=category,
+            status=Post.Status.PUBLISHED,
+        )
+
+    def test_signed_in_member_sees_accessible_vote_forms_and_current_state(self):
+        Vote.objects.create(
+            post=self.post,
+            user=self.member,
+            value=Vote.Value.UPVOTE,
+        )
+        self.client.force_login(self.member)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        vote_url = reverse("news:post-vote", args=[self.post.pk])
+        self.assertEqual(response.context["current_vote"], Vote.Value.UPVOTE)
+        self.assertContains(response, f'action="{vote_url}"', count=2)
+        self.assertContains(response, 'data-vote-value="1"')
+        self.assertContains(response, 'data-vote-value="-1"')
+        self.assertContains(response, 'aria-pressed="true"', count=1)
+        self.assertContains(response, 'aria-pressed="false"', count=1)
+
+    def test_guest_sees_login_guidance_instead_of_vote_forms(self):
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertNotContains(response, "data-vote-form")
+        self.assertContains(response, "Log in to vote")
+
+    def test_draft_preview_does_not_offer_voting(self):
+        self.post.author = self.member
+        self.post.status = Post.Status.DRAFT
+        self.post.save(update_fields=["author", "status"])
+        self.client.force_login(self.member)
+
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk])
+        )
+
+        self.assertNotContains(response, "data-vote-form")
+
+
 class VoteActionTests(TestCase):
     def setUp(self):
         self.member = get_user_model().objects.create_user(

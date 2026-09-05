@@ -35,6 +35,35 @@
     <section class="vote-panel" aria-labelledby="rating-heading">
       <h2 class="visually-hidden" id="rating-heading">Community rating</h2>
       <p class="story-score" id="vote-score" aria-live="polite">Score {{ score }}</p>
+      {% if post.status == "published" %}
+        {% if user.is_authenticated %}
+          <div class="vote-controls" data-vote-controls>
+            <form method="post" action="{% url 'news:post-vote' post.pk %}" data-vote-form>
+              {% csrf_token %}
+              <input type="hidden" name="value" value="1">
+              <button
+                class="btn btn-outline-primary"
+                type="submit"
+                data-vote-value="1"
+                aria-pressed="{% if current_vote == 1 %}true{% else %}false{% endif %}"
+              >Upvote</button>
+            </form>
+            <form method="post" action="{% url 'news:post-vote' post.pk %}" data-vote-form>
+              {% csrf_token %}
+              <input type="hidden" name="value" value="-1">
+              <button
+                class="btn btn-outline-primary"
+                type="submit"
+                data-vote-value="-1"
+                aria-pressed="{% if current_vote == -1 %}true{% else %}false{% endif %}"
+              >Downvote</button>
+            </form>
+          </div>
+          <p class="vote-feedback visually-hidden" data-vote-feedback role="status"></p>
+        {% else %}
+          <p><a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in to vote</a>.</p>
+        {% endif %}
+      {% endif %}
     </section>
 
     <section class="story-detail__content" aria-labelledby="context-heading">

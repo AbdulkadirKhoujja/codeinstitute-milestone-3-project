@@ -39,14 +39,21 @@ SORT_OPTIONS = (
 def post_detail_context(request, post, comment_form=None):
     """Build the discussion context shared by detail and invalid forms."""
     visible_comments = Q(is_approved=True)
+    current_vote = None
     if request.user.is_authenticated:
         visible_comments |= Q(author=request.user)
         comment_form = comment_form or CommentForm()
+        if post.status == Post.Status.PUBLISHED:
+            current_vote = post.votes.filter(user=request.user).values_list(
+                "value",
+                flat=True,
+            ).first()
     return {
         "comment_form": comment_form,
         "comments": post.comments.filter(visible_comments).select_related(
             "author"
         ),
+        "current_vote": current_vote,
         "post": post,
         "score": post.votes.aggregate(
             score=Coalesce(
