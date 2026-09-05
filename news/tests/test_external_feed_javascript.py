@@ -71,3 +71,13 @@ class ExternalFeedJavascriptTests(SimpleTestCase):
         self.assertIn("if (data.partial)", script)
         self.assertIn("data.message", script)
         self.assertIn("external stories loaded", script)
+
+    def test_external_story_cards_have_distinct_responsive_styles(self):
+        stylesheet_path = Path(settings.BASE_DIR, "static", "css", "style.css")
+        stylesheet = stylesheet_path.read_text(encoding="utf-8")
+
+        self.assertIn(".discovery-page", stylesheet)
+        self.assertIn(".external-feed", stylesheet)
+        self.assertIn(".external-story", stylesheet)
+        self.assertIn(".external-story--notice", stylesheet)
+        self.assertIn("grid-template-columns", stylesheet)
