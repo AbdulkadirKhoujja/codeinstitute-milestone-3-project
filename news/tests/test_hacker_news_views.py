@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from news.services.hacker_news import ExternalFeedError
+from news.services.hacker_news import StoryCollection
 
 
 class HackerNewsFeedEndpointTests(TestCase):
@@ -35,6 +36,27 @@ class HackerNewsFeedEndpointTests(TestCase):
             {"success": True, "stories": stories},
         )
         self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+    @patch("news.views.get_top_stories")
+    def test_partial_feed_returns_valid_subset_and_information(
+        self,
+        mocked_feed,
+    ):
+        stories = StoryCollection([{"id": 42}], partial=True)
+        mocked_feed.return_value = stories
+
+        response = self.client.get(reverse("news:hacker-news-feed"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "success": True,
+                "stories": [{"id": 42}],
+                "partial": True,
+                "message": "Some external stories could not be loaded.",
+            },
+        )
 
 
 class HackerNewsDiscoveryPageTests(TestCase):

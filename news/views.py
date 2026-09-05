@@ -147,7 +147,15 @@ def hacker_news_feed(request):
             status=503,
         )
     else:
-        response = JsonResponse({"success": True, "stories": stories})
+        payload = {"success": True, "stories": stories}
+        if getattr(stories, "partial", False):
+            payload.update(
+                {
+                    "partial": True,
+                    "message": "Some external stories could not be loaded.",
+                }
+            )
+        response = JsonResponse(payload)
     response.headers["Cache-Control"] = "no-store"
     return response
 
