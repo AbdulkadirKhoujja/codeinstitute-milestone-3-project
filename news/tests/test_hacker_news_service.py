@@ -3,9 +3,11 @@ from unittest.mock import patch
 
 from django.conf import settings
 from django.test import SimpleTestCase
+from django.test import override_settings
 
 from news.services.hacker_news import fetch_story
 from news.services.hacker_news import fetch_top_story_ids
+from news.services.hacker_news import get_top_stories
 from news.services.hacker_news import normalise_story
 
 
@@ -109,3 +111,49 @@ class HackerNewsNormalisationTests(SimpleTestCase):
         for item in invalid_items:
             with self.subTest(item=item):
                 self.assertIsNone(normalise_story(item))
+
+
+class HackerNewsFeedTests(SimpleTestCase):
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_fetches_default_story_count_in_ranked_order(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = list(range(1, 61))
+        mocked_story.side_effect = lambda story_id: {"id": story_id}
+
+        stories = get_top_stories()
+
+        self.assertEqual(
+            [story["id"] for story in stories],
+            list(range(1, 31)),
+        )
+        self.assertEqual(mocked_story.call_count, 30)
+
+    @override_settings(HACKER_NEWS_STORY_LIMIT=5)
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_clamps_too_small_limit_to_twenty(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = list(range(1, 61))
+        mocked_story.side_effect = lambda story_id: {"id": story_id}
+
+        self.assertEqual(len(get_top_stories()), 20)
+
+    @override_settings(HACKER_NEWS_STORY_LIMIT=99)
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_clamps_too_large_limit_to_fifty(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = list(range(1, 61))
+        mocked_story.side_effect = lambda story_id: {"id": story_id}
+
+        self.assertEqual(len(get_top_stories()), 50)

@@ -82,3 +82,23 @@ def normalise_story(item):
 def fetch_story(story_id):
     """Fetch and normalise one Hacker News story."""
     return normalise_story(_request_json(f"item/{story_id}.json"))
+
+
+def get_story_limit():
+    """Keep the configured refresh size within the product boundary."""
+    try:
+        configured_limit = int(settings.HACKER_NEWS_STORY_LIMIT)
+    except (TypeError, ValueError):
+        configured_limit = 30
+    return max(20, min(configured_limit, 50))
+
+
+def get_top_stories():
+    """Fetch a bounded set of stories while preserving HN rank order."""
+    story_ids = fetch_top_story_ids()
+    stories = []
+    for story_id in story_ids[: get_story_limit()]:
+        story = fetch_story(story_id)
+        if story is not None:
+            stories.append(story)
+    return stories
