@@ -37,6 +37,7 @@ class HackerNewsRequestTests(SimpleTestCase):
             mocked_urlopen.call_args.kwargs["timeout"],
             settings.HACKER_NEWS_REQUEST_TIMEOUT,
         )
+        self.assertNotIn("Authorization", request.headers)
 
     @patch("news.services.hacker_news.urlopen")
     def test_story_request_uses_item_endpoint_and_normalises_metadata(
@@ -274,3 +275,38 @@ class HackerNewsFeedTests(SimpleTestCase):
 
         self.assertIs(get_top_stories(), cached_stories)
         mocked_ids.assert_not_called()
+
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_empty_top_story_response_returns_cacheable_empty_collection(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = []
+
+        stories = get_top_stories()
+
+        self.assertEqual(stories, [])
+        self.assertFalse(stories.partial)
+        mocked_story.assert_not_called()
+
+    @patch("news.services.hacker_news.cache")
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_feed_refreshes_after_cache_expiry_without_sleeping(
+        self,
+        mocked_ids,
+        mocked_story,
+        mocked_cache,
+    ):
+        mocked_cache.get.side_effect = (None, None)
+        mocked_ids.return_value = [11]
+        mocked_story.side_effect = ({"id": 11}, {"id": 11})
+
+        get_top_stories()
+        get_top_stories()
+
+        self.assertEqual(mocked_ids.call_count, 2)
+        self.assertEqual(mocked_story.call_count, 2)
+        self.assertEqual(mocked_cache.set.call_count, 2)
