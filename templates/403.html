@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Access denied | ByteBoard{% endblock %}
+
+{% block meta_description %}This ByteBoard page is not available to you.{% endblock %}
+
+{% block content %}
+  <section class="container py-5 error-page" aria-labelledby="error-heading">
+    <p class="eyebrow">Error 403</p>
+    <h1 id="error-heading">You cannot access this page</h1>
+    <p>Your account does not have permission to view this page.</p>
+    <a class="btn btn-primary" href="{% url 'news:home' %}">Return to the ByteBoard home page</a>
+  </section>
+{% endblock %}

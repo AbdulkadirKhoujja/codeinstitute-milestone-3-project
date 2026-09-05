@@ -22,3 +22,8 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('', include('news.urls')),
 ]
+
+handler400 = 'news.error_views.bad_request'
+handler403 = 'news.error_views.permission_denied'
+handler404 = 'news.error_views.page_not_found'
+handler500 = 'news.error_views.server_error'

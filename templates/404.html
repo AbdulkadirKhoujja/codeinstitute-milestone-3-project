@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found | ByteBoard{% endblock %}
+
+{% block meta_description %}The requested ByteBoard page could not be found.{% endblock %}
+
+{% block content %}
+  <section class="container py-5 error-page" aria-labelledby="error-heading">
+    <p class="eyebrow">Error 404</p>
+    <h1 id="error-heading">We could not find that page</h1>
+    <p>It may have moved, been removed, or the address may be incorrect.</p>
+    <a class="btn btn-primary" href="{% url 'news:home' %}">Return to the ByteBoard home page</a>
+  </section>
+{% endblock %}

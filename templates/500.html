@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Server error | ByteBoard{% endblock %}
+
+{% block meta_description %}ByteBoard encountered a temporary problem.{% endblock %}
+
+{% block content %}
+  <section class="container py-5 error-page" aria-labelledby="error-heading">
+    <p class="eyebrow">Error 500</p>
+    <h1 id="error-heading">Something went wrong</h1>
+    <p>ByteBoard could not complete that request. Please return home and try again later.</p>
+    <a class="btn btn-primary" href="{% url 'news:home' %}">Return to the ByteBoard home page</a>
+  </section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Bad request | ByteBoard{% endblock %}
+
+{% block meta_description %}ByteBoard could not process this request.{% endblock %}
+
+{% block content %}
+  <section class="container py-5 error-page" aria-labelledby="error-heading">
+    <p class="eyebrow">Error 400</p>
+    <h1 id="error-heading">We could not process that request</h1>
+    <p>The information sent was not valid. Check what you entered and try again.</p>
+    <a class="btn btn-primary" href="{% url 'news:home' %}">Return to the ByteBoard home page</a>
+  </section>
+{% endblock %}
