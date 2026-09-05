@@ -179,3 +179,65 @@ class VoteActionTests(TestCase):
                     status_code=400,
                 )
                 self.assertFalse(Vote.objects.exists())
+
+    def test_anonymous_member_is_sent_to_login_without_writing(self):
+        self.client.logout()
+
+        response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": Vote.Value.UPVOTE},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("accounts:login"), response.url)
+        self.assertFalse(Vote.objects.exists())
+
+    def test_unpublished_and_missing_stories_are_not_votable(self):
+        self.post.status = Post.Status.DRAFT
+        self.post.save(update_fields=["status"])
+
+        draft_response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": Vote.Value.UPVOTE},
+        )
+        missing_response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk + 999]),
+            {"value": Vote.Value.UPVOTE},
+        )
+
+        self.assertEqual(draft_response.status_code, 404)
+        self.assertEqual(missing_response.status_code, 404)
+        self.assertFalse(Vote.objects.exists())
+
+    def test_vote_endpoint_only_accepts_post(self):
+        vote_url = reverse("news:post-vote", args=[self.post.pk])
+
+        self.assertEqual(self.client.get(vote_url).status_code, 405)
+        self.assertEqual(self.client.put(vote_url).status_code, 405)
+
+    def test_members_have_independent_votes(self):
+        other_member = get_user_model().objects.create_user(
+            username="other-voter",
+            password="Existing-passphrase-284!",
+        )
+        Vote.objects.create(
+            post=self.post,
+            user=self.member,
+            value=Vote.Value.UPVOTE,
+        )
+        self.client.force_login(other_member)
+
+        self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": Vote.Value.DOWNVOTE},
+        )
+
+        self.assertEqual(Vote.objects.filter(post=self.post).count(), 2)
+        self.assertEqual(
+            Vote.objects.get(post=self.post, user=self.member).value,
+            Vote.Value.UPVOTE,
+        )
+        self.assertEqual(
+            Vote.objects.get(post=self.post, user=other_member).value,
+            Vote.Value.DOWNVOTE,
+        )
