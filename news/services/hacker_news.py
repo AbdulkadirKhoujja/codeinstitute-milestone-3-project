@@ -30,23 +30,52 @@ def fetch_top_story_ids():
 
 def normalise_story(item):
     """Return the small, presentation-safe subset ByteBoard exposes."""
-    story_id = item["id"]
-    external_url = item["url"]
+    if not isinstance(item, dict):
+        return None
+    story_id = item.get("id")
+    title = item.get("title")
+    timestamp = item.get("time")
+    if (
+        not isinstance(story_id, int)
+        or isinstance(story_id, bool)
+        or story_id < 1
+        or not isinstance(title, str)
+        or not title.strip()
+        or item.get("type") != "story"
+        or item.get("dead")
+        or item.get("deleted")
+        or not isinstance(timestamp, (int, float))
+        or isinstance(timestamp, bool)
+    ):
+        return None
+
+    discussion_url = f"https://news.ycombinator.com/item?id={story_id}"
+    external_url = item.get("url")
+    parsed_url = urlparse(external_url) if isinstance(external_url, str) else None
+    if (
+        parsed_url is None
+        or parsed_url.scheme not in {"http", "https"}
+        or not parsed_url.hostname
+    ):
+        external_url = discussion_url
+        parsed_url = urlparse(external_url)
+
+    submitted_by = item.get("by")
+    if not isinstance(submitted_by, str) or not submitted_by.strip():
+        submitted_by = "unknown"
     return {
         "id": story_id,
-        "title": item["title"],
+        "title": title.strip(),
         "url": external_url,
-        "source": urlparse(external_url).hostname,
-        "submitted_by": item.get("by", "unknown"),
+        "source": parsed_url.hostname,
+        "submitted_by": submitted_by,
         "submitted_at": datetime.fromtimestamp(
-            item["time"],
+            timestamp,
             tz=timezone.utc,
         ).isoformat(),
         "score": item.get("score", 0),
         "comment_count": item.get("descendants", 0),
-        "discussion_url": (
-            f"https://news.ycombinator.com/item?id={story_id}"
-        ),
+        "discussion_url": discussion_url,
     }
 
 

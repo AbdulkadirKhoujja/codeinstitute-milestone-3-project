@@ -6,6 +6,7 @@ from django.test import SimpleTestCase
 
 from news.services.hacker_news import fetch_story
 from news.services.hacker_news import fetch_top_story_ids
+from news.services.hacker_news import normalise_story
 
 
 class HackerNewsRequestTests(SimpleTestCase):
@@ -67,3 +68,44 @@ class HackerNewsRequestTests(SimpleTestCase):
                 "discussion_url": "https://news.ycombinator.com/item?id=42",
             },
         )
+
+
+class HackerNewsNormalisationTests(SimpleTestCase):
+    def story_item(self, **overrides):
+        item = {
+            "id": 42,
+            "type": "story",
+            "title": "Fallback link story",
+            "by": "grace",
+            "time": 1_700_000_000,
+            "score": 5,
+            "descendants": 2,
+        }
+        item.update(overrides)
+        return item
+
+    def test_missing_or_unsafe_external_url_uses_hn_discussion_url(self):
+        for external_url in (None, "", "javascript:alert(1)", "ftp://host/file"):
+            with self.subTest(external_url=external_url):
+                story = normalise_story(self.story_item(url=external_url))
+
+                self.assertEqual(
+                    story["url"],
+                    "https://news.ycombinator.com/item?id=42",
+                )
+                self.assertEqual(story["source"], "news.ycombinator.com")
+
+    def test_malformed_deleted_dead_and_non_story_items_are_ignored(self):
+        invalid_items = (
+            None,
+            {},
+            self.story_item(title=""),
+            self.story_item(type="job"),
+            self.story_item(dead=True),
+            self.story_item(deleted=True),
+            self.story_item(time="not-a-timestamp"),
+        )
+
+        for item in invalid_items:
+            with self.subTest(item=item):
+                self.assertIsNone(normalise_story(item))
