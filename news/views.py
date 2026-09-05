@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.core.paginator import Paginator
 from django.db.models import IntegerField
 from django.db.models import Q
@@ -282,15 +283,34 @@ def comment_delete(request, post_id, comment_id):
     )
 
 
-@login_required
 @require_POST
 def post_vote(request, post_id):
     """Record or change a member's vote on a published story."""
-    post = get_object_or_404(
-        Post,
+    if not request.user.is_authenticated:
+        if is_async_request(request):
+            return JsonResponse(
+                {"success": False, "message": "Log in to vote."},
+                status=401,
+            )
+        return redirect_to_login(
+            request.get_full_path(),
+            reverse("accounts:login"),
+        )
+    post = Post.objects.filter(
         pk=post_id,
         status=Post.Status.PUBLISHED,
-    )
+    ).first()
+    if post is None:
+        if is_async_request(request):
+            return JsonResponse(
+                {"success": False, "message": "Story not found."},
+                status=404,
+            )
+        return get_object_or_404(
+            Post,
+            pk=post_id,
+            status=Post.Status.PUBLISHED,
+        )
     raw_value = request.POST.get("value")
     if raw_value not in {str(Vote.Value.UPVOTE), str(Vote.Value.DOWNVOTE)}:
         if is_async_request(request):

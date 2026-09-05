@@ -350,3 +350,34 @@ class VoteActionTests(TestCase):
                 "message": "Choose upvote or downvote.",
             },
         )
+
+    def test_async_vote_requires_authentication_without_redirecting(self):
+        self.client.logout()
+
+        response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": Vote.Value.UPVOTE},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.json(),
+            {"success": False, "message": "Log in to vote."},
+        )
+
+    def test_async_vote_returns_structured_not_found_for_a_draft(self):
+        self.post.status = Post.Status.DRAFT
+        self.post.save(update_fields=["status"])
+
+        response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": Vote.Value.UPVOTE},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.json(),
+            {"success": False, "message": "Story not found."},
+        )
