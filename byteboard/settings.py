@@ -140,6 +140,12 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'news:home'
 LOGOUT_REDIRECT_URL = 'news:home'
 
+# Official Hacker News API integration
+HACKER_NEWS_API_BASE_URL = 'https://hacker-news.firebaseio.com/v0'
+HACKER_NEWS_STORY_LIMIT = 30
+HACKER_NEWS_CACHE_TIMEOUT = 60
+HACKER_NEWS_REQUEST_TIMEOUT = 5
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
