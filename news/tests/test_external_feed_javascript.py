@@ -42,3 +42,19 @@ class ExternalFeedJavascriptTests(SimpleTestCase):
         self.assertIn("submitted_by", script)
         self.assertIn("comment_count", script)
         self.assertNotIn("innerHTML", script)
+
+    def test_script_handles_empty_error_and_user_refresh_states(self):
+        script_path = Path(
+            settings.BASE_DIR,
+            "static",
+            "js",
+            "external-feed.js",
+        )
+        script = script_path.read_text(encoding="utf-8")
+
+        self.assertIn("stories.length === 0", script)
+        self.assertIn("No external stories are available right now.", script)
+        self.assertIn("renderNotice", script)
+        self.assertIn('refreshButton.addEventListener("click", loadStories)', script)
+        self.assertIn("if (isLoading)", script)
+        self.assertIn("External stories are temporarily unavailable.", script)

@@ -73,6 +73,15 @@ if (feed) {
     });
   };
 
+  const renderNotice = (message) => {
+    const item = document.createElement("li");
+    item.className = "external-story external-story--notice";
+    const notice = document.createElement("p");
+    notice.textContent = message;
+    item.append(notice);
+    storyList.replaceChildren(item);
+  };
+
   const loadStories = async () => {
     if (isLoading) {
       return;
@@ -82,6 +91,8 @@ if (feed) {
     feed.setAttribute("aria-busy", "true");
     refreshButton.disabled = true;
     status.textContent = "Loading external stories...";
+    let failureMessage =
+      "External stories are temporarily unavailable. Use Refresh stories to try again.";
 
     try {
       const response = await fetch(feed.dataset.feedUrl, {
@@ -90,15 +101,20 @@ if (feed) {
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.success || !Array.isArray(data.stories)) {
-        throw new Error(
-          data.message || "External stories are temporarily unavailable.",
-        );
+        failureMessage = data.message || failureMessage;
+        throw new Error("External feed request failed");
+      }
+      if (data.stories.length === 0) {
+        const emptyMessage = "No external stories are available right now.";
+        renderNotice(emptyMessage);
+        status.textContent = emptyMessage;
+        return;
       }
       renderStories(data.stories);
       status.textContent = `${data.stories.length} external stories loaded.`;
     } catch (error) {
-      status.textContent =
-        error.message || "External stories are temporarily unavailable.";
+      renderNotice(failureMessage);
+      status.textContent = failureMessage;
     } finally {
       isLoading = false;
       feed.removeAttribute("aria-busy");
