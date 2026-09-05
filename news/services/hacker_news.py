@@ -81,32 +81,51 @@ def normalise_story(item):
     ):
         return None
 
+    try:
+        submitted_at = datetime.fromtimestamp(
+            timestamp,
+            tz=timezone.utc,
+        ).isoformat()
+    except (OSError, OverflowError, ValueError):
+        return None
+
     discussion_url = f"https://news.ycombinator.com/item?id={story_id}"
     external_url = item.get("url")
-    parsed_url = urlparse(external_url) if isinstance(external_url, str) else None
+    try:
+        parsed_url = (
+            urlparse(external_url) if isinstance(external_url, str) else None
+        )
+        source = parsed_url.hostname if parsed_url is not None else None
+    except ValueError:
+        parsed_url = None
+        source = None
     if (
         parsed_url is None
         or parsed_url.scheme not in {"http", "https"}
-        or not parsed_url.hostname
+        or not source
     ):
         external_url = discussion_url
         parsed_url = urlparse(external_url)
+        source = parsed_url.hostname
 
     submitted_by = item.get("by")
     if not isinstance(submitted_by, str) or not submitted_by.strip():
         submitted_by = "unknown"
+    score = item.get("score")
+    if not isinstance(score, int) or isinstance(score, bool):
+        score = 0
+    comment_count = item.get("descendants")
+    if not isinstance(comment_count, int) or isinstance(comment_count, bool):
+        comment_count = 0
     return {
         "id": story_id,
         "title": title.strip(),
         "url": external_url,
-        "source": parsed_url.hostname,
+        "source": source,
         "submitted_by": submitted_by,
-        "submitted_at": datetime.fromtimestamp(
-            timestamp,
-            tz=timezone.utc,
-        ).isoformat(),
-        "score": item.get("score", 0),
-        "comment_count": item.get("descendants", 0),
+        "submitted_at": submitted_at,
+        "score": score,
+        "comment_count": comment_count,
         "discussion_url": discussion_url,
     }
 

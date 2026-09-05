@@ -124,7 +124,13 @@ class HackerNewsNormalisationTests(SimpleTestCase):
         return item
 
     def test_missing_or_unsafe_external_url_uses_hn_discussion_url(self):
-        for external_url in (None, "", "javascript:alert(1)", "ftp://host/file"):
+        for external_url in (
+            None,
+            "",
+            "javascript:alert(1)",
+            "ftp://host/file",
+            "http://[invalid-host",
+        ):
             with self.subTest(external_url=external_url):
                 story = normalise_story(self.story_item(url=external_url))
 
@@ -143,11 +149,20 @@ class HackerNewsNormalisationTests(SimpleTestCase):
             self.story_item(dead=True),
             self.story_item(deleted=True),
             self.story_item(time="not-a-timestamp"),
+            self.story_item(time=10**30),
         )
 
         for item in invalid_items:
             with self.subTest(item=item):
                 self.assertIsNone(normalise_story(item))
+
+    def test_unexpected_score_and_comment_types_use_predictable_zeroes(self):
+        story = normalise_story(
+            self.story_item(score={"unexpected": True}, descendants="many")
+        )
+
+        self.assertEqual(story["score"], 0)
+        self.assertEqual(story["comment_count"], 0)
 
 
 class HackerNewsFeedTests(SimpleTestCase):
