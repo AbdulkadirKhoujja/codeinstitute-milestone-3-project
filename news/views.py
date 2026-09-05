@@ -23,6 +23,7 @@ from .models import Category
 from .models import Comment
 from .models import Post
 from .models import Vote
+from .services.hacker_news import ExternalFeedError
 from .services.hacker_news import get_top_stories
 
 
@@ -125,9 +126,22 @@ def post_list(request, category_slug=None):
 @require_GET
 def hacker_news_feed(request):
     """Expose normalized external stories through a same-origin endpoint."""
-    response = JsonResponse(
-        {"success": True, "stories": get_top_stories()}
-    )
+    try:
+        stories = get_top_stories()
+    except ExternalFeedError:
+        response = JsonResponse(
+            {
+                "success": False,
+                "stories": [],
+                "message": (
+                    "External stories are temporarily unavailable. "
+                    "Please try again."
+                ),
+            },
+            status=503,
+        )
+    else:
+        response = JsonResponse({"success": True, "stories": stories})
     response.headers["Cache-Control"] = "no-store"
     return response
 

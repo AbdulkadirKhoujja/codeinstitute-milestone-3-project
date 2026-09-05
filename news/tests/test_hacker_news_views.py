@@ -3,6 +3,8 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.urls import reverse
 
+from news.services.hacker_news import ExternalFeedError
+
 
 class HackerNewsFeedEndpointTests(TestCase):
     @patch("news.views.get_top_stories")
@@ -40,3 +42,26 @@ class HackerNewsFeedEndpointTests(TestCase):
 
         self.assertEqual(response.status_code, 405)
         mocked_feed.assert_not_called()
+
+    @patch("news.views.get_top_stories")
+    def test_feed_failure_returns_retryable_structured_response(
+        self,
+        mocked_feed,
+    ):
+        mocked_feed.side_effect = ExternalFeedError("private detail")
+
+        response = self.client.get(reverse("news:hacker-news-feed"))
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            response.json(),
+            {
+                "success": False,
+                "stories": [],
+                "message": (
+                    "External stories are temporarily unavailable. "
+                    "Please try again."
+                ),
+            },
+        )
+        self.assertEqual(response.headers["Cache-Control"], "no-store")
