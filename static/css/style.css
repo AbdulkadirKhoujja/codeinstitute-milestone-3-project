@@ -450,6 +450,51 @@ textarea.form-control {
   font-size: clamp(1.05rem, 2.5vw, 1.25rem);
 }
 
+.vote-panel {
+  align-items: center;
+  background: #e6f8f3;
+  border: 0.08rem solid #9edccc;
+  border-radius: var(--bb-radius);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+}
+
+.vote-panel .story-score {
+  margin: 0;
+}
+
+.vote-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.vote-controls .btn {
+  min-height: 2.75rem;
+  min-width: 5.5rem;
+}
+
+.vote-controls [aria-pressed="true"] {
+  background: var(--bb-navy);
+  border-color: var(--bb-navy);
+  color: #ffffff;
+}
+
+.vote-controls[aria-busy="true"] {
+  cursor: wait;
+}
+
+.vote-feedback {
+  color: var(--bb-navy-soft);
+  flex-basis: 100%;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin: 0;
+}
+
 .story-detail__content {
   margin-top: 1.5rem;
 }

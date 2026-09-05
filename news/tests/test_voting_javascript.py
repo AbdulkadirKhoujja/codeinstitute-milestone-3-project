@@ -56,3 +56,12 @@ class VotingJavascriptTests(TestCase):
         self.assertIn("aria-pressed", script)
         self.assertIn("disabled", script)
         self.assertNotIn("innerHTML", script)
+
+    def test_vote_controls_have_clear_active_and_responsive_styles(self):
+        stylesheet_path = Path(settings.BASE_DIR, "static", "css", "style.css")
+        stylesheet = stylesheet_path.read_text(encoding="utf-8")
+
+        self.assertIn(".vote-panel", stylesheet)
+        self.assertIn(".vote-controls", stylesheet)
+        self.assertIn('[aria-pressed="true"]', stylesheet)
+        self.assertIn(".vote-feedback", stylesheet)
