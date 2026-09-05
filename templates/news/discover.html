@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Discover technology stories | ByteBoard{% endblock %}
+
+{% block meta_description %}Discover current technology stories from the Hacker News community.{% endblock %}
+
+{% block content %}
+  <section class="container py-5 discovery-page" aria-labelledby="discovery-heading">
+    <header class="discovery-header">
+      <p class="eyebrow">External discovery</p>
+      <h1 id="discovery-heading">Explore Hacker News</h1>
+      <p>Browse current stories from Hacker News before sharing your own context with the ByteBoard community.</p>
+      <p class="story-meta">These external stories are not ByteBoard posts. Refreshes within one minute reuse ByteBoard's cached results.</p>
+    </header>
+
+    <div
+      class="external-feed"
+      id="external-feed"
+      data-feed-url="{% url 'news:hacker-news-feed' %}"
+      aria-busy="true"
+    >
+      <div class="external-feed__toolbar">
+        <p data-feed-status role="status">Loading external stories&hellip;</p>
+        <button class="btn btn-outline-primary" type="button" data-feed-refresh disabled>Refresh stories</button>
+      </div>
+      <ol class="external-feed__list" data-feed-list aria-label="Hacker News top stories"></ol>
+      <noscript>
+        <p class="external-feed__notice">JavaScript is required to load the external discovery feed.</p>
+      </noscript>
+    </div>
+
+    <p class="external-attribution">
+      Powered by the
+      <a href="https://github.com/HackerNews/API" target="_blank" rel="noopener noreferrer">Hacker News API <span class="visually-hidden">(opens in a new tab)</span></a>.
+    </p>
+  </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/external-feed.js' %}" defer></script>
+{% endblock %}

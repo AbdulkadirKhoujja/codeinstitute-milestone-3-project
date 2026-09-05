@@ -124,6 +124,12 @@ def post_list(request, category_slug=None):
 
 
 @require_GET
+def discover(request):
+    """Render the clearly separated external-story discovery page."""
+    return render(request, "news/discover.html")
+
+
+@require_GET
 def hacker_news_feed(request):
     """Expose normalized external stories through a same-origin endpoint."""
     try:

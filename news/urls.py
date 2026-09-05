@@ -7,6 +7,7 @@ app_name = "news"
 
 urlpatterns = [
     path("", views.post_list, name="home"),
+    path("discover/", views.discover, name="discover"),
     path(
         "discover/feed/",
         views.hacker_news_feed,
