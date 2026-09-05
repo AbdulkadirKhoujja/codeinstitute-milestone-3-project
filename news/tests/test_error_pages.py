@@ -50,3 +50,18 @@ class CustomErrorPageTests(SimpleTestCase):
 
         self.assert_error_page(response, 404, "We could not find that page")
         self.assertTemplateUsed(response, "404.html")
+
+    def test_error_pages_have_focused_responsive_presentation(self):
+        stylesheet = Path(
+            settings.BASE_DIR,
+            "static",
+            "css",
+            "style.css",
+        ).read_text(encoding="utf-8")
+
+        self.assertIn(".error-page", stylesheet)
+        self.assertIn("max-width", stylesheet)
+        self.assertIn("overflow-wrap", stylesheet)
+from pathlib import Path
+
+from django.conf import settings

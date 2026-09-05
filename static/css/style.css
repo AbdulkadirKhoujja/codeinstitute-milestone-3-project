@@ -709,6 +709,28 @@ textarea.form-control {
   margin-top: 1rem;
 }
 
+.error-page {
+  background: var(--bb-surface);
+  border: 0.08rem solid var(--bb-border);
+  border-top: 0.35rem solid var(--bb-coral);
+  border-radius: var(--bb-radius);
+  box-shadow: var(--bb-shadow);
+  margin-block: clamp(3rem, 10vw, 7rem);
+  max-width: 44rem;
+  overflow-wrap: anywhere;
+  padding: clamp(1.5rem, 6vw, 3.5rem) !important;
+}
+
+.error-page h1 {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+}
+
+.error-page > p:not(.eyebrow) {
+  color: var(--bb-muted);
+  font-size: 1.08rem;
+  margin-bottom: 1.5rem;
+}
+
 .btn-danger {
   --bs-btn-bg: #a92d20;
   --bs-btn-border-color: #a92d20;
