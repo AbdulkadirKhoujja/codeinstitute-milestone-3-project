@@ -18,6 +18,14 @@ class ExternalFeedError(Exception):
     """Raised when Hacker News cannot provide usable feed data."""
 
 
+class StoryCollection(list):
+    """List-like feed result carrying a non-sensitive completeness state."""
+
+    def __init__(self, stories=(), *, partial=False):
+        super().__init__(stories)
+        self.partial = partial
+
+
 def _request_json(path):
     """Fetch and decode one JSON resource from Hacker News."""
     request = Request(
@@ -123,7 +131,7 @@ def get_top_stories():
     if cached_stories is not None:
         return cached_stories
     story_ids = fetch_top_story_ids()
-    stories = []
+    stories = StoryCollection()
     failed_requests = 0
     for story_id in story_ids[: get_story_limit()]:
         try:
@@ -135,6 +143,7 @@ def get_top_stories():
             stories.append(story)
     if not stories and failed_requests:
         raise ExternalFeedError("Hacker News stories are unavailable.")
+    stories.partial = failed_requests > 0
     cache.set(
         FEED_CACHE_KEY,
         stories,

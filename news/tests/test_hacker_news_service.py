@@ -211,7 +211,22 @@ class HackerNewsFeedTests(SimpleTestCase):
             {"id": 33},
         )
 
-        self.assertEqual(get_top_stories(), [{"id": 11}, {"id": 33}])
+        stories = get_top_stories()
+
+        self.assertEqual(stories, [{"id": 11}, {"id": 33}])
+        self.assertTrue(stories.partial)
+
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_complete_feed_is_marked_as_complete(
+        self,
+        mocked_ids,
+        mocked_story,
+    ):
+        mocked_ids.return_value = [11, 22]
+        mocked_story.side_effect = lambda story_id: {"id": story_id}
+
+        self.assertFalse(get_top_stories().partial)
 
     @patch("news.services.hacker_news.fetch_story")
     @patch("news.services.hacker_news.fetch_top_story_ids")
