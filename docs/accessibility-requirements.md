@@ -2,13 +2,15 @@
 
 ByteBoard treats accessibility as an implementation requirement throughout development, not a final visual check. The target is a robust experience aligned with WCAG 2.2 Level AA where applicable. Conformance is not claimed before the formal Phase 4 evaluation.
 
-## Phase 2 implementation status
+## Phase 3 implementation status
 
 The core interface now provides semantic page landmarks, one primary heading per page, a skip link, native keyboard-operable controls, visible focus styling, mobile-first reflow, and reduced-motion handling. Navigation exposes account state in text, selected category links use `aria-current`, external story links include a new-tab announcement, and dates use machine-readable `time` elements.
 
 Registration, login, and story forms use persistent labels and autocomplete where relevant. Story fields have task-specific instructions. Invalid controls expose `aria-invalid` through Django and reference both their help text and field error; submitted non-sensitive values remain present after validation. Success messages use a live status region, while destructive actions identify the affected story and require an explicit POST confirmation.
 
-No content image is used in Phase 2, so image alternative-text requirements are not yet exercised. Comments and voting controls are Phase 3 work. Contrast measurement, keyboard journey recording, screen-reader spot checks, zoom/reflow evidence, markup/style validation, and cross-browser checks remain Phase 4 tasks; their absence prevents a conformance claim at this point.
+Phase 3 adds persistent comment controls and validation relationships, text moderation states, pressed-state vote buttons, non-JavaScript voting fallback, score and feedback live regions, disabled/busy asynchronous controls, and a separate external discovery hierarchy. External stories use safe descriptive new-tab links, a live loading/result state, `aria-busy`, clear partial/empty/error text, and user-controlled refresh. Custom 400/403/404/500 pages provide plain-language headings and a prominent home route.
+
+No content image is used in Phase 3, so image alternative-text requirements are not yet exercised. The available browser connection exposed no usable session, so contrast measurement, keyboard journey recording, screen-reader spot checks, zoom/reflow evidence, markup/style validation, and cross-browser checks remain Phase 4 tasks; their absence prevents a conformance claim at this point.
 
 ## Structure and navigation
 

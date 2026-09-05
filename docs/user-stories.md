@@ -43,7 +43,7 @@ Acceptance criteria:
 - The external article link is distinguishable from internal navigation.
 - Missing or unavailable posts return an appropriate not-found response.
 
-Delivery: Phase 2 for post details (implemented); Phase 3 for comments.
+Delivery: Phase 2 for post details and Phase 3 for approved discussion (implemented).
 
 ### Register and sign in
 
@@ -82,7 +82,7 @@ Acceptance criteria:
 - Approval state determines whether a comment is publicly visible.
 - Deleting a post also removes its comments.
 
-Delivery: Phase 3.
+Delivery: Phase 3 (implemented and covered by ownership/moderation tests).
 
 ### Vote on stories
 
@@ -95,7 +95,21 @@ Acceptance criteria:
 - Repeating or changing a vote cannot create duplicate vote records.
 - The displayed score reflects the stored votes.
 
-Delivery: Phase 3.
+Delivery: Phase 3 (implemented with standard-form and progressively enhanced journeys).
+
+### Discover external stories
+
+**As a visitor, I want to refresh a clearly separated external story feed so that I can discover current technology reporting without confusing it with ByteBoard posts.**
+
+Acceptance criteria:
+
+- The browser requests ByteBoard's same-origin endpoint rather than Hacker News directly.
+- Between 20 and 50 ranked stories are requested per refresh cycle, with 30 as the default.
+- Completed normalized results are cached for 60 seconds so repeated refreshes cannot create uncontrolled upstream traffic.
+- Loading, partial, empty, failure, and refresh states use visible and announced text.
+- External titles and URLs are validated and rendered without unsafe HTML insertion.
+
+Delivery: Phase 3 (implemented with mocked upstream tests; manual browser verification remains Phase 4).
 
 ## Site owner and moderators
 
@@ -123,7 +137,7 @@ Acceptance criteria:
 - Post and comment ownership remains visible during moderation.
 - Moderation does not bypass database relationship constraints.
 
-Delivery: Phase 1 admin foundation; moderation workflow enhancements in Phase 3.
+Delivery: Phase 1 admin foundation and Phase 3 pending/edit-remoderation workflow (implemented).
 
 ### Protect data integrity
 
@@ -151,4 +165,4 @@ Acceptance criteria:
 - Status and validation feedback is not communicated by colour alone.
 - Layouts avoid horizontal scrolling at common mobile widths and reflow at larger widths.
 
-Delivery: planned throughout Phases 2–4 and verified in Phase 4.
+Delivery: implemented throughout Phases 2 and 3; formal browser and assistive-technology verification remains Phase 4.

@@ -57,7 +57,7 @@ Exit criteria met: visitors can discover and read published stories; members can
 
 ## Phase 3 — Community and UX
 
-Status: **Planned**.
+Status: **Completed**. Community discussion, voting, the separate Hacker News discovery experience, custom JavaScript, controlled failures, and custom error pages are implemented and covered by the 172-test suite. The browser capability exposed no usable session, so formal interactive verification remains honestly assigned to Phase 4.
 
 Scope:
 
@@ -69,6 +69,8 @@ Scope:
 - add the approved custom JavaScript enhancement and external-news integration with caching and failure handling;
 - add custom navigable error pages and community-specific interface refinements; and
 - extend automated tests for comments, voting, integration, moderation, and accessibility-sensitive behaviour.
+
+Exit criteria met: approved comments are public while pending comments remain visible only to their author; members can create, edit, and delete only their own comments; published stories support create/change/remove voting with and without JavaScript; external stories are normalized through a same-origin cached service with a 20–50 limit and 60-second cache; failures remain controlled; custom error pages are navigable; and all automated, system, migration, and JavaScript syntax checks pass.
 
 ## Phase 4 — Testing, Documentation and Deployment
 
