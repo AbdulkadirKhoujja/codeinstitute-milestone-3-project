@@ -58,25 +58,6 @@ class HackerNewsFeedEndpointTests(TestCase):
             },
         )
 
-
-class HackerNewsDiscoveryPageTests(TestCase):
-    def test_discovery_page_exposes_accessible_feed_structure(self):
-        response = self.client.get(reverse("news:discover"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "news/discover.html")
-        self.assertContains(response, 'id="external-feed"')
-        self.assertContains(
-            response,
-            f'data-feed-url="{reverse("news:hacker-news-feed")}"',
-        )
-        self.assertContains(response, 'aria-busy="true"')
-        self.assertContains(response, 'data-feed-status role="status"')
-        self.assertContains(response, 'data-feed-refresh')
-        self.assertContains(response, "Powered by the")
-        self.assertContains(response, "Hacker News API")
-        self.assertContains(response, 'src="/static/js/external-feed.js"')
-
     @patch("news.views.get_top_stories")
     def test_feed_endpoint_only_accepts_get(self, mocked_feed):
         response = self.client.post(reverse("news:hacker-news-feed"))
@@ -106,3 +87,22 @@ class HackerNewsDiscoveryPageTests(TestCase):
             },
         )
         self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+
+class HackerNewsDiscoveryPageTests(TestCase):
+    def test_discovery_page_exposes_accessible_feed_structure(self):
+        response = self.client.get(reverse("news:discover"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "news/discover.html")
+        self.assertContains(response, 'id="external-feed"')
+        self.assertContains(
+            response,
+            f'data-feed-url="{reverse("news:hacker-news-feed")}"',
+        )
+        self.assertContains(response, 'aria-busy="true"')
+        self.assertContains(response, 'data-feed-status role="status"')
+        self.assertContains(response, 'data-feed-refresh')
+        self.assertContains(response, "Powered by the")
+        self.assertContains(response, "Hacker News API")
+        self.assertContains(response, 'src="/static/js/external-feed.js"')
