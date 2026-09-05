@@ -271,15 +271,24 @@ def comment_delete(request, post_id, comment_id):
 @login_required
 @require_POST
 def post_vote(request, post_id):
-    """Record a member's first vote on a published story."""
+    """Record or change a member's vote on a published story."""
     post = get_object_or_404(
         Post,
         pk=post_id,
         status=Post.Status.PUBLISHED,
     )
     value = int(request.POST["value"])
-    Vote.objects.create(post=post, user=request.user, value=value)
-    messages.success(request, "Your vote was recorded.")
+    vote = Vote.objects.filter(post=post, user=request.user).first()
+    if vote is None:
+        Vote.objects.create(post=post, user=request.user, value=value)
+        feedback = "Your vote was recorded."
+    elif vote.value != value:
+        vote.value = value
+        vote.save(update_fields=["value"])
+        feedback = "Your vote was changed."
+    else:
+        feedback = "Your vote was recorded."
+    messages.success(request, feedback)
     return redirect(
         f"{reverse('news:post-detail', args=[post.pk])}#rating-heading"
     )

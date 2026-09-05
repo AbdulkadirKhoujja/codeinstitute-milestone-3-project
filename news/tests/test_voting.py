@@ -107,3 +107,34 @@ class VoteActionTests(TestCase):
                 )
                 self.assertContains(response, f"Score {value}")
                 self.assertContains(response, "Your vote was recorded.")
+
+    def test_opposite_vote_changes_existing_record_in_both_directions(self):
+        cases = (
+            (Vote.Value.UPVOTE, Vote.Value.DOWNVOTE),
+            (Vote.Value.DOWNVOTE, Vote.Value.UPVOTE),
+        )
+        for initial_value, new_value in cases:
+            with self.subTest(initial_value=initial_value, new_value=new_value):
+                Vote.objects.all().delete()
+                vote = Vote.objects.create(
+                    post=self.post,
+                    user=self.member,
+                    value=initial_value,
+                )
+
+                response = self.client.post(
+                    reverse("news:post-vote", args=[self.post.pk]),
+                    {"value": new_value},
+                    follow=True,
+                )
+
+                vote.refresh_from_db()
+                self.assertEqual(vote.value, new_value)
+                self.assertEqual(
+                    Vote.objects.filter(
+                        post=self.post,
+                        user=self.member,
+                    ).count(),
+                    1,
+                )
+                self.assertContains(response, "Your vote was changed.")
