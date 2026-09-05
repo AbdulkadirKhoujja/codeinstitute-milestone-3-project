@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phase 2 delivers the complete core application. Comment interactions, voting interactions, production configuration, deployment, and final cross-browser validation remain intentionally scheduled for later phases.
+Phase 3 delivers the community interaction and external discovery experience. Comment CRUD, voting, custom JavaScript, the Hacker News discovery feed, controlled failures, and custom error pages are implemented. Production configuration, deployment, and formal cross-browser validation remain intentionally scheduled for Phase 4.
 
 ## Purpose and audience
 
@@ -21,7 +21,7 @@ The core experience supports two goals:
 - Dedicated category URLs and a category query-string filter.
 - Case-insensitive search across title, summary, and member commentary.
 - Newest, highest-rated, oldest, and title sorting with deterministic tie-breakers.
-- Aggregate vote scores calculated from existing vote records without exposing Phase 3 voting controls.
+- Aggregate vote scores calculated from positive and negative member votes.
 - Ten stories per page with active search, category, and sort settings preserved between pages.
 - Contextual empty states for an empty platform, category, or search result.
 - Reusable story cards showing category, author, date, summary, and score.
@@ -46,6 +46,26 @@ The core experience supports two goals:
 - Published story detail for everyone and private draft preview for its owner only.
 - Safe external article links that announce a new tab to assistive technology.
 
+### Comments and voting
+
+- Approved comments displayed oldest first beneath their parent story.
+- Authenticated comment creation with server-assigned ownership and pending-moderation feedback.
+- Owner-only comment editing and deletion, including explicit deletion confirmation.
+- Edited comments return to moderation; their author can still see the private pending state.
+- Upvote and downvote actions limited to published stories and one current vote per member/story.
+- Repeating a vote removes it, while choosing the opposite direction updates the existing record.
+- Functional server-rendered voting forms progressively enhanced with same-origin `fetch` requests, immediate score/state updates, CSRF protection, disabled loading controls, and live feedback.
+
+### External discovery
+
+- A separate `/discover/` experience for current Hacker News top stories; external records are never stored as ByteBoard posts.
+- The official Hacker News Firebase API accessed only by a server-side service and a same-origin JSON endpoint.
+- Ranked, validated story metadata with safe HTTP/HTTPS links and Hacker News discussion fallbacks.
+- A server-enforced 20–50 story boundary, using 30 by default.
+- Completed normalized collections cached under a stable key for exactly 60 seconds.
+- Controlled timeouts, invalid-response handling, partial-result feedback, empty states, and retryable failure states.
+- Safe DOM rendering with `textContent`, user-controlled refresh, visible loading feedback, and no direct browser request to Hacker News.
+
 ### Interface foundation
 
 - Semantic shared templates with consistent header, navigation, main, and footer landmarks.
@@ -56,7 +76,7 @@ The core experience supports two goals:
 
 ## Features reserved for later phases
 
-The relational foundations for comments and votes already exist, but Phase 2 deliberately does not include comment CRUD, public comment display, or voting actions. Phase 3 will implement and test those community interactions. Phase 4 covers production settings, PostgreSQL, deployment, and formal browser, accessibility, and validation evidence.
+Phase 4 covers production settings, PostgreSQL, deployment, the complete manual browser/accessibility matrix, standards validation, and final release evidence. Phase 3 does not claim any of that future work.
 
 No live deployment is claimed at this stage.
 
@@ -122,9 +142,10 @@ The project uses Django's model-template-view structure:
 
 - `byteboard/` contains project settings and root URL routing;
 - `accounts/` contains registration, authentication presentation, profiles, and their tests;
-- `news/` contains the domain models, model form, story queries, CRUD views, URLs, admin configuration, migrations, and tests;
-- `templates/` contains the shared layout, reusable includes, account pages, and story pages; and
-- `static/css/style.css` contains the mobile-first ByteBoard visual system.
+- `news/` contains domain models, forms, story/comment/vote views, the isolated Hacker News service, URLs, error handlers, admin configuration, migrations, and tests;
+- `templates/` contains the shared layout, reusable includes, account, community, discovery, and custom error pages;
+- `static/css/style.css` contains the mobile-first ByteBoard visual system; and
+- `static/js/` contains focused progressive enhancements for voting and external discovery.
 
 Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering, `select_related`, and pagination. Django messages carry success feedback across post/redirect/get journeys.
 
@@ -138,6 +159,12 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 | `/posts/new/` | Create a story | Signed-in member |
 | `/posts/<id>/edit/` | Edit an owned story | Owner only |
 | `/posts/<id>/delete/` | Confirm and delete an owned story | Owner only |
+| `/posts/<id>/comments/new/` | Add a pending comment | Signed-in member |
+| `/posts/<id>/comments/<comment-id>/edit/` | Edit an owned comment | Comment owner |
+| `/posts/<id>/comments/<comment-id>/delete/` | Confirm and delete an owned comment | Comment owner |
+| `/posts/<id>/vote/` | Create, change, or remove a vote | Signed-in member |
+| `/discover/` | Separate external Hacker News discovery page | Public |
+| `/discover/feed/` | Cached normalized discovery JSON | Public, GET only |
 | `/accounts/register/` | Create and enter an account | Signed-out visitor |
 | `/accounts/login/` | Sign in | Signed-out visitor |
 | `/accounts/logout/` | Sign out via POST | Signed-in member |
@@ -148,7 +175,9 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 
 - Python and Django 5.2.17 for routing, forms, authentication, ORM, migrations, admin, and tests.
 - HTML5 and Django templates for server-rendered pages and reusable components.
+- Custom JavaScript for progressive voting and safe external-feed rendering.
 - Custom CSS and Bootstrap 5.3.8 for the responsive interface.
+- Python's standard-library HTTP and JSON modules for the official Hacker News Firebase API; no API key or additional HTTP dependency is required.
 - SQLite for local development.
 - Git and GitHub for incremental version control.
 
@@ -199,13 +228,13 @@ Prerequisites are Python 3 with `venv` and `pip`, Git, and a local repository cl
 
 ## Using ByteBoard
 
-A visitor can search, choose a category, change sorting, move between result pages, open a member profile, read a story, and follow its clearly identified source link. Registration signs the new member in immediately.
+A visitor can search, choose a category, change sorting, move between result pages, open a member profile, read approved discussion, follow a clearly identified source link, and use **Discover** to load validated Hacker News stories. Registration signs the new member in immediately.
 
-A signed-in member can use **Submit story**, choose **Draft** to keep work private or **Published** to add it to public feeds, then manage the record from its detail page or their profile. Sign-out is submitted as a POST form from the navigation. Attempting to view another member's draft or mutate another member's story returns a not-found response rather than disclosing protected data.
+A signed-in member can submit and manage stories, add/edit/delete their comments, and upvote, downvote, change, or remove a vote. Comment edits return to moderation. Voting works with standard forms and updates immediately when JavaScript is available. Attempts to view private drafts or mutate another member's content return a not-found response rather than disclosing protected data.
 
 ## Testing
 
-The automated suite creates isolated test records and does not depend on `db.sqlite3`. It covers models, admin, forms, routes, authentication, safe redirects, profiles, draft privacy, published feeds, detail visibility, story CRUD, ownership, filtering, search, sorting, vote-score aggregation, pagination, feedback, and method restrictions.
+The 172-test automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
 
 Run the quality checks with:
 
@@ -215,13 +244,13 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
 
-The development approach and observed Phase 2 results are recorded in [testing](docs/testing.md). Later formal accessibility, compatibility, and deployment validation must not be inferred from these local checks.
+The development approach and observed Phase 3 results are recorded in [testing](docs/testing.md). Later formal accessibility, compatibility, and deployment validation must not be inferred from these local checks.
 
 ## Accessibility and responsive design
 
-The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, screen-reader message announcements, descriptive links, machine-readable dates, and text-based draft/filter/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
+The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, live status announcements, pressed vote states, busy discovery state, descriptive links, machine-readable dates, and text-based moderation/loading/error/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
 
-Phase 2 browser checks provide implementation feedback, while the formal multi-browser, assistive-technology, contrast, zoom, and validator matrix remains Phase 4 work. See [accessibility requirements](docs/accessibility-requirements.md).
+The interactive browser was unavailable during Phase 3, so no new viewport, keyboard, console, or network observation is claimed. The formal multi-browser, assistive-technology, contrast, zoom, and validator matrix remains Phase 4 work. See [accessibility requirements](docs/accessibility-requirements.md).
 
 ## Documentation
 
@@ -248,16 +277,21 @@ The wireframes are low-fidelity planning artefacts, not final screenshots.
 - Logout and story mutations require POST; unsupported mutation methods return `405`.
 - Ownership is enforced in server-side queries and authorship comes from the session.
 - Draft queries restrict non-public records to their owner.
+- Comment ownership and moderation visibility are enforced by server-side queries.
+- Vote values are allowlisted before writes; published-story and authentication checks are enforced server-side.
+- Asynchronous voting remains same-origin and CSRF protected.
+- Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Production `DEBUG`, hosts, database, and static settings are not Phase 2 deployment claims and must be hardened in Phase 4.
+Production `DEBUG`, hosts, database, and static settings are not Phase 3 deployment claims and must be hardened in Phase 4.
 
 ## Credits and attribution
 
 - The project is created for Code Institute's Backend Development milestone requirements.
 - [Django documentation](https://docs.djangoproject.com/en/5.2/) informs the framework, authentication, forms, ORM, migrations, admin, and testing implementation. Django is distributed under the BSD 3-Clause licence.
 - [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/) informs the responsive component foundation. Bootstrap is loaded from jsDelivr with integrity attributes and is distributed under the MIT licence.
+- [Official Hacker News API](https://github.com/HackerNews/API) supplies top-story identifiers and item metadata for the separate discovery feed. The application stores none of those external records and requires no API key.
 - Django project and application scaffolding supplied the conventional starting file structure.
-- No third-party images, icon sets, or fonts are included in Phase 2.
+- No third-party images, icon sets, or fonts are included in Phase 3.
 
 Any later external code, media, data, or learning resource must be credited with its source and licence where required.
