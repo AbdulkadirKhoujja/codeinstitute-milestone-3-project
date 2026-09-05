@@ -163,3 +163,19 @@ class VoteActionTests(TestCase):
                 )
                 self.assertContains(response, "Score 0")
                 self.assertContains(response, "Your vote was removed.")
+
+    def test_invalid_vote_values_return_bad_request_without_writing(self):
+        for value in ("", "0", "2", "not-a-number"):
+            with self.subTest(value=value):
+                response = self.client.post(
+                    reverse("news:post-vote", args=[self.post.pk]),
+                    {"value": value},
+                )
+
+                self.assertEqual(response.status_code, 400)
+                self.assertContains(
+                    response,
+                    "Choose upvote or downvote.",
+                    status_code=400,
+                )
+                self.assertFalse(Vote.objects.exists())

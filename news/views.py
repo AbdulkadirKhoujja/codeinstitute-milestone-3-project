@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.db.models import Sum
 from django.db.models import Value
 from django.db.models.functions import Coalesce
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -277,7 +278,10 @@ def post_vote(request, post_id):
         pk=post_id,
         status=Post.Status.PUBLISHED,
     )
-    value = int(request.POST["value"])
+    raw_value = request.POST.get("value")
+    if raw_value not in {str(Vote.Value.UPVOTE), str(Vote.Value.DOWNVOTE)}:
+        return HttpResponseBadRequest("Choose upvote or downvote.")
+    value = int(raw_value)
     vote = Vote.objects.filter(post=post, user=request.user).first()
     if vote is None:
         Vote.objects.create(post=post, user=request.user, value=value)
