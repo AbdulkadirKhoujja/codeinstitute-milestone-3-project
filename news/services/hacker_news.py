@@ -8,6 +8,10 @@ from urllib.request import Request
 from urllib.request import urlopen
 
 from django.conf import settings
+from django.core.cache import cache
+
+
+FEED_CACHE_KEY = "byteboard:hacker-news:top-stories:v1"
 
 
 class ExternalFeedError(Exception):
@@ -115,6 +119,9 @@ def get_story_limit():
 
 def get_top_stories():
     """Fetch a bounded set of stories while preserving HN rank order."""
+    cached_stories = cache.get(FEED_CACHE_KEY)
+    if cached_stories is not None:
+        return cached_stories
     story_ids = fetch_top_story_ids()
     stories = []
     failed_requests = 0
@@ -128,4 +135,9 @@ def get_top_stories():
             stories.append(story)
     if not stories and failed_requests:
         raise ExternalFeedError("Hacker News stories are unavailable.")
+    cache.set(
+        FEED_CACHE_KEY,
+        stories,
+        timeout=settings.HACKER_NEWS_CACHE_TIMEOUT,
+    )
     return stories

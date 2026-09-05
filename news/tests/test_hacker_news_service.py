@@ -3,6 +3,7 @@ from unittest.mock import patch
 from urllib.error import URLError
 
 from django.conf import settings
+from django.core.cache import cache
 from django.test import SimpleTestCase
 from django.test import override_settings
 
@@ -149,6 +150,9 @@ class HackerNewsNormalisationTests(SimpleTestCase):
 
 
 class HackerNewsFeedTests(SimpleTestCase):
+    def setUp(self):
+        cache.clear()
+
     @patch("news.services.hacker_news.fetch_story")
     @patch("news.services.hacker_news.fetch_top_story_ids")
     def test_feed_fetches_default_story_count_in_ranked_order(
@@ -221,3 +225,37 @@ class HackerNewsFeedTests(SimpleTestCase):
 
         with self.assertRaises(ExternalFeedError):
             get_top_stories()
+
+    @patch("news.services.hacker_news.cache")
+    @patch("news.services.hacker_news.fetch_story")
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    def test_successful_feed_is_cached_for_exactly_sixty_seconds(
+        self,
+        mocked_ids,
+        mocked_story,
+        mocked_cache,
+    ):
+        mocked_cache.get.return_value = None
+        mocked_ids.return_value = [11, 22]
+        mocked_story.side_effect = lambda story_id: {"id": story_id}
+
+        stories = get_top_stories()
+
+        mocked_cache.set.assert_called_once_with(
+            "byteboard:hacker-news:top-stories:v1",
+            stories,
+            timeout=60,
+        )
+
+    @patch("news.services.hacker_news.fetch_top_story_ids")
+    @patch("news.services.hacker_news.cache")
+    def test_cache_hit_prevents_refresh_within_boundary(
+        self,
+        mocked_cache,
+        mocked_ids,
+    ):
+        cached_stories = [{"id": 77}]
+        mocked_cache.get.return_value = cached_stories
+
+        self.assertIs(get_top_stories(), cached_stories)
+        mocked_ids.assert_not_called()
