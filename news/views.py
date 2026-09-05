@@ -287,7 +287,8 @@ def post_vote(request, post_id):
         vote.save(update_fields=["value"])
         feedback = "Your vote was changed."
     else:
-        feedback = "Your vote was recorded."
+        vote.delete()
+        feedback = "Your vote was removed."
     messages.success(request, feedback)
     return redirect(
         f"{reverse('news:post-detail', args=[post.pk])}#rating-heading"

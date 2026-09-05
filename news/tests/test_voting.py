@@ -138,3 +138,28 @@ class VoteActionTests(TestCase):
                     1,
                 )
                 self.assertContains(response, "Your vote was changed.")
+
+    def test_repeating_a_vote_removes_it_in_both_directions(self):
+        for value in (Vote.Value.UPVOTE, Vote.Value.DOWNVOTE):
+            with self.subTest(value=value):
+                Vote.objects.all().delete()
+                Vote.objects.create(
+                    post=self.post,
+                    user=self.member,
+                    value=value,
+                )
+
+                response = self.client.post(
+                    reverse("news:post-vote", args=[self.post.pk]),
+                    {"value": value},
+                    follow=True,
+                )
+
+                self.assertFalse(
+                    Vote.objects.filter(
+                        post=self.post,
+                        user=self.member,
+                    ).exists()
+                )
+                self.assertContains(response, "Score 0")
+                self.assertContains(response, "Your vote was removed.")
