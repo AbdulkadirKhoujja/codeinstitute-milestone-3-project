@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_POST
 
 from .forms import CommentForm
@@ -22,6 +23,7 @@ from .models import Category
 from .models import Comment
 from .models import Post
 from .models import Vote
+from .services.hacker_news import get_top_stories
 
 
 SORT_ORDERS = {
@@ -118,6 +120,16 @@ def post_list(request, category_slug=None):
             "sort_options": SORT_OPTIONS,
         },
     )
+
+
+@require_GET
+def hacker_news_feed(request):
+    """Expose normalized external stories through a same-origin endpoint."""
+    response = JsonResponse(
+        {"success": True, "stories": get_top_stories()}
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 def post_detail(request, pk):

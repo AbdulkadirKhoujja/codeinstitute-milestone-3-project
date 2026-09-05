@@ -8,6 +8,11 @@ app_name = "news"
 urlpatterns = [
     path("", views.post_list, name="home"),
     path(
+        "discover/feed/",
+        views.hacker_news_feed,
+        name="hacker-news-feed",
+    ),
+    path(
         "categories/<slug:category_slug>/",
         views.post_list,
         name="category-feed",
