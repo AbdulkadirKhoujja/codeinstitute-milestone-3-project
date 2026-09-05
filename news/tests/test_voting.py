@@ -307,3 +307,46 @@ class VoteActionTests(TestCase):
             Vote.objects.get(post=self.post, user=other_member).value,
             Vote.Value.DOWNVOTE,
         )
+
+    def test_async_votes_return_score_state_and_feedback(self):
+        vote_url = reverse("news:post-vote", args=[self.post.pk])
+        cases = (
+            (Vote.Value.UPVOTE, 1, 1, "Your vote was recorded."),
+            (Vote.Value.DOWNVOTE, -1, -1, "Your vote was changed."),
+            (Vote.Value.DOWNVOTE, 0, None, "Your vote was removed."),
+        )
+
+        for value, score, current_vote, message in cases:
+            with self.subTest(value=value, message=message):
+                response = self.client.post(
+                    vote_url,
+                    {"value": value},
+                    HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    response.json(),
+                    {
+                        "success": True,
+                        "score": score,
+                        "current_vote": current_vote,
+                        "message": message,
+                    },
+                )
+
+    def test_invalid_async_vote_returns_structured_bad_request(self):
+        response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]),
+            {"value": "2"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "success": False,
+                "message": "Choose upvote or downvote.",
+            },
+        )

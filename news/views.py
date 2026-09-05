@@ -7,6 +7,7 @@ from django.db.models import Sum
 from django.db.models import Value
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseBadRequest
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -34,6 +35,11 @@ SORT_OPTIONS = (
     ("oldest", "Oldest first"),
     ("title", "Title A–Z"),
 )
+
+
+def is_async_request(request):
+    """Return whether the caller expects a same-origin JSON response."""
+    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
 
 def post_detail_context(request, post, comment_form=None):
@@ -287,6 +293,14 @@ def post_vote(request, post_id):
     )
     raw_value = request.POST.get("value")
     if raw_value not in {str(Vote.Value.UPVOTE), str(Vote.Value.DOWNVOTE)}:
+        if is_async_request(request):
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Choose upvote or downvote.",
+                },
+                status=400,
+            )
         return HttpResponseBadRequest("Choose upvote or downvote.")
     value = int(raw_value)
     vote = Vote.objects.filter(post=post, user=request.user).first()
@@ -300,6 +314,26 @@ def post_vote(request, post_id):
     else:
         vote.delete()
         feedback = "Your vote was removed."
+    if is_async_request(request):
+        score = post.votes.aggregate(
+            score=Coalesce(
+                Sum("value"),
+                Value(0),
+                output_field=IntegerField(),
+            )
+        )["score"]
+        current_vote = post.votes.filter(user=request.user).values_list(
+            "value",
+            flat=True,
+        ).first()
+        return JsonResponse(
+            {
+                "success": True,
+                "score": score,
+                "current_vote": current_vote,
+                "message": feedback,
+            }
+        )
     messages.success(request, feedback)
     return redirect(
         f"{reverse('news:post-detail', args=[post.pk])}#rating-heading"
