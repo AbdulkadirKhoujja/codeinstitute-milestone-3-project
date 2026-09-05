@@ -58,3 +58,16 @@ class ExternalFeedJavascriptTests(SimpleTestCase):
         self.assertIn('refreshButton.addEventListener("click", loadStories)', script)
         self.assertIn("if (isLoading)", script)
         self.assertIn("External stories are temporarily unavailable.", script)
+
+    def test_script_announces_partial_result_information(self):
+        script_path = Path(
+            settings.BASE_DIR,
+            "static",
+            "js",
+            "external-feed.js",
+        )
+        script = script_path.read_text(encoding="utf-8")
+
+        self.assertIn("if (data.partial)", script)
+        self.assertIn("data.message", script)
+        self.assertIn("external stories loaded", script)

@@ -111,7 +111,12 @@ if (feed) {
         return;
       }
       renderStories(data.stories);
-      status.textContent = `${data.stories.length} external stories loaded.`;
+      const loadedMessage = `${data.stories.length} external stories loaded.`;
+      if (data.partial) {
+        status.textContent = `${loadedMessage} ${data.message}`;
+      } else {
+        status.textContent = loadedMessage;
+      }
     } catch (error) {
       renderNotice(failureMessage);
       status.textContent = failureMessage;
