@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ post.title }} | ByteBoard{% endblock %}
 
@@ -102,4 +103,8 @@
       </div>
     </section>
   </article>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/voting.js' %}" defer></script>
 {% endblock %}
