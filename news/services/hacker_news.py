@@ -21,12 +21,14 @@ class ExternalFeedError(Exception):
 class StoryCollection(list):
     """List-like feed result carrying a non-sensitive completeness state."""
 
-    def __init__(self, stories=(), *, partial=False):
+    def __init__(self, stories=(), *, partial=False, attempted=0, failed=0):
         super().__init__(stories)
         self.partial = partial
+        self.attempted = attempted
+        self.failed = failed
 
 
-def _request_json(path):
+def _request_json(path, timeout=None):
     """Fetch and decode one JSON resource from Hacker News."""
     request = Request(
         f"{settings.HACKER_NEWS_API_BASE_URL}/{path}",
@@ -35,20 +37,23 @@ def _request_json(path):
     try:
         with urlopen(
             request,
-            timeout=settings.HACKER_NEWS_REQUEST_TIMEOUT,
+            timeout=timeout or settings.HACKER_NEWS_REQUEST_TIMEOUT,
         ) as response:
             if response.status != 200:
                 raise ExternalFeedError("Hacker News returned an error.")
-            return json.loads(response.read().decode("utf-8"))
+            body = response.read(131073)
+            if len(body) > 131072:
+                raise ExternalFeedError("Hacker News response is too large.")
+            return json.loads(body.decode("utf-8"))
     except ExternalFeedError:
         raise
     except (OSError, TimeoutError, UnicodeDecodeError, json.JSONDecodeError) as error:
         raise ExternalFeedError("Hacker News is unavailable.") from error
 
 
-def fetch_top_story_ids():
+def fetch_top_story_ids(timeout=None):
     """Return Hacker News top-story identifiers in ranked order."""
-    payload = _request_json("topstories.json")
+    payload = _request_json("topstories.json", timeout=timeout)
     if not isinstance(payload, list):
         raise ExternalFeedError("Hacker News returned invalid story data.")
     return [
@@ -130,9 +135,11 @@ def normalise_story(item):
     }
 
 
-def fetch_story(story_id):
+def fetch_story(story_id, timeout=None):
     """Fetch and normalise one Hacker News story."""
-    return normalise_story(_request_json(f"item/{story_id}.json"))
+    return normalise_story(_request_json(
+        f"item/{story_id}.json", timeout=timeout,
+    ))
 
 
 def get_story_limit():

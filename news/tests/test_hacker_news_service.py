@@ -16,6 +16,17 @@ from news.services.hacker_news import normalise_story
 
 class HackerNewsRequestTests(SimpleTestCase):
     @patch("news.services.hacker_news.urlopen")
+    def test_oversized_response_is_rejected_before_json_decoding(self, opener):
+        from news.services.hacker_news import _request_json
+
+        response = MagicMock()
+        response.status = 200
+        response.read.return_value = b'"' + b"a" * 131072 + b'"'
+        opener.return_value.__enter__.return_value = response
+        with self.assertRaises(ExternalFeedError):
+            _request_json("item/1.json")
+
+    @patch("news.services.hacker_news.urlopen")
     def test_top_story_ids_use_official_endpoint_and_configured_timeout(
         self,
         mocked_urlopen,

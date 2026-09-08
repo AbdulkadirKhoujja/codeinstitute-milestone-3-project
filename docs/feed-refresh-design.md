@@ -48,3 +48,32 @@ in 3.404 seconds. Migration drift check passed.
 
 References: [Django caching](https://docs.djangoproject.com/en/5.2/topics/cache/)
 and [Heroku request timeout](https://devcenter.heroku.com/articles/request-timeout).
+
+## Bounded upstream worker
+
+A refresh uses one disposable spawned process containing at most five request
+threads. The default overall budget is ten seconds, including startup, followed
+by at most half a second of parent cleanup. Each request has a five-second
+socket timeout and a 128 KiB response limit; at most 50 item requests are queued.
+There are no retries. Completed results retain their original upstream rank.
+Incomplete collections are marked partial; no usable results means unavailable.
+
+The separate process is necessary because cancelling a thread future cannot
+stop a running socket read, and executor shutdown normally waits for threads.
+The parent terminates the process at its deadline. A child watchdog also exits
+that disposable process if the requesting web worker has disappeared. The
+ten-second default leaves headroom beneath the configured 20-second Gunicorn
+worker timeout and Heroku's documented 30-second initial response deadline.
+This adds process-startup overhead but does not require another service.
+
+New tests initially failed for the missing worker, oversized responses, startup
+cleanup and pipe-creation failure. Following fixes, 30 worker, request and cache
+tests passed in 1.135 seconds on Windows. Network responses were mocked. One
+test spawned a real blocked child without networking and verified termination
+within 2.5 seconds for a one-second budget, with no remaining active child.
+
+A separate live Windows measurement on 8 September 2026 requested and attempted
+30 items, returned 30 valid results in 6.750 seconds, with zero failed items and
+no partial flag. This measures the worker only, not the shared-cache endpoint;
+it is a single observation, not a performance guarantee. Endpoint integration
+and cross-process PostgreSQL evidence remain to be recorded.
