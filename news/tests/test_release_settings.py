@@ -82,3 +82,11 @@ class ReleaseSettingsTests(SimpleTestCase):
                 SECRET_KEY="test-only-placeholder",
                 DATABASE_URL="unknown://member:private-placeholder@host/database",
             )
+
+    def test_collected_assets_have_a_production_serving_backend(self):
+        config = self.load_settings(SECRET_KEY="test-only-placeholder")
+        self.assertEqual(config["STATIC_ROOT"], settings.BASE_DIR / "staticfiles")
+        self.assertEqual(config["MIDDLEWARE"][1],
+                         "whitenoise.middleware.WhiteNoiseMiddleware")
+        self.assertEqual(config["STORAGES"]["staticfiles"]["BACKEND"],
+                         "whitenoise.storage.CompressedStaticFilesStorage")
