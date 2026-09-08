@@ -49,6 +49,12 @@ No Windows PostgreSQL command or service was found. Docker Desktop is installed
 but its Linux engine was not running. Existing Ubuntu/WSL infrastructure is
 being checked before adding another database installation.
 
+## Corrective testing
+
+| Defect | Reproduction and cause | Correction and retest |
+| --- | --- | --- |
+| Empty comment edit silently redisplayed the original body | Focused test failed: form was unbound; an empty POST dictionary was treated as a GET | Bind according to request method; required-body error is now returned without changing the record. Comment update/permission suites: 9 tests passed. |
+
 ## Release decision
 
 **In progress; not ready for deployment.** Material browser, PostgreSQL,

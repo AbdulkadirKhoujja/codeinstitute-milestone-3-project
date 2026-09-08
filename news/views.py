@@ -280,7 +280,10 @@ def comment_update(request, post_id, comment_id):
         post_id=post_id,
         author=request.user,
     )
-    form = CommentForm(request.POST or None, instance=comment)
+    form = CommentForm(
+        request.POST if request.method == "POST" else None,
+        instance=comment,
+    )
     if request.method == "POST" and form.is_valid():
         comment = form.save(commit=False)
         comment.is_approved = False

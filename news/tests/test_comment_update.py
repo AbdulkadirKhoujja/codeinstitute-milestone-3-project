@@ -125,3 +125,16 @@ class CommentUpdatePageTests(TestCase):
         )
         self.assertContains(response, 'id="body-error"')
         self.assertEqual(self.comment.body, "Comment before editing.")
+
+    def test_empty_post_is_bound_and_reports_required_body(self):
+        self.client.force_login(self.owner)
+
+        response = self.client.post(reverse(
+            "news:comment-update", args=[self.post.pk, self.comment.pk],
+        ), {})
+
+        self.assertFormError(
+            response.context["form"], "body", "This field is required.",
+        )
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.body, "Comment before editing.")
