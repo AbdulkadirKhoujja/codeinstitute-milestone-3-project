@@ -54,6 +54,7 @@ being checked before adding another database installation.
 | Defect | Reproduction and cause | Correction and retest |
 | --- | --- | --- |
 | Empty comment edit silently redisplayed the original body | Focused test failed: form was unbound; an empty POST dictionary was treated as a GET | Bind according to request method; required-body error is now returned without changing the record. Comment update/permission suites: 9 tests passed. |
+| Expired-session form voting returned to an unusable page after login | Focused test received 405 instead of 200: login returned to the POST-only vote endpoint | Return to the story detail page without replaying a mutation. Voting suite: 17 tests passed. |
 
 ## Release decision
 

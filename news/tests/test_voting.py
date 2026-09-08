@@ -1,3 +1,5 @@
+from urllib.parse import parse_qs, urlparse
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -256,6 +258,16 @@ class VoteActionTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("accounts:login"), response.url)
+        self.assertFalse(Vote.objects.exists())
+
+    def test_login_after_expired_session_returns_to_gettable_story(self):
+        self.client.logout()
+        response = self.client.post(
+            reverse("news:post-vote", args=[self.post.pk]), {"value": "1"},
+        )
+        next_url = parse_qs(urlparse(response.url).query)["next"][0]
+        self.client.force_login(self.member)
+        self.assertEqual(self.client.get(next_url).status_code, 200)
         self.assertFalse(Vote.objects.exists())
 
     def test_unpublished_and_missing_stories_are_not_votable(self):

@@ -336,7 +336,7 @@ def post_vote(request, post_id):
                 status=401,
             )
         return redirect_to_login(
-            request.get_full_path(),
+            reverse("news:post-detail", args=[post_id]),
             reverse("accounts:login"),
         )
     post = Post.objects.filter(
