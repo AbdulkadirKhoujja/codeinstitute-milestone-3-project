@@ -13,6 +13,24 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+def environment_bool(name, default=False):
+    """Require explicit boolean values instead of trusting non-empty text."""
+    value = os.environ.get(name, str(default)).strip().lower()
+    if value in {"true", "1"}:
+        return True
+    if value in {"false", "0"}:
+        return False
+    raise ImproperlyConfigured(f"{name} must be true, false, 1 or 0.")
+
+
+def environment_list(name):
+    """Read comma-separated hosts or origins without empty entries."""
+    return [item.strip() for item in os.environ.get(name, "").split(",")
+            if item.strip()]
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,16 +39,25 @@ if os.path.isfile(BASE_DIR / 'env.py'):
     import env
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured("Set SECRET_KEY in the environment.")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = environment_bool("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = environment_list("ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = environment_list("CSRF_TRUSTED_ORIGINS")
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+# Enable only behind Heroku's router, which sets X-Forwarded-Proto itself.
+SECURE_PROXY_SSL_HEADER = (
+    ("HTTP_X_FORWARDED_PROTO", "https")
+    if environment_bool("TRUST_HEROKU_PROXY") else None
+)
+# Explicit opt-in permits local HTTP checks; production must enable this.
+SECURE_SSL_REDIRECT = environment_bool("SECURE_SSL_REDIRECT")
+# Choose an HSTS policy only after the final domain and HTTPS are verified.
+SECURE_HSTS_SECONDS = 0
 
 
 # Application definition

@@ -217,6 +217,11 @@ Prerequisites are Python 3 with `venv` and `pip`, Git, and a local repository cl
 
    Never commit the real key, `env.py`, `.env`, credentials, or the local database.
 
+   Debug mode now defaults to off. For local HTTP development explicitly set
+   `DEBUG=true` and `ALLOWED_HOSTS=localhost,127.0.0.1` in the environment.
+   Boolean settings accept only `true`, `false`, `1` or `0`; invalid values
+   fail at startup. `.env` is not automatically loaded.
+
 5. Prepare and run the application:
 
    ```shell
@@ -268,6 +273,13 @@ The interactive browser was unavailable during Phase 3, so no new viewport, keyb
 The wireframes are low-fidelity planning artefacts, not final screenshots.
 
 ## Security
+
+Phase 4 configuration uses explicit hosts and trusted CSRF origins, secure
+session/CSRF cookies when debug is off, and no trusted proxy header by default.
+Set `TRUST_HEROKU_PROXY=true` only behind Heroku's router, and enable
+`SECURE_SSL_REDIRECT=true` for production. Local HTTP verification leaves that
+redirect off. HSTS remains disabled until the final HTTPS domain is verified.
+These choices follow the [Django deployment checklist](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/).
 
 - `SECRET_KEY` is read from the environment rather than stored in tracked source.
 - Django CSRF tokens protect every local POST form.

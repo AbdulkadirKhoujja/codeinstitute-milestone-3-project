@@ -56,6 +56,17 @@ being checked before adding another database installation.
 | Empty comment edit silently redisplayed the original body | Focused test failed: form was unbound; an empty POST dictionary was treated as a GET | Bind according to request method; required-body error is now returned without changing the record. Comment update/permission suites: 9 tests passed. |
 | Expired-session form voting returned to an unusable page after login | Focused test received 405 instead of 200: login returned to the POST-only vote endpoint | Return to the story detail page without replaying a mutation. Voting suite: 17 tests passed. |
 
+## Production-settings verification
+
+Five isolated settings tests initially failed because debug was always on,
+cookie/proxy controls were absent, and missing or malformed configuration did
+not fail at startup. Settings now parse explicit booleans and lists, require a
+secret, disable debug by default, secure cookies outside debug and require
+explicit proxy trust. HSTS remains zero pending final-domain verification.
+The local private DEBUG value was not a supported boolean; test commands use
+an explicit process environment value without rewriting private configuration.
+Settings, account and custom-error suites: 29 tests passed in 14.761 seconds.
+
 ## Release decision
 
 **In progress; not ready for deployment.** Material browser, PostgreSQL,
