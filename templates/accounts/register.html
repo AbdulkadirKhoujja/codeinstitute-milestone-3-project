@@ -20,9 +20,11 @@
             {% if field.help_text %}
               <div id="{{ field.name }}-help" class="form-text">{{ field.help_text|safe }}</div>
             {% endif %}
-            {% for error in field.errors %}
-              <p class="invalid-feedback d-block" id="{{ field.name }}-error">{{ error }}</p>
-            {% endfor %}
+            {% if field.errors %}
+              <div class="invalid-feedback d-block" id="{{ field.name }}-error">
+                {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
+              </div>
+            {% endif %}
           </div>
         {% endfor %}
         <button class="btn btn-primary" type="submit">Create account</button>
