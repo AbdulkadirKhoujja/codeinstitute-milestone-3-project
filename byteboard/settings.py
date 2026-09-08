@@ -191,6 +191,7 @@ STORAGES = {
 }
 
 LOGIN_URL = 'accounts:login'
+CSRF_FAILURE_VIEW = 'news.error_views.csrf_failure'
 LOGIN_REDIRECT_URL = 'news:home'
 LOGOUT_REDIRECT_URL = 'news:home'
 

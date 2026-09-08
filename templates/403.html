@@ -8,7 +8,11 @@
   <section class="container py-5 error-page" aria-labelledby="error-heading">
     <p class="eyebrow">Error 403</p>
     <h1 id="error-heading">You cannot access this page</h1>
-    <p>Your account does not have permission to view this page.</p>
+    {% if csrf_failure %}
+      <p>Your form session expired or the request could not be verified. Reload the page and try again.</p>
+    {% else %}
+      <p>Your account does not have permission to view this page.</p>
+    {% endif %}
     <a class="btn btn-primary" href="{% url 'news:home' %}">Return to the ByteBoard home page</a>
   </section>
 {% endblock %}
