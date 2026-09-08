@@ -2,6 +2,18 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+
+
+class FeedSnapshot(models.Model):
+    """One shared public feed snapshot and an atomic refresh lease."""
+
+    key = models.CharField(max_length=40, primary_key=True)
+    stories = models.JSONField(null=True)
+    partial = models.BooleanField(default=False)
+    expires_at = models.DateTimeField(null=True)
+    refresh_after = models.DateTimeField(default=timezone.now)
+    refresh_token = models.UUIDField(null=True)
 
 
 class Category(models.Model):

@@ -138,6 +138,26 @@ A check constraint rejects values outside `-1` and `1`. A composite unique const
 
 ## Application architecture
 
+### Operational feed snapshot
+
+Phase 4 adds a separate `FeedSnapshot` table for shared public discovery data.
+It is not a community post and has no relationship to users or private content.
+
+| Field | Type | Purpose |
+| --- | --- | --- |
+| `key` | `CharField(40)`, primary key | One `hacker-news` snapshot |
+| `stories` | Nullable `JSONField` | Normalised public metadata; null means no result |
+| `partial` | Boolean, false default | Completeness label retained with the result |
+| `expires_at` | Nullable datetime | Successful-result expiry |
+| `refresh_after` | Datetime | Earliest permitted next refresh |
+| `refresh_token` | Nullable UUID | Prevent an expired worker replacing newer data |
+
+An atomic conditional database update admits only one refresh within the
+boundary. A failed refresh retains its cooldown; cached empty results are valid.
+Expired data is not served. The single row is replaced, so no growing cache
+table or scheduled expiry cleanup is required. See the
+[shared-cache design](docs/feed-refresh-design.md) for integration status.
+
 The project uses Django's model-template-view structure:
 
 - `byteboard/` contains project settings and root URL routing;
