@@ -3,14 +3,12 @@ from unittest.mock import patch
 from urllib.error import URLError
 
 from django.conf import settings
-from django.core.cache import cache
 from django.test import SimpleTestCase
 from django.test import override_settings
 
 from news.services.hacker_news import ExternalFeedError
 from news.services.hacker_news import fetch_story
 from news.services.hacker_news import fetch_top_story_ids
-from news.services.hacker_news import get_top_stories
 from news.services.hacker_news import normalise_story
 
 
@@ -176,163 +174,55 @@ class HackerNewsNormalisationTests(SimpleTestCase):
         self.assertEqual(story["comment_count"], 0)
 
 
-class HackerNewsFeedTests(SimpleTestCase):
-    def setUp(self):
-        cache.clear()
-
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_fetches_default_story_count_in_ranked_order(
-        self,
-        mocked_ids,
-        mocked_story,
+class HackerNewsCollectionTests(SimpleTestCase):
+    @patch("news.services.feed_worker.fetch_story")
+    @patch("news.services.feed_worker.fetch_top_story_ids")
+    def test_bounded_collection_respects_target_and_keeps_rank_metadata(
+        self, ids, story,
     ):
-        mocked_ids.return_value = list(range(1, 61))
-        mocked_story.side_effect = lambda story_id: {"id": story_id}
+        from news.services.feed_worker import collect_items
+        from news.services.hacker_news import get_story_limit
 
-        stories = get_top_stories()
+        ids.return_value = list(range(1, 61))
+        story.side_effect = lambda story_id, **kwargs: {"id": story_id}
+        for configured, expected in ((30, 30), (5, 20), (99, 50), ("bad", 30)):
+            with self.subTest(configured=configured):
+                story.reset_mock()
+                events = []
+                with override_settings(HACKER_NEWS_STORY_LIMIT=configured):
+                    collect_items(events.append, get_story_limit(), 5, 5)
+                self.assertEqual(story.call_count, expected)
+                items = sorted(
+                    (event[1], event[2]["id"]) for event in events
+                    if event[0] == "item"
+                )
+                self.assertEqual(items, list(enumerate(range(1, expected + 1))))
+                self.assertEqual(events[-1], ("done",))
 
-        self.assertEqual(
-            [story["id"] for story in stories],
-            list(range(1, 31)),
-        )
-        self.assertEqual(mocked_story.call_count, 30)
-
-    @override_settings(HACKER_NEWS_STORY_LIMIT=5)
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_clamps_too_small_limit_to_twenty(
-        self,
-        mocked_ids,
-        mocked_story,
+    @patch("news.services.feed_worker.fetch_story")
+    @patch("news.services.feed_worker.fetch_top_story_ids")
+    def test_collection_reports_failed_filtered_and_empty_items(
+        self, ids, story,
     ):
-        mocked_ids.return_value = list(range(1, 61))
-        mocked_story.side_effect = lambda story_id: {"id": story_id}
+        from news.services.feed_worker import collect_items
 
-        self.assertEqual(len(get_top_stories()), 20)
+        ids.return_value = [11, 22, 33]
 
-    @override_settings(HACKER_NEWS_STORY_LIMIT=99)
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_clamps_too_large_limit_to_fifty(
-        self,
-        mocked_ids,
-        mocked_story,
-    ):
-        mocked_ids.return_value = list(range(1, 61))
-        mocked_story.side_effect = lambda story_id: {"id": story_id}
+        def fetch(story_id, **kwargs):
+            if story_id == 22:
+                raise ExternalFeedError("simulated")
+            return {"id": 11} if story_id == 11 else None
 
-        self.assertEqual(len(get_top_stories()), 50)
-
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_keeps_successful_items_when_one_request_fails(
-        self,
-        mocked_ids,
-        mocked_story,
-    ):
-        mocked_ids.return_value = [11, 22, 33]
-        mocked_story.side_effect = (
-            {"id": 11},
-            ExternalFeedError("item unavailable"),
-            {"id": 33},
-        )
-
-        stories = get_top_stories()
-
-        self.assertEqual(stories, [{"id": 11}, {"id": 33}])
-        self.assertTrue(stories.partial)
-
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_complete_feed_is_marked_as_complete(
-        self,
-        mocked_ids,
-        mocked_story,
-    ):
-        mocked_ids.return_value = [11, 22]
-        mocked_story.side_effect = lambda story_id: {"id": story_id}
-
-        self.assertFalse(get_top_stories().partial)
-
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_reports_failure_when_every_item_request_fails(
-        self,
-        mocked_ids,
-        mocked_story,
-    ):
-        mocked_ids.return_value = [11, 22]
-        mocked_story.side_effect = ExternalFeedError("item unavailable")
-
-        with self.assertRaises(ExternalFeedError):
-            get_top_stories()
-
-    @patch("news.services.hacker_news.cache")
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_successful_feed_is_cached_for_exactly_sixty_seconds(
-        self,
-        mocked_ids,
-        mocked_story,
-        mocked_cache,
-    ):
-        mocked_cache.get.return_value = None
-        mocked_ids.return_value = [11, 22]
-        mocked_story.side_effect = lambda story_id: {"id": story_id}
-
-        stories = get_top_stories()
-
-        mocked_cache.set.assert_called_once_with(
-            "byteboard:hacker-news:top-stories:v1",
-            stories,
-            timeout=60,
-        )
-
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    @patch("news.services.hacker_news.cache")
-    def test_cache_hit_prevents_refresh_within_boundary(
-        self,
-        mocked_cache,
-        mocked_ids,
-    ):
-        cached_stories = [{"id": 77}]
-        mocked_cache.get.return_value = cached_stories
-
-        self.assertIs(get_top_stories(), cached_stories)
-        mocked_ids.assert_not_called()
-
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_empty_top_story_response_returns_cacheable_empty_collection(
-        self,
-        mocked_ids,
-        mocked_story,
-    ):
-        mocked_ids.return_value = []
-
-        stories = get_top_stories()
-
-        self.assertEqual(stories, [])
-        self.assertFalse(stories.partial)
-        mocked_story.assert_not_called()
-
-    @patch("news.services.hacker_news.cache")
-    @patch("news.services.hacker_news.fetch_story")
-    @patch("news.services.hacker_news.fetch_top_story_ids")
-    def test_feed_refreshes_after_cache_expiry_without_sleeping(
-        self,
-        mocked_ids,
-        mocked_story,
-        mocked_cache,
-    ):
-        mocked_cache.get.side_effect = (None, None)
-        mocked_ids.return_value = [11]
-        mocked_story.side_effect = ({"id": 11}, {"id": 11})
-
-        get_top_stories()
-        get_top_stories()
-
-        self.assertEqual(mocked_ids.call_count, 2)
-        self.assertEqual(mocked_story.call_count, 2)
-        self.assertEqual(mocked_cache.set.call_count, 2)
+        story.side_effect = fetch
+        events = []
+        collect_items(events.append, 30, 5, 5)
+        self.assertIn(("failure", 1), events)
+        self.assertIn(("item", 2, None), events)
+        self.assertIn(("item", 0, {"id": 11}), events)
+        self.assertEqual(events[-1], ("done",))
+        ids.return_value = []
+        story.reset_mock()
+        events.clear()
+        collect_items(events.append, 30, 5, 5)
+        self.assertEqual(events, [("target", 0), ("done",)])
+        story.assert_not_called()

@@ -22,10 +22,10 @@ operation. There is no additional infrastructure dependency or pickle payload.
 5. Publish only if the caller still owns the token and its lease has not expired.
    An expired worker cannot overwrite a newer refresh. Never serve stale data.
 
-The upstream refresh duration must be strictly shorter than the lease. The
-public endpoint is not switched to this helper until the bounded worker is
-implemented and tested. Unit tests establish sequential and re-entrant behaviour;
-they do not alone establish actual PostgreSQL cross-process correctness.
+The upstream refresh duration is strictly shorter than the lease. The public
+service now calls this shared helper with the bounded worker. Unit tests
+establish sequential and re-entrant behaviour; they do not alone establish
+actual PostgreSQL cross-process correctness.
 
 Setup is the normal `python manage.py migrate` command. There is one lazily
 created `hacker-news` row, updated in place. No `createcachetable` command or
@@ -77,3 +77,15 @@ A separate live Windows measurement on 8 September 2026 requested and attempted
 no partial flag. This measures the worker only, not the shared-cache endpoint;
 it is a single observation, not a performance guarantee. Endpoint integration
 and cross-process PostgreSQL evidence remain to be recorded.
+
+## Public service integration
+
+The new integration test failed when the public service still attempted the
+old sequential HTTP path. After routing through the shared snapshot and worker,
+the same test passed: two calls produced one refresh and one database snapshot,
+preserving the partial flag. The old process-local cache implementation was
+removed. Its cache assertions are replaced by database-backed expiry/cooldown
+tests, and collection tests now execute the fixed request pool with mocked HTTP
+helpers. Worker, request, shared-cache, feed and script-contract regressions:
+44 tests passed in 31.512 seconds on SQLite. These script-contract checks remain
+distinct from the separately recorded JavaScript interaction tests.

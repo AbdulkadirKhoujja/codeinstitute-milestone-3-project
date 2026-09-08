@@ -6,10 +6,24 @@ from django.utils import timezone
 
 from news.models import FeedSnapshot
 from news.services.feed_cache import get_shared_feed
-from news.services.hacker_news import ExternalFeedError, StoryCollection
+from news.services.hacker_news import (
+    ExternalFeedError, StoryCollection, get_top_stories,
+)
 
 
 class SharedFeedCacheTests(TestCase):
+    @patch("news.services.hacker_news.urlopen", side_effect=OSError("offline"))
+    @patch("news.services.feed_worker.fetch_bounded_stories")
+    def test_public_service_uses_bounded_worker_and_shared_snapshot(
+        self, worker, opener,
+    ):
+        worker.return_value = StoryCollection([{"id": 9}], partial=True)
+        self.assertTrue(get_top_stories().partial)
+        self.assertEqual(get_top_stories(), [{"id": 9}])
+        worker.assert_called_once()
+        opener.assert_not_called()
+        self.assertEqual(FeedSnapshot.objects.get().stories, [{"id": 9}])
+
     def at(self, now, seconds=0):
         return patch(
             "news.services.feed_cache.timezone.now",

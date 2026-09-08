@@ -8,10 +8,6 @@ from urllib.request import Request
 from urllib.request import urlopen
 
 from django.conf import settings
-from django.core.cache import cache
-
-
-FEED_CACHE_KEY = "byteboard:hacker-news:top-stories:v1"
 
 
 class ExternalFeedError(Exception):
@@ -152,27 +148,10 @@ def get_story_limit():
 
 
 def get_top_stories():
-    """Fetch a bounded set of stories while preserving HN rank order."""
-    cached_stories = cache.get(FEED_CACHE_KEY)
-    if cached_stories is not None:
-        return cached_stories
-    story_ids = fetch_top_story_ids()
-    stories = StoryCollection()
-    failed_requests = 0
-    for story_id in story_ids[: get_story_limit()]:
-        try:
-            story = fetch_story(story_id)
-        except ExternalFeedError:
-            failed_requests += 1
-            continue
-        if story is not None:
-            stories.append(story)
-    if not stories and failed_requests:
-        raise ExternalFeedError("Hacker News stories are unavailable.")
-    stories.partial = failed_requests > 0
-    cache.set(
-        FEED_CACHE_KEY,
-        stories,
-        timeout=settings.HACKER_NEWS_CACHE_TIMEOUT,
-    )
-    return stories
+    """Return shared public results or acquire one bounded refresh."""
+    # Lazy imports keep the normalisation helpers usable in a spawned child
+    # without loading database models or initialising Django's app registry.
+    from .feed_cache import get_shared_feed
+    from .feed_worker import fetch_bounded_stories
+
+    return get_shared_feed(fetch_bounded_stories)
