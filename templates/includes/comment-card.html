@@ -1,13 +1,13 @@
 <article class="comment-card" id="comment-{{ comment.pk }}">
   <header class="comment-card__header">
-    <a href="{% url 'accounts:profile' comment.author.username %}">{{ comment.author.username }}</a>
-    <time datetime="{{ comment.created_at|date:'c' }}">{{ comment.created_at|date:"j F Y, H:i" }}</time>
-    {% if comment.was_edited %}<span>Edited <time datetime="{{ comment.updated_at|date:'c' }}">{{ comment.updated_at|date:"j F Y, H:i" }}</time></span>{% endif %}
+    <h3 class="h6 mb-0"><a href="{% url 'accounts:profile' comment.author.username %}">{{ comment.author.username }}</a></h3>
+    <time datetime="{{ comment.created_at|date:'Y-m-d\TH:i:sO' }}">{{ comment.created_at|date:"j F Y, H:i" }}</time>
+    {% if comment.was_edited %}<span>Edited <time datetime="{{ comment.updated_at|date:'Y-m-d\TH:i:sO' }}">{{ comment.updated_at|date:"j F Y, H:i" }}</time></span>{% endif %}
     {% if not comment.is_approved %}<span class="badge text-bg-secondary">Awaiting moderation</span>{% endif %}
   </header>
   <div class="comment-card__body">{{ comment.body|linebreaks }}</div>
   {% if user == comment.author %}
-    <div class="owner-actions" aria-label="Manage comment by {{ comment.author.username }}">
+    <div class="owner-actions" role="group" aria-label="Manage comment by {{ comment.author.username }}">
       <a href="{% url 'news:comment-update' comment.post_id comment.pk %}">Edit comment</a>
       <a href="{% url 'news:comment-delete' comment.post_id comment.pk %}">Delete comment</a>
     </div>

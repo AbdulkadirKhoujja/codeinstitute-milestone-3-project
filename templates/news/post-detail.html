@@ -17,7 +17,7 @@
       <p class="story-meta">
         Submitted by
         <a href="{% url 'accounts:profile' post.author.username %}">{{ post.author.username }}</a>
-        on <time datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"j F Y" }}</time>
+        on <time datetime="{{ post.created_at|date:'Y-m-d\TH:i:sO' }}">{{ post.created_at|date:"j F Y" }}</time>
       </p>
       <a
         class="btn btn-primary"
@@ -26,7 +26,7 @@
         rel="noopener noreferrer"
       >Read the original article <span class="visually-hidden">(opens in a new tab)</span></a>
       {% if user == post.author %}
-        <div class="owner-actions" aria-label="Story management">
+        <div class="owner-actions" role="group" aria-label="Story management">
           <a class="btn btn-outline-primary" href="{% url 'news:post-update' post.pk %}">Edit story</a>
           <a class="btn btn-outline-danger" href="{% url 'news:post-delete' post.pk %}">Delete story</a>
         </div>
@@ -71,7 +71,7 @@
       <h2 id="context-heading">Why this story matters</h2>
       {{ post.content|linebreaks }}
       {% if post.updated_at != post.created_at %}
-        <p class="story-meta">Updated <time datetime="{{ post.updated_at|date:'c' }}">{{ post.updated_at|date:"j F Y" }}</time></p>
+        <p class="story-meta">Updated <time datetime="{{ post.updated_at|date:'Y-m-d\TH:i:sO' }}">{{ post.updated_at|date:"j F Y" }}</time></p>
       {% endif %}
     </section>
 

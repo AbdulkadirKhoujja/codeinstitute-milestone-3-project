@@ -20,6 +20,17 @@ class FormMarkup(HTMLParser):
 
 
 class AccountFormMarkupTests(TestCase):
+    def test_validation_sanitiser_keeps_password_label_target_without_value(self):
+        from verification.official_validation import sanitise
+
+        rendered = ('<label for="id_password">Password</label>'
+                    '<input type="password" id="id_password" value="sample">'
+                    '<input name="csrfmiddlewaretoken" value="sample-token">')
+        cleaned = sanitise(rendered)
+        self.assertIn('id="id_password"', cleaned)
+        self.assertNotIn("sample", cleaned)
+        self.assertNotIn("csrfmiddlewaretoken", cleaned)
+
     def assert_associations(self, response):
         markup = FormMarkup(response.content.decode())
         counts = Counter(markup.ids)
