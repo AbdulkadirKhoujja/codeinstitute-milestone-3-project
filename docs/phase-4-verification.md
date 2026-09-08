@@ -69,6 +69,19 @@ Settings, account and custom-error suites: 29 tests passed in 14.761 seconds.
 
 ## Release decision
 
+## Database configuration
+
+Three new settings tests reproduced the missing PostgreSQL URL selection,
+disposable SQLite path and safe malformed-URL handling. The corrected settings
+and model suites passed 31 tests in 3.466 seconds, with no migration drift.
+The Windows virtual environment installed the pinned stack, database-URL parser
+and Psycopg successfully; `pip check` found no broken requirements.
+`requirements.txt` was normalised from UTF-16 to UTF-8 for portable text tooling.
+
+PostgreSQL 18.6 was installed in the existing Ubuntu environment. Before test
+data preparation its cluster contained only postgres/template0/template1.
+This is infrastructure availability, not yet a PostgreSQL test pass.
+
 **In progress; not ready for deployment.** Material browser, PostgreSQL,
 production-configuration and feed-refresh verification remains outstanding.
 No grade or complete accessibility claim is made.

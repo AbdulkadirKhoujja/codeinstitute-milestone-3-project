@@ -183,6 +183,12 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 
 All Python package versions are pinned in `requirements.txt`. PostgreSQL and a production WSGI configuration are later-phase work.
 
+Phase 4 adds `dj-database-url` for central URL parsing and Psycopg 3's binary
+distribution for PostgreSQL connectivity on Windows and Linux. The existing
+Django version is retained. With no `DATABASE_URL`, SQLite remains the default;
+`SQLITE_PATH` can select a disposable local file. Set `DATABASE_SSL_REQUIRE=true`
+for Heroku PostgreSQL. Do not use production database credentials for tests.
+
 ## Local setup
 
 Prerequisites are Python 3 with `venv` and `pip`, Git, and a local repository clone.

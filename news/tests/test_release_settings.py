@@ -55,3 +55,30 @@ class ReleaseSettingsTests(SimpleTestCase):
             "https://byteboard.example",
         ])
         self.assertEqual(config["SECURE_HSTS_SECONDS"], 0)
+
+    def test_postgresql_url_is_parsed_in_authoritative_settings(self):
+        config = self.load_settings(
+            SECRET_KEY="test-only-placeholder",
+            DATABASE_URL="postgresql://member:placeholder@localhost:5432/byteboard",
+        )
+        database = config["DATABASES"]["default"]
+        self.assertEqual(database["ENGINE"], "django.db.backends.postgresql")
+        self.assertEqual(database["NAME"], "byteboard")
+        self.assertEqual(database["HOST"], "localhost")
+        self.assertEqual(database["OPTIONS"]["connect_timeout"], 5)
+
+    def test_sqlite_path_can_target_disposable_local_data(self):
+        config = self.load_settings(
+            SECRET_KEY="test-only-placeholder", SQLITE_PATH="sample.sqlite3",
+        )
+        self.assertEqual(str(config["DATABASES"]["default"]["NAME"]),
+                         "sample.sqlite3")
+
+    def test_database_url_errors_do_not_echo_credentials(self):
+        with self.assertRaisesMessage(
+            ImproperlyConfigured, "DATABASE_URL must be a PostgreSQL URL",
+        ):
+            self.load_settings(
+                SECRET_KEY="test-only-placeholder",
+                DATABASE_URL="unknown://member:private-placeholder@host/database",
+            )
