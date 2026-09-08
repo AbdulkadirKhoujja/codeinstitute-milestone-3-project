@@ -41,8 +41,9 @@ After release blockers are resolved:
    Obtain `DATABASE_URL` from the separately provisioned PostgreSQL resource.
 3. Deploy the reviewed commit using the chosen Heroku Git/GitHub workflow.
    The Python build runs `collectstatic`; do not disable that build step.
-4. Run `heroku run python manage.py migrate --app <app-name>` and the final
-   cache-setup command documented after shared-cache implementation.
+4. Run `heroku run python manage.py migrate --app <app-name>`. Migration 0005
+   creates the shared feed table; its single row is created lazily. No separate
+   cache-table command, Redis service or expiry-cleanup job is required.
 5. Create an authorised moderator with `createsuperuser`, entering credentials
    interactively. Do not upload sample community records as real activity.
 6. Run production checks, verify all collected assets and custom error pages,

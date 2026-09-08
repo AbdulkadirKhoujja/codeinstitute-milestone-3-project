@@ -12,6 +12,19 @@ from news.services.hacker_news import (
 
 
 class SharedFeedCacheTests(TestCase):
+    def test_expired_worker_cannot_overwrite_replacement_snapshot(self):
+        now = timezone.now()
+
+        def slow_refresh():
+            with self.at(now, 61):
+                get_shared_feed(lambda: StoryCollection([{"id": 2}]))
+            return StoryCollection([{"id": 1}])
+
+        with self.at(now):
+            with self.assertRaises(ExternalFeedError):
+                get_shared_feed(slow_refresh)
+        self.assertEqual(FeedSnapshot.objects.get().stories, [{"id": 2}])
+
     @patch("news.services.hacker_news.urlopen", side_effect=OSError("offline"))
     @patch("news.services.feed_worker.fetch_bounded_stories")
     def test_public_service_uses_bounded_worker_and_shared_snapshot(

@@ -89,3 +89,21 @@ tests, and collection tests now execute the fixed request pool with mocked HTTP
 helpers. Worker, request, shared-cache, feed and script-contract regressions:
 44 tests passed in 31.512 seconds on SQLite. These script-contract checks remain
 distinct from the separately recorded JavaScript interaction tests.
+
+## Actual PostgreSQL cross-process check
+
+`verification/shared_cache_check.py --confirm-disposable` ran against local
+PostgreSQL 18.6 database `byteboard_phase4` on 8 September 2026, after migration
+0005. It uses separate Python processes and real database connections, but a
+simulated refresh: no Hacker News network calls. One leader held the lease;
+four concurrent competitors returned controlled busy responses without running
+their refresh callback. A new process subsequently read the leader's stored
+sample result. The script passed and removed its single disposable cache row.
+
+The first attempt timed out waiting ten seconds for interpreter/database
+startup on the local WSL mount. The harness startup allowance was raised to
+45 seconds, without changing the application's 60-second lease or ten-second
+upstream budget; the second attempt passed. This is coordination evidence, not
+a load or throughput benchmark. A controlled-time expired-worker test also
+verified that an old token cannot replace a newer snapshot. All six shared-cache
+tests passed in 0.065 seconds on SQLite.
