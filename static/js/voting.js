@@ -6,6 +6,9 @@ document.querySelectorAll("[data-vote-form]").forEach((form) => {
 
     const panel = form.closest(".vote-panel");
     const controls = panel.querySelector("[data-vote-controls]");
+    if (controls.getAttribute("aria-busy") === "true") {
+      return;
+    }
     const buttons = controls.querySelectorAll("button[data-vote-value]");
     const feedback = panel.querySelector("[data-vote-feedback]");
     const score = panel.querySelector("#vote-score");
@@ -28,8 +31,14 @@ document.querySelectorAll("[data-vote-form]").forEach((form) => {
         },
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.message || "Voting is temporarily unavailable.");
+      if (!response.ok || data?.success !== true ||
+          !Number.isInteger(data.score) ||
+          ![1, -1, null].includes(data.current_vote) ||
+          typeof data.message !== "string") {
+        throw new Error(
+          typeof data?.message === "string"
+            ? data.message : "Voting is temporarily unavailable.",
+        );
       }
 
       score.textContent = `Score ${data.score}`;

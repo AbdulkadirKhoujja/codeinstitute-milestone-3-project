@@ -15,7 +15,7 @@ if (feed) {
         if (url.protocol === "https:" || url.protocol === "http:") {
           return url.href;
         }
-      } catch (error) {
+      } catch {
         continue;
       }
     }
@@ -73,6 +73,12 @@ if (feed) {
     });
   };
 
+  const isValidStory = (story) => story !== null &&
+    typeof story === "object" &&
+    ["title", "url", "discussion_url", "source", "submitted_by", "submitted_at"]
+      .every((field) => typeof story[field] === "string" && story[field].trim()) &&
+    Number.isInteger(story.score) && Number.isInteger(story.comment_count);
+
   const renderNotice = (message) => {
     const item = document.createElement("li");
     item.className = "external-story external-story--notice";
@@ -100,8 +106,10 @@ if (feed) {
         cache: "no-store",
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data.success || !Array.isArray(data.stories)) {
-        failureMessage = data.message || failureMessage;
+      if (!response.ok || data?.success !== true || !Array.isArray(data.stories) ||
+          !data.stories.every(isValidStory)) {
+        failureMessage = typeof data?.message === "string"
+          ? data.message : failureMessage;
         throw new Error("External feed request failed");
       }
       if (data.stories.length === 0) {
@@ -113,11 +121,13 @@ if (feed) {
       renderStories(data.stories);
       const loadedMessage = `${data.stories.length} external stories loaded.`;
       if (data.partial) {
-        status.textContent = `${loadedMessage} ${data.message}`;
+        const partialMessage = typeof data.message === "string"
+          ? data.message : "Some external stories could not be loaded.";
+        status.textContent = `${loadedMessage} ${partialMessage}`;
       } else {
         status.textContent = loadedMessage;
       }
-    } catch (error) {
+    } catch {
       renderNotice(failureMessage);
       status.textContent = failureMessage;
     } finally {

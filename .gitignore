@@ -179,6 +179,7 @@ tempCodeRunnerFile.py
 
 # Ruff
 .ruff_cache/
+node_modules/
 
 # PyPI
 .pypirc

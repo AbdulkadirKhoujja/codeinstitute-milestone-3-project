@@ -1,0 +1,14 @@
+{
+  "name": "byteboard-interaction-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test interactions.test.mjs",
+    "lint": "node lint.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.10.0",
+    "jsdom": "26.1.0"
+  }
+}
