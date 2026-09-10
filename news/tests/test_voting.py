@@ -88,7 +88,7 @@ class VoteControlDisplayTests(TestCase):
             status=Post.Status.PUBLISHED,
         )
 
-    def test_signed_in_member_sees_accessible_vote_forms_and_current_state(self):
+    def test_member_sees_accessible_vote_forms_and_current_state(self):
         Vote.objects.create(
             post=self.post,
             user=self.member,
@@ -182,7 +182,10 @@ class VoteActionTests(TestCase):
             (Vote.Value.DOWNVOTE, Vote.Value.UPVOTE),
         )
         for initial_value, new_value in cases:
-            with self.subTest(initial_value=initial_value, new_value=new_value):
+            with self.subTest(
+                initial_value=initial_value,
+                new_value=new_value,
+            ):
                 Vote.objects.all().delete()
                 vote = Vote.objects.create(
                     post=self.post,

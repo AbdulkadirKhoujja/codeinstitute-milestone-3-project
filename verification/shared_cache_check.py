@@ -18,7 +18,9 @@ def main():
     from django.db import connection
     from news.models import FeedSnapshot
     from news.services.hacker_news import (
-        ExternalFeedError, StoryCollection, get_top_stories,
+        ExternalFeedError,
+        StoryCollection,
+        get_top_stories,
     )
 
     if (connection.vendor != "postgresql"
@@ -33,7 +35,8 @@ def main():
 
     if len(sys.argv) == 2 and sys.argv[1] in {"refresh", "read"}:
         replacement = sample_refresh if sys.argv[1] == "refresh" else None
-        with patch("news.services.feed_worker.fetch_bounded_stories") as worker:
+        worker_path = "news.services.feed_worker.fetch_bounded_stories"
+        with patch(worker_path) as worker:
             worker.side_effect = replacement or AssertionError(
                 "A competing or warm process attempted an upstream refresh"
             )
@@ -45,7 +48,8 @@ def main():
         return
 
     if sys.argv[1:] != ["--confirm-disposable"]:
-        raise SystemExit("Use --confirm-disposable; resets one public cache row.")
+        raise SystemExit(
+            "Use --confirm-disposable; resets one public cache row.")
 
     FeedSnapshot.objects.filter(pk="hacker-news").delete()
     command = [sys.executable, str(Path(__file__).resolve())]
@@ -59,7 +63,8 @@ def main():
         with selectors.DefaultSelector() as selector:
             selector.register(leader.stdout, selectors.EVENT_READ)
             if not selector.select(timeout=45):
-                raise AssertionError("Leader did not acquire within 45 seconds")
+                raise AssertionError(
+                    "Leader did not acquire within 45 seconds")
         assert leader.stdout.readline().strip() == "acquired"
         followers = [subprocess.Popen(
             command + ["read"], stdout=subprocess.PIPE,

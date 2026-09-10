@@ -87,7 +87,8 @@ def render_samples():
     )
     request = RequestFactory().get("/sample-error/")
     pages["bad-request"] = error_views.bad_request(request, Exception())
-    pages["permission-denied"] = error_views.permission_denied(request, Exception())
+    pages["permission-denied"] = error_views.permission_denied(
+        request, Exception())
     pages["server-error"] = error_views.server_error(request)
     return {name: sanitise(response.content.decode())
             for name, response in pages.items()}
@@ -130,12 +131,15 @@ def main():
             print(f"{name}: {len(html)} characters sanitised; no upload.")
             continue
         result = json.loads(submit("https://validator.w3.org/nu/?out=json",
-                                  html.encode(), "text/html; charset=utf-8"))
+                                   html.encode(), "text/html; charset=utf-8"))
         messages = result.get("messages", [])
         print(json.dumps({
             "page": name, "version": result.get("version"),
             "errors": sum(item["type"] == "error" for item in messages),
-            "warnings": sum(item.get("subType") == "warning" for item in messages),
+            "warnings": sum(
+                item.get("subType") == "warning"
+                for item in messages
+            ),
             "messages": sorted({item["message"] for item in messages}),
             "unavailable": result.get("unavailable"),
         }), flush=True)

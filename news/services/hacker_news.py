@@ -43,7 +43,12 @@ def _request_json(path, timeout=None):
             return json.loads(body.decode("utf-8"))
     except ExternalFeedError:
         raise
-    except (OSError, TimeoutError, UnicodeDecodeError, json.JSONDecodeError) as error:
+    except (
+        OSError,
+        TimeoutError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+    ) as error:
         raise ExternalFeedError("Hacker News is unavailable.") from error
 
 

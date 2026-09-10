@@ -55,7 +55,8 @@ class ExternalFeedJavascriptTests(SimpleTestCase):
         self.assertIn("stories.length === 0", script)
         self.assertIn("No external stories are available right now.", script)
         self.assertIn("renderNotice", script)
-        self.assertIn('refreshButton.addEventListener("click", loadStories)', script)
+        self.assertIn(
+            'refreshButton.addEventListener("click", loadStories)', script)
         self.assertIn("if (isLoading)", script)
         self.assertIn("External stories are temporarily unavailable.", script)
 

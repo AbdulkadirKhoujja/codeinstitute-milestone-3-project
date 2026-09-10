@@ -131,7 +131,8 @@ class PostModelTests(TestCase):
             self.category.delete()
 
         self.assertTrue(Category.objects.filter(pk=self.category.pk).exists())
-        self.assertEqual(Post.objects.filter(category=self.category).count(), 2)
+        self.assertEqual(Post.objects.filter(
+            category=self.category).count(), 2)
 
 
 class CommentModelTests(TestCase):

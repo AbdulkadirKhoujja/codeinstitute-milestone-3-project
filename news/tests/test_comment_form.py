@@ -19,7 +19,8 @@ class CommentFormValidationTests(TestCase):
             "Add up to 2,000 characters of relevant discussion.",
         )
         self.assertEqual(form.fields["body"].widget.attrs["rows"], 5)
-        self.assertIn("form-control", form.fields["body"].widget.attrs["class"])
+        self.assertIn("form-control",
+                      form.fields["body"].widget.attrs["class"])
         self.assertEqual(
             form.fields["body"].widget.attrs["aria-describedby"],
             "body-help",

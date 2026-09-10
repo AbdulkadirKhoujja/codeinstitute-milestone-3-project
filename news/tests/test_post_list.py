@@ -51,7 +51,8 @@ class HomePageFoundationTests(TestCase):
         self.assertContains(response, f'href="{reverse("news:home")}"')
         self.assertContains(response, f'href="{reverse("accounts:register")}"')
         self.assertContains(response, f'href="{reverse("accounts:login")}"')
-        self.assertNotContains(response, f'href="{reverse("news:post-create")}"')
+        self.assertNotContains(
+            response, f'href="{reverse("news:post-create")}"')
         self.assertNotContains(response, reverse("accounts:logout"))
 
     def test_member_navigation_shows_profile_and_post_logout(self):
@@ -77,5 +78,6 @@ class HomePageFoundationTests(TestCase):
         )
         self.assertContains(response, 'method="post"')
         self.assertContains(response, 'name="csrfmiddlewaretoken"')
-        self.assertNotContains(response, f'href="{reverse("accounts:register")}"')
+        self.assertNotContains(
+            response, f'href="{reverse("accounts:register")}"')
         self.assertNotContains(response, f'href="{reverse("accounts:login")}"')

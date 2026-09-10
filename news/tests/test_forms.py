@@ -43,8 +43,10 @@ class PostFormTests(TestCase):
     def test_form_provides_task_specific_labels_and_guidance(self):
         form = PostForm()
 
-        self.assertEqual(form.fields["article_url"].label, "Original article URL")
-        self.assertEqual(form.fields["content"].label, "Why this story matters")
+        self.assertEqual(
+            form.fields["article_url"].label, "Original article URL")
+        self.assertEqual(form.fields["content"].label,
+                         "Why this story matters")
         expected_guidance = {
             "title": "Use a clear, specific headline.",
             "summary": "Summarise the story in a few sentences.",

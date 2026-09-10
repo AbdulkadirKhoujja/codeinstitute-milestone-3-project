@@ -9,13 +9,16 @@ from time import monotonic
 from django.conf import settings
 
 from .hacker_news import (
-    ExternalFeedError, StoryCollection, fetch_story, fetch_top_story_ids,
+    ExternalFeedError,
+    StoryCollection,
+    fetch_story,
+    fetch_top_story_ids,
     get_story_limit,
 )
 
 
 def collect_items(send, limit, timeout, workers):
-    """Use a fixed small pool; send ranked results as each request completes."""
+    """Use a small pool; send ranked results as each request completes."""
     ids = fetch_top_story_ids(timeout=timeout)[:limit]
     send(("target", len(ids)))
 
@@ -60,19 +63,25 @@ def refresh_child(sender, deadline, limit, timeout, workers):
 
 
 def fetch_bounded_stories():
-    """Return partial ranked results within ten seconds plus bounded cleanup."""
+    """Return ranked results within a bounded refresh budget."""
     budget = min(15, max(1, settings.HACKER_NEWS_REFRESH_BUDGET))
     deadline = monotonic() + budget
     context = multiprocessing.get_context("spawn")
     try:
         receiver, sender = context.Pipe(duplex=False)
     except OSError:
-        raise ExternalFeedError("Hacker News worker is unavailable.") from None
+        raise ExternalFeedError(
+            "Hacker News worker is unavailable."
+        ) from None
     process = context.Process(
         target=refresh_child,
-        args=(sender, deadline, get_story_limit(),
-              min(5, settings.HACKER_NEWS_REQUEST_TIMEOUT),
-              min(5, max(1, settings.HACKER_NEWS_MAX_WORKERS))),
+        args=(
+            sender,
+            deadline,
+            get_story_limit(),
+            min(5, settings.HACKER_NEWS_REQUEST_TIMEOUT),
+            min(5, max(1, settings.HACKER_NEWS_MAX_WORKERS)),
+        ),
         daemon=True,
     )
     ranked = {}

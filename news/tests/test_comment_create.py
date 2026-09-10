@@ -74,7 +74,10 @@ class CommentCreationTests(TestCase):
         self.assertFalse(comment.is_approved)
         self.assertRedirects(
             response,
-            f'{reverse("news:post-detail", args=[self.post.pk])}#comment-{comment.pk}',
+            (
+                f'{reverse("news:post-detail", args=[self.post.pk])}'
+                f"#comment-{comment.pk}"
+            ),
         )
         self.assertContains(response, comment.body)
         self.assertContains(response, "Your comment is awaiting moderation.")

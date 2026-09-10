@@ -11,7 +11,9 @@ class LoginForm(AuthenticationForm):
             field.widget.attrs["class"] = "form-control"
 
         self.fields["username"].widget.attrs["autocomplete"] = "username"
-        self.fields["password"].widget.attrs["autocomplete"] = "current-password"
+        self.fields["password"].widget.attrs[
+            "autocomplete"
+        ] = "current-password"
 
 
 class RegistrationForm(UserCreationForm):

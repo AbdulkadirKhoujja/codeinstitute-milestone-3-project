@@ -29,7 +29,8 @@ class PublishedPostDetailTests(TestCase):
         )
 
     def test_detail_shows_complete_published_story(self):
-        response = self.client.get(reverse("news:post-detail", args=[self.post.pk]))
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk]))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "news/post-detail.html")
@@ -39,9 +40,13 @@ class PublishedPostDetailTests(TestCase):
         self.assertContains(response, "Second context paragraph.")
         self.assertContains(response, self.author.username)
         self.assertContains(response, self.category.name)
+        category_url = reverse(
+            "news:category-feed",
+            args=[self.category.slug],
+        )
         self.assertContains(
             response,
-            f'href="{reverse("news:category-feed", args=[self.category.slug])}"',
+            f'href="{category_url}"',
         )
         self.assertContains(response, self.post.article_url)
         self.assertContains(response, 'rel="noopener noreferrer"')

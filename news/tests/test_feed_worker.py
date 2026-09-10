@@ -24,7 +24,7 @@ class FeedWorkerTests(SimpleTestCase):
         return context, receiver, sender
 
     @patch("news.services.feed_worker.multiprocessing.get_context")
-    def test_out_of_order_results_preserve_rank_and_report_partial(self, factory):
+    def test_out_of_order_results_keep_rank_and_report_partial(self, factory):
         context, receiver, sender = self.worker_context([
             ("target", 3), ("attempt", 0), ("attempt", 1), ("attempt", 2),
             ("item", 2, {"id": 3}), ("failure", 1),
@@ -41,7 +41,7 @@ class FeedWorkerTests(SimpleTestCase):
         sender.close.assert_called_once()
 
     @patch("news.services.feed_worker.multiprocessing.get_context")
-    def test_deadline_terminates_worker_without_waiting_for_threads(self, factory):
+    def test_deadline_terminates_worker_without_thread_wait(self, factory):
         context, receiver, sender = self.worker_context([
             ("target", 30), ("attempt", 0), ("item", 0, {"id": 1}),
         ])
@@ -91,7 +91,7 @@ class FeedWorkerTests(SimpleTestCase):
             fetch_bounded_stories()
 
     @override_settings(HACKER_NEWS_REFRESH_BUDGET=1)
-    def test_real_blocked_child_is_terminated_at_deadline_without_network(self):
+    def test_real_blocked_child_is_terminated_without_network(self):
         real_context = multiprocessing.get_context("spawn")
         context = MagicMock()
         context.Pipe.side_effect = real_context.Pipe
@@ -101,7 +101,8 @@ class FeedWorkerTests(SimpleTestCase):
             return real_context.Process(**kwargs)
 
         context.Process.side_effect = process_factory
-        children_before = {child.pid for child in multiprocessing.active_children()}
+        children_before = {
+            child.pid for child in multiprocessing.active_children()}
         started = monotonic()
         with patch("news.services.feed_worker.multiprocessing.get_context",
                    return_value=context):

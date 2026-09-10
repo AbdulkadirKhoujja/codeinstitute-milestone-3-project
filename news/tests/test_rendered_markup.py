@@ -47,7 +47,7 @@ class RenderedMarkupTests(TestCase):
                      "/accounts/profile/sample-editor/"):
             yield MarkupFacts(self.client.get(path).content.decode())
 
-    def test_rendered_timestamps_do_not_emit_invalid_microsecond_precision(self):
+    def test_rendered_timestamps_avoid_invalid_microseconds(self):
         for page in self.pages():
             self.assertTrue(page.times)
             for timestamp in page.times:
@@ -59,7 +59,8 @@ class RenderedMarkupTests(TestCase):
 
     def test_comment_article_has_an_identifying_heading(self):
         response = self.client.get(f"/posts/{self.post.pk}/")
-        self.assertGreater(MarkupFacts(response.content.decode()).comment_headings, 0)
+        self.assertGreater(MarkupFacts(
+            response.content.decode()).comment_headings, 0)
 
     def test_labelled_action_containers_have_a_group_role(self):
         for page in self.pages():

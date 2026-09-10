@@ -75,13 +75,21 @@ class PublishedPostFeedTests(TestCase):
             response,
             f'href="{reverse("news:post-detail", args=[self.newer_post.pk])}"',
         )
-        self.assertContains(
-            response,
-            f'href="{reverse("accounts:profile", args=[self.newer_post.author.username])}"',
+        profile_url = reverse(
+            "accounts:profile",
+            args=[self.newer_post.author.username],
         )
         self.assertContains(
             response,
-            f'href="{reverse("news:category-feed", args=[self.newer_post.category.slug])}"',
+            f'href="{profile_url}"',
+        )
+        category_url = reverse(
+            "news:category-feed",
+            args=[self.newer_post.category.slug],
+        )
+        self.assertContains(
+            response,
+            f'href="{category_url}"',
         )
         self.assertContains(response, '<time datetime="')
         content = response.content.decode()
@@ -133,8 +141,10 @@ class CategoryFilterTests(TestCase):
             {"category": self.startup_category.slug},
         )
 
-        self.assertQuerySetEqual(response.context["posts"], [self.startup_post])
-        self.assertEqual(response.context["active_category"], self.startup_category)
+        self.assertQuerySetEqual(
+            response.context["posts"], [self.startup_post])
+        self.assertEqual(
+            response.context["active_category"], self.startup_category)
         self.assertContains(response, "Startups stories")
         self.assertContains(response, self.startup_post.title)
         self.assertNotContains(response, self.ai_post.title)
@@ -224,7 +234,8 @@ class StorySearchTests(TestCase):
             with self.subTest(query=query):
                 response = self.client.get(reverse("news:home"), {"q": query})
 
-                self.assertQuerySetEqual(response.context["posts"], [expected_post])
+                self.assertQuerySetEqual(
+                    response.context["posts"], [expected_post])
                 self.assertNotContains(response, self.private_match.title)
 
     def test_search_form_and_heading_identify_active_query(self):
@@ -286,7 +297,8 @@ class StorySortingTests(TestCase):
                     {"sort": sort_value},
                 )
 
-                self.assertQuerySetEqual(response.context["posts"], expected_posts)
+                self.assertQuerySetEqual(
+                    response.context["posts"], expected_posts)
 
     def test_sort_control_identifies_active_safe_option(self):
         response = self.client.get(reverse("news:home"), {"sort": "oldest"})
@@ -472,7 +484,8 @@ class CombinedFeedControlTests(TestCase):
             },
         )
 
-        self.assertQuerySetEqual(response.context["posts"], [self.matching_post])
+        self.assertQuerySetEqual(
+            response.context["posts"], [self.matching_post])
         self.assertContains(
             response,
             "/categories/networks/?q=shared%20systems&amp;sort=oldest",
@@ -481,4 +494,5 @@ class CombinedFeedControlTests(TestCase):
             response,
             "/?q=shared%20systems&amp;sort=oldest",
         )
-        self.assertContains(response, 'name="sort" type="hidden" value="oldest"')
+        self.assertContains(
+            response, 'name="sort" type="hidden" value="oldest"')

@@ -104,7 +104,10 @@ class RegistrationSubmissionTests(TestCase):
             'aria-describedby="username-help username-error"',
         )
         self.assertEqual(
-            get_user_model().objects.filter(username="existing-member").count(),
+            get_user_model()
+            .objects
+            .filter(username="existing-member")
+            .count(),
             1,
         )
 

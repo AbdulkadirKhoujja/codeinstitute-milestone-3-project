@@ -46,7 +46,8 @@ class Command(BaseCommand):
             raise CommandError("Requires --confirm-disposable.")
         database = str(connection.settings_dict["NAME"])
         safe = (
-            database in {"byteboard_phase4", "test_byteboard_phase4", ":memory:"}
+            database in {"byteboard_phase4",
+                         "test_byteboard_phase4", ":memory:"}
             or Path(database).name == "byteboard-phase4.sqlite3"
             or database.startswith("file:memorydb_default?")
         )
@@ -77,7 +78,8 @@ class Command(BaseCommand):
                 defaults={"name": f"Sample {label}", "description": MARKER},
             )
             if category.description != MARKER:
-                raise CommandError("Existing category is not marked as sample.")
+                raise CommandError(
+                    "Existing category is not marked as sample.")
             categories.append(category)
         posts = []
         for index, title in enumerate(TITLES):

@@ -1,3 +1,5 @@
+from pathlib import Path
+from django.conf import settings
 from django.test import RequestFactory
 from django.test import SimpleTestCase
 from django.test import override_settings
@@ -24,7 +26,8 @@ class CustomErrorPageTests(SimpleTestCase):
         with self.assertTemplateUsed("400.html"):
             response = bad_request(self.request, Exception("private"))
 
-        self.assert_error_page(response, 400, "We could not process that request")
+        self.assert_error_page(
+            response, 400, "We could not process that request")
 
     def test_permission_denied_page_is_plain_and_navigable(self):
         with self.assertTemplateUsed("403.html"):
@@ -62,6 +65,3 @@ class CustomErrorPageTests(SimpleTestCase):
         self.assertIn(".error-page", stylesheet)
         self.assertIn("max-width", stylesheet)
         self.assertIn("overflow-wrap", stylesheet)
-from pathlib import Path
-
-from django.conf import settings

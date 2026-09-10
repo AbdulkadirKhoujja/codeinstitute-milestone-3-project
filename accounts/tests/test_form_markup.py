@@ -20,7 +20,7 @@ class FormMarkup(HTMLParser):
 
 
 class AccountFormMarkupTests(TestCase):
-    def test_validation_sanitiser_keeps_password_label_target_without_value(self):
+    def test_sanitiser_keeps_password_label_target_without_value(self):
         from verification.official_validation import sanitise
 
         rendered = ('<label for="id_password">Password</label>'
@@ -40,11 +40,15 @@ class AccountFormMarkupTests(TestCase):
         self.assertFalse([key for key, count in counts.items() if count > 1])
 
     def test_required_login_errors_have_existing_descriptions(self):
-        self.assert_associations(self.client.post(reverse("accounts:login"), {}))
+        self.assert_associations(
+            self.client.post(reverse("accounts:login"), {}))
 
     def test_multiple_password_errors_share_one_description_container(self):
         response = self.client.post(reverse("accounts:register"), {
-            "username": "sample-reader", "password1": "123", "password2": "123",
+            "username": "sample-reader",
+            "password1": "123",
+            "password2": "123",
         })
-        self.assertGreater(len(response.context["form"].errors["password2"]), 1)
+        self.assertGreater(
+            len(response.context["form"].errors["password2"]), 1)
         self.assert_associations(response)

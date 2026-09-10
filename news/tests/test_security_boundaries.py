@@ -25,8 +25,10 @@ class SecurityBoundaryTests(TestCase):
         client = Client(enforce_csrf_checks=True)
         client.force_login(self.member)
         count = Comment.objects.count()
-        response = client.post(reverse("news:comment-create", args=[self.post.pk]),
-                               {"body": "Rejected request"})
+        response = client.post(
+            reverse("news:comment-create", args=[self.post.pk]),
+            {"body": "Rejected request"},
+        )
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, "403.html")
         self.assertEqual(Comment.objects.count(), count)
@@ -37,8 +39,10 @@ class SecurityBoundaryTests(TestCase):
         client.get(reverse("news:post-detail", args=[self.post.pk]))
         token = client.cookies["csrftoken"].value
         url = reverse("news:comment-create", args=[self.post.pk])
-        data = {"body": "A token-protected sample", "csrfmiddlewaretoken": token}
-        response = client.post(url, data, HTTP_ORIGIN="https://untrusted.example")
+        data = {"body": "A token-protected sample",
+                "csrfmiddlewaretoken": token}
+        response = client.post(
+            url, data, HTTP_ORIGIN="https://untrusted.example")
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Comment.objects.filter(body=data["body"]).exists())
         self.assertEqual(client.post(url, data).status_code, 302)
@@ -65,12 +69,14 @@ class SecurityBoundaryTests(TestCase):
         )
         for url in urls:
             self.assertEqual(self.client.get(url).status_code, 405)
-        self.assertEqual(counts, (Comment.objects.count(), Vote.objects.count()))
+        self.assertEqual(
+            counts, (Comment.objects.count(), Vote.objects.count()))
         self.assertIn("_auth_user_id", self.client.session)
 
     def test_hostile_comment_text_is_escaped_in_public_response(self):
         self.comment.body = '<script>alert("sample")</script>'
         self.comment.save()
-        response = self.client.get(reverse("news:post-detail", args=[self.post.pk]))
+        response = self.client.get(
+            reverse("news:post-detail", args=[self.post.pk]))
         self.assertContains(response, "&lt;script&gt;")
         self.assertNotContains(response, self.comment.body)

@@ -48,9 +48,13 @@ class PublicProfileTests(TestCase):
         self.assertContains(response, "profile-member")
         self.assertContains(response, "Member since")
         self.assertContains(response, self.published_post.title)
+        detail_url = reverse(
+            "news:post-detail",
+            args=[self.published_post.pk],
+        )
         self.assertContains(
             response,
-            f'href="{reverse("news:post-detail", args=[self.published_post.pk])}"',
+            f'href="{detail_url}"',
         )
         self.assertNotContains(response, self.draft_post.title)
         self.assertNotContains(response, "Private drafts")

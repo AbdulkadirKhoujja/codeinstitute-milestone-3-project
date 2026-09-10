@@ -212,9 +212,11 @@ def post_update(request, pk):
         if form.is_valid():
             post = form.save()
             if post.status == Post.Status.PUBLISHED:
-                messages.success(request, "Your story changes are now published.")
+                messages.success(
+                    request, "Your story changes are now published.")
             else:
-                messages.success(request, "Your changes were saved as a draft.")
+                messages.success(
+                    request, "Your changes were saved as a draft.")
             return redirect("news:post-detail", pk=post.pk)
     else:
         form = PostForm(instance=post)

@@ -61,7 +61,7 @@ class CommentUpdatePageTests(TestCase):
         self.assertContains(response, self.comment.body)
         self.assertContains(response, 'name="csrfmiddlewaretoken"')
 
-    def test_owner_update_preserves_relationships_and_returns_to_moderation(self):
+    def test_owner_update_preserves_relations_and_moderates(self):
         replacement_post = Post.objects.create(
             title="Tampered post",
             summary="Tampered summary.",

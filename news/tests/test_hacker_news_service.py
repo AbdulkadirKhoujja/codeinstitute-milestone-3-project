@@ -196,7 +196,8 @@ class HackerNewsCollectionTests(SimpleTestCase):
                     (event[1], event[2]["id"]) for event in events
                     if event[0] == "item"
                 )
-                self.assertEqual(items, list(enumerate(range(1, expected + 1))))
+                self.assertEqual(items, list(
+                    enumerate(range(1, expected + 1))))
                 self.assertEqual(events[-1], ("done",))
 
     @patch("news.services.feed_worker.fetch_story")
