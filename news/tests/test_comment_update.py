@@ -8,6 +8,15 @@ from news.models import Post
 
 
 class CommentUpdatePageTests(TestCase):
+    def test_edit_page_explains_return_to_moderation_before_saving(self):
+        self.client.force_login(self.owner)
+        response = self.client.get(reverse(
+            "news:comment-update", args=[self.post.pk, self.comment.pk],
+        ))
+        self.assertContains(
+            response, "Saving an edit returns your comment to moderation",
+        )
+
     @classmethod
     def setUpTestData(cls):
         cls.owner = get_user_model().objects.create_user(

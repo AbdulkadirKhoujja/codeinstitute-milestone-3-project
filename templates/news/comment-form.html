@@ -9,6 +9,7 @@
     <div class="form-shell">
       <p class="eyebrow">Manage your contribution</p>
       <h1 id="comment-form-heading">Edit your comment</h1>
+      <p>Saving an edit returns your comment to moderation. You can still see your pending comment, but other readers cannot see it until it is approved again.</p>
       <form method="post" action="{% url 'news:comment-update' comment.post_id comment.pk %}" novalidate>
         {% csrf_token %}
         {{ form.body.label_tag }}
