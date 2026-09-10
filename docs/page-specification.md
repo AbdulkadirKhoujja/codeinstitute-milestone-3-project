@@ -124,7 +124,7 @@ Implemented content and behaviour:
 
 Purpose: let authorised staff organise and moderate relational content.
 
-Phase 1 provides Django Admin model registrations with useful columns, search, filters, date navigation, and slug prepopulation. Public-facing moderation screens remain later work.
+Phase 1 provides Django Admin model registrations with useful columns, search, filters, date navigation, and slug prepopulation. Phase 4 verified the existing staff comment-moderation workflow through Django-client tests; no custom moderation screen was needed. Manual staff browser journeys remain outstanding. See [moderation verification](moderation-verification.md).
 
 ## Shared states and content rules
 

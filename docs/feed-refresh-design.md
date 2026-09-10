@@ -75,8 +75,9 @@ within 2.5 seconds for a one-second budget, with no remaining active child.
 A separate live Windows measurement on 8 September 2026 requested and attempted
 30 items, returned 30 valid results in 6.750 seconds, with zero failed items and
 no partial flag. This measures the worker only, not the shared-cache endpoint;
-it is a single observation, not a performance guarantee. Endpoint integration
-and cross-process PostgreSQL evidence remain to be recorded.
+it is a single observation, not a performance guarantee. Subsequent service
+integration and local cross-process PostgreSQL evidence are recorded below;
+hosted-runtime and load verification remain outstanding.
 
 ## Public service integration
 

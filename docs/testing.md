@@ -1,6 +1,24 @@
 # Testing
 
-This document records the Phase 3 testing approach and results that have actually been observed. It does not claim the formal browser, accessibility, performance, validation, production, or deployment evidence scheduled for Phase 4.
+This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete; Phase 4 is underway. Manual browser, responsive, accessibility, performance and hosted-runtime verification remain outstanding; no deployment is recorded.
+
+## Current Phase 4 automated result — 11 September 2026
+
+The recovery audit tested commit `4eb7e867cd6ad64a40ad304209d4084f79a3268e` using isolated placeholder settings and an in-memory SQLite database without changing private configuration or application data:
+
+| Check | Observed result |
+| --- | --- |
+| Django test runner | 209 tests passed in 105.755 seconds |
+| JavaScript interactions (`node --test verification/javascript/interactions.test.mjs`) | 8 passed |
+| JavaScript lint (`node verification/javascript/lint.mjs`) | 5 files, no errors or warnings |
+| Python style (`python -B -m pycodestyle accounts byteboard news verification manage.py`) | Passed |
+| Django system check | No issues |
+| `makemigrations --check --dry-run` | No changes detected |
+| `git diff --check` | Passed |
+
+The JavaScript tests execute project scripts in jsdom with simulated DOM/network responses; they are not real-browser evidence. The Django suite mocks upstream HTTP. The audit read local migration records without writing: both existing SQLite databases had news migrations 0001–0005 applied.
+
+Phase 4 adds coverage for release settings, bounded/shared feed refresh, sample-data guards, rendered markup, enforced CSRF, failure pages and staff moderation. See [Phase 4 verification](phase-4-verification.md) for completed work and remaining gaps. The [formal validation record](formal-validation.md) separately records 23 HTML samples with zero errors or warnings on 8 September; CSS validation remains unresolved after service HTTP 500 responses. These are historical validator observations, not a fresh validator run or a conformance claim.
 
 ## Approach
 
@@ -62,7 +80,7 @@ The following examples describe observed failures before their implementation an
 
 One early template assertion attempted structural HTML comparison on a partial snippet and was corrected to a literal content assertion. A message test also initially attached the wrong storage fixture and was corrected to render with a message instance. These were test-harness corrections, not application defect resolutions.
 
-## Current Phase 3 automated result
+## Historical Phase 3 automated result — 5 September 2026
 
 The following commands were run from the repository root after the Phase 3 implementation was complete:
 
@@ -95,4 +113,4 @@ The unexecuted scope includes comment create/edit/delete journeys, vote create/c
 
 ## Later testing
 
-Phase 4 will execute and record the manual functional matrix, browser compatibility, keyboard-only journeys, screen-reader spot checks, contrast, zoom and reflow, HTML/CSS validation, deployment configuration, production migrations, static assets, and development/production parity. Results will be stated only after each check has run.
+Remaining Phase 4 work includes the manual functional matrix, browser compatibility, keyboard-only journeys, screen-reader spot checks, contrast, zoom/reflow, unresolved CSS validation and final HTML coverage after any changes. Deployment configuration and local static preparation already have evidence; production migrations, hosted assets and development/production parity remain unverified. Results will be stated only after each check has run.

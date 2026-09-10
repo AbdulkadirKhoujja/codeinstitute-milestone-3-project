@@ -10,7 +10,7 @@ Registration, login, and story forms use persistent labels and autocomplete wher
 
 Phase 3 adds persistent comment controls and validation relationships, text moderation states, pressed-state vote buttons, non-JavaScript voting fallback, score and feedback live regions, disabled/busy asynchronous controls, and a separate external discovery hierarchy. External stories use safe descriptive new-tab links, a live loading/result state, `aria-busy`, clear partial/empty/error text, and user-controlled refresh. Custom 400/403/404/500 pages provide plain-language headings and a prominent home route.
 
-No content image is used in Phase 3, so image alternative-text requirements are not yet exercised. The available browser connection exposed no usable session, so contrast measurement, keyboard journey recording, screen-reader spot checks, zoom/reflow evidence, markup/style validation, and cross-browser checks remain Phase 4 tasks; their absence prevents a conformance claim at this point.
+No content image is used in Phase 3, so image alternative-text requirements are not yet exercised. Manual contrast measurement, keyboard journeys, screen-reader spot checks, zoom/reflow and cross-browser checks remain outstanding in Phase 4. The [formal validation record](formal-validation.md) reports 23 HTML samples with zero errors or warnings on 8 September 2026; CSS validation remains unresolved after service HTTP 500 responses. Automated markup and JavaScript checks do not establish manual accessibility verification or conformance.
 
 ## Structure and navigation
 

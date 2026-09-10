@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phase 3 delivers the community interaction and external discovery experience. Comment CRUD, voting, custom JavaScript, the Hacker News discovery feed, controlled failures, and custom error pages are implemented. Production configuration, deployment, and formal cross-browser validation remain intentionally scheduled for Phase 4.
+Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. Manual browser, responsive, accessibility and hosted-runtime verification remain outstanding. No deployment or live URL has been recorded.
 
 ## Purpose and audience
 
@@ -74,11 +74,13 @@ The core experience supports two goals:
 - Bootstrap components used as a responsive foundation, extended by the project's own visual system.
 - Reduced-motion support and flexible layouts without fixed content heights.
 
-## Features reserved for later phases
+## Phase 4 progress and remaining work
 
-Phase 4 covers production settings, PostgreSQL, deployment, the complete manual browser/accessibility matrix, standards validation, and final release evidence. Phase 3 does not claim any of that future work.
+Completed Phase 4 work includes explicit security settings, environment-driven PostgreSQL configuration, Gunicorn/WhiteNoise preparation, the shared database feed snapshot and bounded worker, executable JavaScript tests, guarded disposable sample data, form/error-page corrections, moderation verification and Python style tooling. Local PostgreSQL cross-process cache coordination is recorded with a simulated refresh.
 
-No live deployment is claimed at this stage.
+The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records 23 HTML samples with zero errors or warnings on 8 September 2026. CSS validation remains unresolved because the official service returned HTTP 500.
+
+Manual browser journeys, responsive and accessibility checks, full current-suite PostgreSQL verification, hosted-runtime verification, final security review and submission evidence remain outstanding. No production-readiness, deployment or live-URL claim is made.
 
 ## Data model
 
@@ -201,7 +203,7 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 - SQLite for local development.
 - Git and GitHub for incremental version control.
 
-All Python package versions are pinned in `requirements.txt`. PostgreSQL and a production WSGI configuration are later-phase work.
+Runtime Python package versions are pinned in `requirements.txt`; Python style tools are pinned in `requirements-dev.txt`. PostgreSQL configuration, Gunicorn and WhiteNoise are prepared; hosted-runtime verification remains outstanding.
 
 Phase 4 adds `dj-database-url` for central URL parsing and Psycopg 3's binary
 distribution for PostgreSQL connectivity on Windows and Linux. The existing
@@ -265,7 +267,7 @@ A signed-in member can submit and manage stories, add/edit/delete their comments
 
 ## Testing
 
-The 173-test automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
+The 209-test automated Django suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
 
 Run the quality checks with:
 
@@ -275,13 +277,13 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
 
-The development approach and observed Phase 3 results are recorded in [testing](docs/testing.md). Later formal accessibility, compatibility, and deployment validation must not be inferred from these local checks.
+The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks do not establish browser, accessibility, production or deployment readiness.
 
 ## Accessibility and responsive design
 
 The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, live status announcements, pressed vote states, busy discovery state, descriptive links, machine-readable dates, and text-based moderation/loading/error/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
 
-The interactive browser was unavailable during Phase 3, so no new viewport, keyboard, console, or network observation is claimed. The formal multi-browser, assistive-technology, contrast, zoom, and validator matrix remains Phase 4 work. See [accessibility requirements](docs/accessibility-requirements.md).
+The interactive browser was unavailable during Phase 3, so no new viewport, keyboard, console, or network observation is claimed. The manual multi-browser, assistive-technology, contrast and zoom matrix remains outstanding in Phase 4. HTML sample validation is recorded separately; official CSS validation remains unresolved. See [accessibility requirements](docs/accessibility-requirements.md).
 
 ## Documentation
 
@@ -292,6 +294,9 @@ The interactive browser was unavailable during Phase 3, so no new viewport, keyb
 - [Database design and ERD](docs/database-design.md)
 - [Accessibility requirements](docs/accessibility-requirements.md)
 - [Testing](docs/testing.md)
+- [Phase 4 verification and remaining gaps](docs/phase-4-verification.md)
+- [Formal HTML/CSS validation](docs/formal-validation.md)
+- [Deployment preparation](docs/deployment-preparation.md)
 - [Assessment criteria tracker](docs/assessment-criteria.md)
 - [Development roadmap](docs/development-roadmap.md)
 - [Planning wireframes](docs/wireframes/)
@@ -321,14 +326,14 @@ These choices follow the [Django deployment checklist](https://docs.djangoprojec
 - Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Production `DEBUG`, hosts, database, and static settings are not Phase 3 deployment claims and must be hardened in Phase 4.
+Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. Hosted HTTPS/runtime checks and the final security-history review remain outstanding; local preparation is not deployment evidence.
 
 ## Credits and attribution
 
 - The project is created for Code Institute's Backend Development milestone requirements.
 - [Django documentation](https://docs.djangoproject.com/en/5.2/) informs the framework, authentication, forms, ORM, migrations, admin, and testing implementation. Django is distributed under the BSD 3-Clause licence.
 - [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/) informs the responsive component foundation. Bootstrap is loaded from jsDelivr with integrity attributes and is distributed under the MIT licence.
-- [Official Hacker News API](https://github.com/HackerNews/API) supplies top-story identifiers and item metadata for the separate discovery feed. The application stores none of those external records and requires no API key.
+- [Official Hacker News API](https://github.com/HackerNews/API) supplies top-story identifiers and item metadata for the separate discovery feed. The application caches normalized public metadata in `FeedSnapshot`, does not create ByteBoard posts from those records, and requires no API key.
 - Django project and application scaffolding supplied the conventional starting file structure.
 - No third-party images, icon sets, or fonts are included in Phase 3.
 

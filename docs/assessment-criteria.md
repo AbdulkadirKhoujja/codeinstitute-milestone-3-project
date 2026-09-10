@@ -9,6 +9,8 @@ Status meanings:
 - **Planned** — scheduled but not implemented.
 - **Not applicable** — unsuitable for ByteBoard, with a recorded reason.
 
+Current baseline: Phases 1–3 complete; Phase 4 underway. The 11 September 2026 audit at `4eb7e86` passed 209 Django tests, 8 JavaScript interaction tests, JavaScript lint without errors or warnings, Python style checks, Django system checks, migration drift checks and Git whitespace checks. See [Phase 4 verification](phase-4-verification.md). No deployment/live URL or manual browser/accessibility/hosted-runtime pass is recorded.
+
 ## Pass criteria
 
 | Criterion | ByteBoard evidence | Phase | Status | Evidence location |
@@ -17,14 +19,14 @@ Status meanings:
 | 1.2 Responsive custom HTML and CSS | Template inheritance, semantic HTML, Bootstrap support, substantial original mobile-first CSS | 2; validate in 4 | In progress | `templates/`, `static/css/style.css`; formal viewport matrix remains |
 | 1.3 Database-backed data manipulation | Tested Post and Comment CRUD, voting transitions, profiles, feeds, search, filters, sorting, and pagination | 2–3 | Complete | `news/views.py`, `news/forms.py`, `accounts/views.py`, test packages |
 | 1.4 Relevant relational database design | User, Category, Post, Comment, and Vote relationships with explicit deletion and integrity rules | 1 | Complete | `docs/database-design.md`, `news/models.py`, `news/migrations/` |
-| 1.5 Test procedures | 173 isolated automated tests, mocked upstream responses, documented TDD cycles/results, and an explicit browser limitation; later formal manual matrices remain | 1–4 | In progress | Test packages and `docs/testing.md` |
-| 1.6 Styled Python and validated front end | Readable Python and consistent templates/CSS; formal validators remain | 2–4 | In progress | Application code and future Phase 4 validation evidence |
+| 1.5 Test procedures | 209 passing Django tests, 8 passing JavaScript interaction tests, mocked upstream responses and documented historical TDD/results; manual matrices remain outstanding | 1–4 | In progress | Test packages and `docs/testing.md` |
+| 1.6 Styled Python and validated front end | Python style and JavaScript lint pass; 23 HTML samples recorded with zero errors/warnings; CSS validator returned HTTP 500 | 2–4 | In progress | `docs/formal-validation.md`, `docs/testing.md`; CSS and final validation coverage remain open |
 | 1.7 Python proficiency | Views, model forms, ORM filters/aggregation, permissions, validation, pagination, cache use, HTTP/JSON normalization, and controlled exceptions | 2–3 | Complete | `accounts/`, `news/views.py`, `news/forms.py`, `news/services/`, tests |
 | 1.8 Compound Python statements | Request handling, privacy branches, sorting, search, form configuration, and template iteration | 2–3 | Complete | Views, forms, templates, and tests |
 | 1.9 Readable code | Descriptive names, focused functions, conventional app boundaries, and concise docstrings | 1–4 | In progress | Source tree; final audit remains Phase 4 |
 | 1.10 Cross-platform filenames | Lower-case descriptive names without spaces, grouped by responsibility | 1–4 | Complete | Repository file tree |
 | 2.1 Purposeful data model | Entities and relationships support ownership, moderation-ready discussion, and story ranking | 1 | Complete | `news/models.py`, `docs/database-design.md` |
-| 2.2 Usable relational database | Applied local SQLite migrations and database constraints in central settings | 1; production in 4 | In progress | `byteboard/settings.py`, migrations; PostgreSQL remains Phase 4 |
+| 2.2 Usable relational database | Local SQLite migrations 0001–0005 applied; environment-driven PostgreSQL configuration and local cross-process cache evidence | 1; production in 4 | In progress | `byteboard/settings.py`, `docs/feed-refresh-design.md`; full current-suite PostgreSQL and hosted verification remain |
 | 3.1 Create, locate, display, edit, and delete records | Full owner-restricted Post and Comment CRUD plus feeds, profiles, discovery, voting, ownership, moderation visibility, and privacy | 2–3 | Complete | News/account views, forms, templates, and tests |
 | 4.1 Cloud deployment and parity | PostgreSQL-backed cloud release and local/production parity verification | Final operation after 4 | Planned | Deployment evidence and README |
 | 4.2 Clean deployed code and working links | Route/link, browser/server, and abandoned-code audits before and after release | 4 and final operation | Planned | Testing record and deployed application |
@@ -32,7 +34,7 @@ Status meanings:
 | 5.1 Git and GitHub history | Small descriptive commits independently pushed throughout development | 1–final operation | In progress | Git log and GitHub repository |
 | 5.2 No committed credentials | Ignore rules plus tracked/staged secret and local-database audits | 1–final operation | In progress | `.gitignore` and final security audit |
 | 5.3 Environment-managed secrets | `SECRET_KEY` loaded from the environment; local environment files ignored | 1–final operation | Complete | `byteboard/settings.py`, `.gitignore` |
-| 5.4 Production DEBUG disabled | Environment-controlled production debug mode verified in release | 4 and final operation | Planned | Production settings and deployment test |
+| 5.4 Production DEBUG disabled | DEBUG defaults off with isolated settings tests; hosted verification remains | 4 and final operation | In progress | `news/tests/test_release_settings.py`, `docs/deployment-preparation.md` |
 
 ## Merit criteria
 
@@ -43,10 +45,10 @@ Status meanings:
 | M(iii) Immediately evident purpose | Technology-news purpose is stated in the home hero above the public feed | 2 | Complete | `templates/news/post-list.html`, foundation tests |
 | M(iv) Correct template syntax and logic | Inheritance, includes, URL reversal, conditionals, loops, filters, CSRF, context, and empty states | 2–3 | Complete | `templates/` and template/view tests |
 | M(v) Robust error-free implementation | Missing-data, invalid-input, redirect, permission, privacy, and unsupported-method paths are tested | 2–4 | In progress | Application code and tests; browser pass remains unavailable |
-| M(vi) Fully documented testing | Phase 2 and 3 commands, coverage, representative failures, mocked API strategy, results, and browser limitation recorded | 2–4 | In progress | `docs/testing.md`; later formal evidence remains |
+| M(vi) Fully documented testing | Historical Phase 2/3 results and current Phase 4 automation, corrections, HTML validation and evidence gaps recorded | 2–4 | In progress | `docs/testing.md`; later formal evidence remains |
 | M(vii) Complete README schema | Every domain-model field, relationship, deletion rule, and constraint described | 2 | Complete | README data-model section |
-| M(viii) Central database configuration | Active database configured in Django settings; environment-driven production selection later | 1 and 4 | In progress | `byteboard/settings.py` |
-| M(ix) Maintained deployment files | Requirements, process file, settings, and related release files kept accurate | 4 | Planned | `requirements.txt` and future deployment files |
+| M(viii) Central database configuration | SQLite/PostgreSQL selection, URL parsing and connection options centralised and tested; hosted verification remains | 1 and 4 | In progress | `byteboard/settings.py` |
+| M(ix) Maintained deployment files | Pinned requirements, Procfile, runtime declaration and WhiteNoise settings prepared; hosted verification remains | 4 | In progress | `requirements.txt`, `Procfile`, `.python-version`, `docs/deployment-preparation.md` |
 | M(x) Working CRUD | Complete authenticated owner-restricted Post and Comment create, read, update, and delete | 2–3 | Complete | Views, forms, URLs, templates, and tests |
 | M(xi) CRUD immediately reflected | Successful Post/Comment actions redirect to updated destinations; votes update immediately when enhanced and still work by redirect fallback | 2–3 | Complete | Integration tests, JavaScript, and rendered pages |
 | M(xii) Small feature/fix commits | Green vertical slices are coherent, descriptive, reviewed, and independently pushed | 1–final operation | In progress | Git log and remote history |
@@ -68,7 +70,8 @@ Status meanings:
 
 ## Phase boundaries
 
+- **Phase 1 complete:** planning, wireframes, relational models/migrations, constraints, Admin and model/admin tests.
 - **Phase 2 complete:** accounts, templates, navigation, original CSS, authentication, profiles, Post CRUD, ownership, draft privacy, filtering, search, vote-score sorting, pagination, feedback, TDD, and assessment updates.
 - **Phase 3 complete:** Comment CRUD/moderation visibility, voting actions and fallback, custom JavaScript, bounded/cached Hacker News discovery, failure handling, custom error pages, community UX refinement, and automated evidence.
-- **Phase 4 planned:** comprehensive manual and automated testing evidence, standards validation, defect review, final documentation, PostgreSQL, and production preparation.
+- **Phase 4 underway:** release settings, PostgreSQL configuration, bounded/shared feed refresh, executable JavaScript checks, Python style tooling, corrective tests, local static preparation and HTML sample validation are evidenced. Manual browser/responsive/accessibility checks, CSS validation, full current-suite PostgreSQL checks, hosted-runtime verification and final submission evidence remain open.
 - **Final deployment operation planned:** hosting configuration, deployment, production migrations, parity testing, genuine live evidence, and verified deployment documentation.

@@ -57,7 +57,7 @@ Exit criteria met: visitors can discover and read published stories; members can
 
 ## Phase 3 — Community and UX
 
-Status: **Completed**. Community discussion, voting, the separate Hacker News discovery experience, custom JavaScript, controlled failures, and custom error pages are implemented and covered by the 173-test suite. The browser capability exposed no usable session, so formal interactive verification remains honestly assigned to Phase 4.
+Status: **Completed**. Community discussion, voting, the separate Hacker News discovery experience, custom JavaScript, controlled failures, and custom error pages are implemented and were verified by 173 tests at Phase 3 closure. The current Phase 4 audit passes 209 Django tests. The browser capability exposed no usable session, so formal interactive verification remains honestly assigned to Phase 4.
 
 Scope:
 
@@ -74,7 +74,11 @@ Exit criteria met: approved comments are public while pending comments remain vi
 
 ## Phase 4 — Testing, Documentation and Deployment
 
-Status: **Planned**.
+Status: **Current**. Phases 1–3 are complete. Phase 4 implementation and verification are underway; deployment has not occurred.
+
+Completed preparation includes explicit release security settings, PostgreSQL configuration, Gunicorn/WhiteNoise setup, shared database feed coordination and bounded refresh, guarded sample data, executable JavaScript tests, markup/security/moderation corrections and Python style tooling. The 11 September 2026 audit at `4eb7e86` passed 209 Django tests, 8 JavaScript interaction tests, JavaScript lint without errors or warnings, Python style checks, Django system checks, migration drift checks and Git whitespace checks.
+
+Recorded evidence includes local PostgreSQL cross-process feed coordination and 23 HTML samples with zero validator errors or warnings. Official CSS validation remains unresolved after HTTP 500 responses. Manual browser, responsive, accessibility, full current-suite PostgreSQL and hosted-runtime verification remain outstanding. See [Phase 4 verification](phase-4-verification.md) for evidence and limits.
 
 Scope:
 
@@ -100,7 +104,7 @@ Exit criteria include a reproducible deployment and accurate evidence. No live U
 
 ## Deployment intentions
 
-Production is intended to use PostgreSQL, a deployment-appropriate WSGI server, environment-provided secrets, and hosting-specific static-file configuration. Exact provider instructions, credentials, production dependencies, and a live URL will be documented only after they are selected and verified in Phase 4. `env.py`, `.env`, local databases, and credentials must never be committed.
+PostgreSQL configuration, Gunicorn, environment-provided secrets and WhiteNoise static serving are prepared for the intended Heroku deployment. The [deployment preparation](deployment-preparation.md) records local checks and the separate deployment procedure. Hosting resources, hosted-runtime verification and a live URL remain outstanding. `env.py`, `.env`, local databases, and credentials must never be committed.
 
 ## Future improvements outside the agreed phases
 
