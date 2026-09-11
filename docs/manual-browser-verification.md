@@ -17,7 +17,7 @@ local database was selected. No credentials are recorded here.
 
 Private local configuration was bypassed. DEBUG was false to exercise custom
 errors; cookie secure flags were disabled in the local process for HTTP, and
-runserver's insecure static option served source assets. This is not hosted,
+runserver's insecure static option was requested. The resumed check found that manifest URLs still referenced collected CSS; source-asset retests used the isolated override described below. This is not hosted,
 HTTPS, collected-static or production-parity evidence.
 
 ## Journey record
@@ -80,7 +80,7 @@ test files and git whitespace check passed. No JavaScript or model changes.
 The earlier 209-test/8-JavaScript-test baseline was not rerun wholesale.
 Existing regression tests were extended; the total test count did not increase.
 
-## Interrupted checks and remaining gaps
+## Historical interruption and remaining gaps at d3ed877
 
 Browser control subsequently timed out repeatedly, including the connection
 inventory. A final 320px reflow attempt was interrupted and is **not a pass**.
@@ -106,3 +106,87 @@ Further interactive work requires a working browser connection.
 Next task: restore browser control and finish the interrupted narrow/zoom and
 keyboard checks, then the unchecked journey variants above. Do not restart the
 completed CRUD/authentication/moderation block without a regression reason.
+
+## Resumed execution — 11 September 2026
+
+Browser recovery succeeded after resetting the connection and opening a fresh
+local tab. One later timeout was also recovered with a fresh tab. No accepted
+baseline audit or full application test suite was repeated.
+
+For CSS retests, a local process on port 8001 used the same guarded disposable
+database and `StaticFilesStorage` instead of manifest storage. This ensured
+that the browser loaded changed source CSS rather than the earlier collected
+asset. Production settings and collected assets were not changed.
+
+Two additional loopback-only WSGI wrappers used the same disposable database:
+port 8002 added `Content-Security-Policy: script-src 'none'`; port 8003 used an
+in-process replacement for `news.views.get_top_stories` which waited two
+seconds, raised `ExternalFeedError` on its first request, then returned an empty
+list. Application views and frontend code handled those states normally.
+These process-only fixtures were not committed or applied to production.
+They establish frontend/form behaviour, not an actual upstream outage or
+complete browser-native JavaScript-disabled behaviour (including noscript).
+
+| ID / check | Browser / viewport | Expected | Actual and evidence | Result |
+| --- | --- | --- | --- | --- |
+| R04 Narrow home/category navigation | In-app browser, 320 × 800 | Categories reflow without sideways scrolling | Initially links extended to x=711 beyond 305px content area inside a horizontal scroller; after D3 every link ended within x=255 and wrapped to new rows; document client/scroll widths both 305 | Pass after fix |
+| R05 Narrow story validation/detail | In-app browser, 320 × 800 | Text and controls fit; validation focus remains useful | Invalid story summary readable and focused; document client/scroll widths both 305; draft detail also 305/305 | Pass for sampled views |
+| R06 Desktop category regression | In-app browser, 1280 × 900 | Categories remain a usable row where space permits | All five links shared the same vertical position; document client/scroll widths both 1265 | Pass |
+| R07 Landscape discovery | In-app browser, 667 × 375 | Empty discovery state remains within width | Document client/scroll widths both 652 | Pass for measured width; not all landscape pages |
+| A05 Navigation and story-form keyboard sequence | In-app browser, 320 × 800 | Menu and form reachable in logical order | Tab reached collapsed menu; Return expanded it; subsequent Tabs reached Home, Discover, Submit; form sequence was Title, Summary, URL, content, category, status, submit, cancel; Shift+Tab/Return submitted invalid form and focused summary | Pass |
+| A06 Ownership keyboard path | In-app browser, 320 × 800 | Draft actions and safe cancellation operable | From skip link: submit-new, draft title, edit, delete; Return opened confirmation; keyboard reached Keep story and returned to intact draft | Pass |
+| A07 Account keyboard path | In-app browser, desktop | Login fields and submission operable without pointer | Logout and login links activated with Enter; username, Tab, password, Tab, Enter signed in and showed welcome message | Pass |
+| A08 Keyboard sorting | In-app browser, desktop | Native sort select and Apply work | End selected title order; Tab/Enter applied correctly alphabetized results; ArrowUp selected oldest and Apply showed earliest samples first | Pass |
+| F01 Script-blocked voting | In-app browser, 1280 × 900, port 8002 | Ordinary POST/redirect supports add/reverse/remove | Enter activated Upvote: score 2 to 3 with server success message; Downvote: 3 to 1; repeat Downvote: 1 to 2; final URL ended in #rating-heading | Pass for application-script-blocked fallback |
+| F02 Script-blocked validation | Same | Empty comment gives server error without scripts | Enter on Add comment returned required-field error while preserving existing discussion | Pass |
+| F03 Discovery failure/retry/empty | In-app browser, desktop, port 8003 | Loading disables refresh; failure offers retry; empty success recovers | Loading and disabled refresh observed; simulated 503 produced unavailable/try-again message; Enter on refresh showed loading then No external stories are available right now; button re-enabled | Pass for controlled fixtures |
+| A09 Measured text contrast | Rendered story-form styles | Normal text reaches 4.5:1 | Summary link initially 4.19:1; corrected link 10.22:1. Help text 5.81:1, inline error 9.19:1, submit label 5.59:1 | Pass for listed pairs after D4 fix |
+| A12 Comment keyboard lifecycle | In-app browser, desktop | Comment create/edit/delete works through keyboard controls | Typed disposable comment, Tab/Enter submitted pending comment; Enter opened edit, keyboard appended text and submitted; deletion confirmation displayed edited body and Delete comment was activated with Enter | Exercised; no screen-reader announcement claim |
+| A13 Registration keyboard order | In-app browser, desktop | Fields and actions follow reading order | Focus started on username; Tab sequence password, confirmation, Create account, Cancel, login link | Pass for tab order; account creation was already tested in the initial block |
+| A10 Browser zoom | In-app browser, 1280 × 900 | Zoom changes effective CSS viewport and content reflows | Four Ctrl+plus attempts left measured innerWidth at 1280; no zoom percentage could be verified; Ctrl+0 sent afterward | Unverified; viewport emulation is not zoom evidence |
+| A11 Screen reader | Available browser-control environment | Genuine assistive-technology interaction | No screen-reader interface or native app control available; accessibility tree inspection is not a screen-reader test | Not performed |
+| E01 Persistent screenshots | In-app browser | Save useful screenshot artifacts | Before/after 320px screenshots displayed in session; documented content export returned unsupported; screenshot API exposes bytes/display without a documented repository-save operation | No persistent image files saved |
+
+Contrast ratios used the rendered foreground/background RGB values and the
+sRGB relative-luminance formula `(Llighter + 0.05)/(Ldarker + 0.05)`. Summary
+background was (248,215,218); links changed from (8,117,104) to inherited
+(88,21,28). Help text was (84,104,117) on white; inline error (123,32,23) on
+(255,240,238); submit text white on (8,117,104). Browser retest confirmed the
+new computed summary link colour, retained focus and narrow reflow. This is
+sampled contrast evidence, not a whole-site contrast or WCAG conformance pass.
+
+### Additional corrections
+
+- D3: Removed horizontal scrolling/max-content sizing from category navigation
+  and enabled flex wrapping, as required by the documented narrow reflow goal.
+- D4: Error-summary links now inherit the dark alert text colour, including
+  interactive states, rather than using insufficient-contrast global teal.
+
+Both CSS-only corrections were browser-retested and pushed in `3bb151a` —
+`fix: wrap narrow category navigation and improve error contrast`.
+The diff and whitespace checks passed. No Python, JavaScript, template or
+schema code changed in this block, so no Django suite rerun was warranted.
+Viewport overrides were reset after testing.
+
+### Current remaining verification gaps
+
+This section supersedes the historical interruption list above.
+
+- Use a browser with working zoom controls for genuine zoom/text resizing and
+  native JavaScript-disabled navigation/noscript verification. Script-blocked
+  voting and comment-form fallback are now evidenced separately above.
+- Complete broader focus-state and keyboard coverage beyond the exercised
+  journeys, additional landscape layouts and cross-browser/device coverage.
+- Screen-reader interaction and broader measured contrast/focus-state coverage
+  require suitable assistive-technology/browser controls.
+- Save selected screenshots as repository artifacts with a supported capture
+  export workflow; current screenshots remain session-only.
+- Discovery partial/stale/malformed-response browser variants and safe 400
+  coverage remain; controlled outage/loading/retry/empty checks are complete.
+- Revalidate changed HTML/CSS. Official CSS service success remains unrecorded.
+  Full PostgreSQL, hosted runtime and release/submission checks remain open.
+
+Next Phase 4 task: obtain a browser/session supporting genuine zoom, native
+script disabling, assistive technology and persistent screenshot export; then
+finish those capability-dependent checks and discovery partial/stale variants.
+No deployment, production readiness or accessibility conformance is claimed.

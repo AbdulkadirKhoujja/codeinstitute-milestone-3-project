@@ -57,6 +57,12 @@ Browser control then timed out; unchecked variants and interrupted narrow/zoom
 checks remain explicit gaps. Screenshots were displayed in-session only.
 The earlier HTML result predates the changed story-form markup.
 
+The resumed browser block verified 320px wrapping, further keyboard paths,
+script-blocked form voting and controlled discovery failure/empty recovery.
+CSS correction `3bb151a` fixes category reflow and measured error-link contrast.
+See the same manual record for ratios, fixture limits and remaining gaps;
+genuine zoom, screen-reader use and saved screenshots remain unverified.
+
 ## Remaining verification and release decision
 
 - Remaining browser journey variants and viewport coverage listed in the manual
