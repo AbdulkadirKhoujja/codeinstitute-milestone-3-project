@@ -178,6 +178,14 @@ implementation. Its browser accessibility tree exposed the story link as
 discussion link as `View discussion (2 comments) (opens in a new tab)`.
 The final browser accessibility-tree retest passed for both generated links.
 
+### Zoom/reflow closure
+
+Genuine browser zoom/reflow was attempted, but the available controlled browser
+does not expose measurable zoom: Ctrl+plus left the CSS viewport unchanged.
+Zoom/reflow therefore remains **blocked by the verification environment**. It
+is neither a pass nor an application failure. All other targeted browser checks
+in this record are complete.
+
 ### Current remaining verification gaps
 
 This section supersedes the historical interruption list above.
