@@ -25,6 +25,7 @@ if (feed) {
   const externalLink = (label, url, fallback) => {
     const link = document.createElement("a");
     link.textContent = label;
+    link.setAttribute("aria-label", `${label} (opens in a new tab)`);
     const newTabNotice = document.createElement("span");
     newTabNotice.className = "visually-hidden";
     newTabNotice.textContent = " (opens in a new tab)";

@@ -102,7 +102,10 @@ test("feed loads hostile text safely, keeps safe fallback links and allows refre
   await setImmediate();
   const document = window.document;
   assert.equal(document.querySelector("h2").textContent, `${story.title} (opens in a new tab)`);
-  for (const link of document.querySelectorAll("a")) {
+  const links = document.querySelectorAll("a");
+  assert.equal(links[0].getAttribute("aria-label"), `${story.title} (opens in a new tab)`);
+  assert.equal(links[1].getAttribute("aria-label"), "View discussion (2 comments) (opens in a new tab)");
+  for (const link of links) {
     assert.equal(link.target, "_blank");
     assert.equal(link.querySelector(".visually-hidden").textContent, " (opens in a new tab)");
   }
