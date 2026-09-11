@@ -168,6 +168,16 @@ The diff and whitespace checks passed. No Python, JavaScript, template or
 schema code changed in this block, so no Django suite rerun was warranted.
 Viewport overrides were reset after testing.
 
+### Generated external-link accessibility retest
+
+The initial browser check after `e974256` failed because the controlled fixture
+served a stale cached `external-feed.js` response: neither generated link had
+an `aria-label`. A fresh fixture on a new local origin loaded the corrected
+implementation. Its browser accessibility tree exposed the story link as
+`[Browser sample] Fresh discovery result (opens in a new tab)` and the
+discussion link as `View discussion (2 comments) (opens in a new tab)`.
+The final browser accessibility-tree retest passed for both generated links.
+
 ### Current remaining verification gaps
 
 This section supersedes the historical interruption list above.
