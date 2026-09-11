@@ -101,6 +101,10 @@ class ProfileDraftPrivacyTests(TestCase):
             reverse("accounts:profile", args=[self.member.username])
         )
 
+        self.assertContains(
+            response, "You have not published any stories yet."
+        )
+        self.assertNotContains(response, "You have not submitted any stories")
         self.assertContains(response, "Private drafts")
         self.assertContains(response, self.draft_post.title)
         self.assertContains(response, "Draft")

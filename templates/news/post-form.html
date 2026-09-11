@@ -11,6 +11,21 @@
       <h1 id="post-form-heading">{% if post %}Edit your story{% else %}Submit a story{% endif %}</h1>
       <p>All fields are required. Save as a draft if your context is not ready for the public feed.</p>
 
+      {% if form.errors %}
+        <div class="alert alert-danger" id="error-summary" role="alert" tabindex="-1" autofocus aria-labelledby="error-summary-heading">
+          <h2 class="h5" id="error-summary-heading">Check your story</h2>
+          <p>Correct the following errors before submitting:</p>
+          <ul class="mb-0">
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
       <form method="post" action="{% if post %}{% url 'news:post-update' post.pk %}{% else %}{% url 'news:post-create' %}{% endif %}" novalidate>
         {% csrf_token %}
         {% for field in form %}

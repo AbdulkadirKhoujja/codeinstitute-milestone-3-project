@@ -115,5 +115,9 @@ class PostCreateSubmissionTests(TestCase):
             response,
             'aria-describedby="article_url-help article_url-error"',
         )
+        self.assertContains(response, 'id="error-summary"')
+        self.assertContains(response, 'tabindex="-1" autofocus')
+        self.assertContains(response, 'href="#id_article_url"')
+        self.assertNotContains(response, 'href="#id_title"')
         self.assertContains(response, "Retained story title")
         self.assertEqual(Post.objects.count(), 0)
