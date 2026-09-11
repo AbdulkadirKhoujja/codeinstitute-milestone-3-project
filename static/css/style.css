@@ -196,16 +196,15 @@ a:hover {
 
 .category-navigation {
   margin-block: -1.15rem 3rem;
-  overflow-x: auto;
   padding-block: 1.15rem;
 }
 
 .category-navigation__list {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.65rem;
   list-style: none;
   margin: 0;
-  min-width: max-content;
   padding: 0;
 }
 
@@ -415,6 +414,10 @@ textarea.form-control {
   border-top: 0.08rem solid var(--bb-border);
   margin: 2rem 0 0;
   padding-top: 1.25rem;
+}
+
+#error-summary a {
+  color: inherit;
 }
 
 [role="status"] .alert {
