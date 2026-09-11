@@ -1,6 +1,6 @@
 # Testing
 
-This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete; Phase 4 is underway. Manual browser, responsive, accessibility, performance and hosted-runtime verification remain outstanding; no deployment is recorded.
+This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete; Phase 4 is underway. The first local browser journey block is recorded in [manual browser verification](manual-browser-verification.md), including two corrected defects. Remaining browser/accessibility coverage, performance and hosted-runtime verification are outstanding; no deployment is recorded.
 
 ## Current Phase 4 automated result — 11 September 2026
 
@@ -113,4 +113,4 @@ The unexecuted scope includes comment create/edit/delete journeys, vote create/c
 
 ## Later testing
 
-Remaining Phase 4 work includes the manual functional matrix, browser compatibility, keyboard-only journeys, screen-reader spot checks, contrast, zoom/reflow, unresolved CSS validation and final HTML coverage after any changes. Deployment configuration and local static preparation already have evidence; production migrations, hosted assets and development/production parity remain unverified. Results will be stated only after each check has run.
+The [11 September browser record](manual-browser-verification.md) supersedes the historical unexecuted status for its listed journeys. Remaining Phase 4 work includes the unchecked functional variants, browser compatibility, fuller keyboard journeys, screen-reader spot checks, contrast, zoom/reflow, unresolved CSS validation and final HTML coverage after the story-form change. Deployment configuration and local static preparation already have evidence; production migrations, hosted assets and development/production parity remain unverified. Results will be stated only after each check has run.

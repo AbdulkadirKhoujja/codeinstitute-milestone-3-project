@@ -46,10 +46,22 @@ The recorded PostgreSQL check uses separate processes and real local database
 connections with a simulated refresh; it is not full-suite, load or hosted
 verification.
 
+## Browser execution — 11 September 2026
+
+The [manual browser record](manual-browser-verification.md) records actual
+local CRUD, authentication, draft privacy, moderation, voting and discovery
+journeys across desktop/tablet/mobile presets, plus sampled keyboard checks.
+Two feedback defects were corrected and browser-retested in `88be9ba`;
+19 focused Django tests and changed-file style/whitespace checks passed.
+Browser control then timed out; unchecked variants and interrupted narrow/zoom
+checks remain explicit gaps. Screenshots were displayed in-session only.
+The earlier HTML result predates the changed story-form markup.
+
 ## Remaining verification and release decision
 
-- Manual browser journeys, responsive viewports, keyboard/screen-reader checks,
-  contrast, zoom/reflow, console/network inspection and genuine screenshots.
+- Remaining browser journey variants and viewport coverage listed in the manual
+  record; fuller keyboard/screen-reader checks, measured contrast, zoom/reflow,
+  network inspection, multi-browser coverage and saved assessment screenshots.
 - CSS validator retry and final HTML coverage after relevant changes.
 - Full current-suite PostgreSQL testing and hosted-runtime, HTTPS, static asset,
   production migration, feed timing and development/production parity checks.
@@ -57,8 +69,8 @@ verification.
   documentation.
 - Separate deployment operation and verified live URL.
 
-**In progress; not ready for deployment.** No deployment/live URL, manual
-accessibility pass, CSS validator success or hosted-runtime pass is recorded.
+**In progress; not ready for deployment.** No deployment/live URL, accessibility conformance, CSS validator success or
+hosted-runtime pass is recorded. Sampled keyboard checks are documented above.
 
 ## Historical baseline — 8 September 2026
 

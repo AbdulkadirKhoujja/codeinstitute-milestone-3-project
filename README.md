@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. Manual browser, responsive, accessibility and hosted-runtime verification remain outstanding. No deployment or live URL has been recorded.
+Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. The first local browser verification block is recorded; remaining browser/accessibility coverage and hosted-runtime verification are outstanding. No deployment or live URL has been recorded.
 
 ## Purpose and audience
 
@@ -80,7 +80,7 @@ Completed Phase 4 work includes explicit security settings, environment-driven P
 
 The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records 23 HTML samples with zero errors or warnings on 8 September 2026. CSS validation remains unresolved because the official service returned HTTP 500.
 
-Manual browser journeys, responsive and accessibility checks, full current-suite PostgreSQL verification, hosted-runtime verification, final security review and submission evidence remain outstanding. No production-readiness, deployment or live-URL claim is made.
+The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Remaining browser/accessibility coverage, full current-suite PostgreSQL verification, hosted-runtime verification, final security review and submission evidence are outstanding. No production-readiness, deployment or live-URL claim is made.
 
 ## Data model
 
@@ -283,7 +283,7 @@ The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Djang
 
 The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, live status announcements, pressed vote states, busy discovery state, descriptive links, machine-readable dates, and text-based moderation/loading/error/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
 
-The interactive browser was unavailable during Phase 3, so no new viewport, keyboard, console, or network observation is claimed. The manual multi-browser, assistive-technology, contrast and zoom matrix remains outstanding in Phase 4. HTML sample validation is recorded separately; official CSS validation remains unresolved. See [accessibility requirements](docs/accessibility-requirements.md).
+The interactive browser was unavailable during Phase 3. The [Phase 4 browser record](docs/manual-browser-verification.md) now records sampled viewport, keyboard and console observations; it does not establish comprehensive accessibility coverage. The manual multi-browser, assistive-technology, contrast and zoom matrix remains outstanding in Phase 4. HTML sample validation is recorded separately; official CSS validation remains unresolved. See [accessibility requirements](docs/accessibility-requirements.md).
 
 ## Documentation
 
