@@ -101,7 +101,11 @@ test("feed loads hostile text safely, keeps safe fallback links and allows refre
   assert.ok(window.document.querySelector("button").disabled);
   await setImmediate();
   const document = window.document;
-  assert.equal(document.querySelector("h2").textContent, story.title);
+  assert.equal(document.querySelector("h2").textContent, `${story.title} (opens in a new tab)`);
+  for (const link of document.querySelectorAll("a")) {
+    assert.equal(link.target, "_blank");
+    assert.equal(link.querySelector(".visually-hidden").textContent, " (opens in a new tab)");
+  }
   assert.equal(document.querySelector("img"), null);
   assert.equal(document.querySelector("a").href, story.discussion_url);
   assert.equal(document.querySelector("a").rel, "noopener noreferrer");

@@ -25,6 +25,10 @@ if (feed) {
   const externalLink = (label, url, fallback) => {
     const link = document.createElement("a");
     link.textContent = label;
+    const newTabNotice = document.createElement("span");
+    newTabNotice.className = "visually-hidden";
+    newTabNotice.textContent = " (opens in a new tab)";
+    link.append(newTabNotice);
     link.href = safeExternalUrl(url, fallback);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
