@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. The first local browser verification block is recorded; remaining browser/accessibility coverage and hosted-runtime verification are outstanding. No deployment or live URL has been recorded.
+Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. ByteBoard is deployed to Heroku at [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/); final security, performance and submission evidence remains outstanding.
 
 ## Purpose and audience
 
@@ -80,7 +80,7 @@ Completed Phase 4 work includes explicit security settings, environment-driven P
 
 The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records 23 HTML samples with zero errors or warnings on 8 September 2026. CSS validation remains unresolved because the official service returned HTTP 500.
 
-The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Remaining browser/accessibility coverage, full current-suite PostgreSQL verification, hosted-runtime verification, final security review and submission evidence are outstanding. No production-readiness, deployment or live-URL claim is made.
+The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. A hosted Heroku smoke check also passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence. Remaining browser/accessibility coverage, the final PostgreSQL-backed suite, security review, performance and submission evidence are outstanding.
 
 ## Data model
 
@@ -203,7 +203,7 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 - SQLite for local development.
 - Git and GitHub for incremental version control.
 
-Runtime Python package versions are pinned in `requirements.txt`; Python style tools are pinned in `requirements-dev.txt`. PostgreSQL configuration, Gunicorn and WhiteNoise are prepared; hosted-runtime verification remains outstanding.
+Runtime Python package versions are pinned in `requirements.txt`; Python style tools are pinned in `requirements-dev.txt`. PostgreSQL, Gunicorn and WhiteNoise are deployed and received a focused hosted-runtime smoke check; final comprehensive verification remains outstanding.
 
 Phase 4 adds `dj-database-url` for central URL parsing and Psycopg 3's binary
 distribution for PostgreSQL connectivity on Windows and Linux. The existing
@@ -326,7 +326,7 @@ These choices follow the [Django deployment checklist](https://docs.djangoprojec
 - Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. Hosted HTTPS/runtime checks and the final security-history review remain outstanding; local preparation is not deployment evidence.
+Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check passed; final security-history review, performance evidence and comprehensive PostgreSQL-backed testing remain outstanding.
 
 ## Credits and attribution
 

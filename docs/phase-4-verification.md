@@ -69,14 +69,27 @@ genuine zoom, screen-reader use and saved screenshots remain unverified.
   record; fuller keyboard/screen-reader checks, measured contrast, zoom/reflow,
   network inspection, multi-browser coverage and saved assessment screenshots.
 - CSS validator retry and final HTML coverage after relevant changes.
-- Full current-suite PostgreSQL testing and hosted-runtime, HTTPS, static asset,
-  production migration, feed timing and development/production parity checks.
+- Full current-suite PostgreSQL testing, production feed timing and
+  development/production parity checks.
 - Final security-history review, performance evidence, credits and submission
   documentation.
-- Separate deployment operation and verified live URL.
 
-**In progress; not ready for deployment.** No deployment/live URL, accessibility conformance, CSS validator success or
-hosted-runtime pass is recorded. Sampled keyboard checks are documented above.
+## Hosted deployment evidence — 18 September 2026
+
+Heroku app `byteboard-app` is live in Europe at
+[https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/)
+with Heroku Postgres Essential-0. Production migrations were applied through
+`news.0005_feedsnapshot`; a superuser was created and the permanent
+`Technology` category was created through Django Admin and retained. Focused HTTPS smoke checks passed for the home
+page, Discover, static assets, anonymous access control, Django Admin
+reachability, registration/login, draft creation and PostgreSQL persistence
+after refresh/navigation. Owner-only draft visibility passed; the temporary
+story and disposable `bb-smoke-918x` account were deleted and no hosted
+application defects were found. Hosted smoke-test cleanup is complete.
+
+**In progress; deployment is live.** Accessibility conformance, CSS validator
+success, final PostgreSQL-suite, security, performance and submission evidence
+are not yet recorded.
 
 ## Historical baseline — 8 September 2026
 
@@ -160,5 +173,6 @@ PostgreSQL 18.6 was installed in the existing Ubuntu environment. Before test
 data preparation its cluster contained only postgres/template0/template1.
 That initial installation established availability only. The later passing local
 PostgreSQL cross-process cache check is recorded in [feed refresh design](feed-refresh-design.md).
-Full current-suite PostgreSQL and hosted-runtime verification remain outstanding;
+Full current-suite PostgreSQL verification remains outstanding; hosted-runtime
+smoke evidence is recorded above.
 the current release decision is recorded above.

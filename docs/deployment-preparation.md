@@ -1,7 +1,23 @@
-# Prepared; deployment pending
+# Deployed; final verification pending
 
-No cloud resource has been provisioned and no Heroku deployment has been run.
-Material verification gaps must be resolved before this becomes a release.
+ByteBoard is deployed to Heroku in the Europe region as `byteboard-app` at
+[https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/).
+Heroku Postgres Essential-0 is attached. Production migrations were applied
+through `news.0005_feedsnapshot`; a production superuser was created and the
+permanent `Technology` category was created through Django Admin and retained.
+
+## Hosted smoke evidence
+
+The live HTTPS home page, Discover page, collected CSS/JavaScript assets,
+anonymous authentication boundary and Django Admin login page all passed a
+focused smoke check. Disposable registration/login, draft story creation and
+owner-only visibility also passed. The draft persisted after refresh and
+navigation, confirming the deployed PostgreSQL path. The temporary story and
+disposable `bb-smoke-918x` account were deleted afterwards; no hosted
+application defect was found. Hosted smoke-test cleanup is complete.
+
+This is focused deployment evidence, not a final security, performance,
+cross-browser or comprehensive PostgreSQL-suite result.
 
 ## Configuration decisions
 
@@ -27,13 +43,13 @@ Material verification gaps must be resolved before this becomes a release.
   Cookies are secure when debug is off. HSTS stays disabled until domain/HTTPS
   verification establishes a safe policy; no preload is requested.
 
-## Separate deployment operation
+## Recorded deployment operation
 
-The owner must supply the Heroku account, app name, region, approved plan,
-PostgreSQL resource and final hostname. Creating any billable resources requires
-separate approval. Do not use the disposable local test database for production.
+The approved Heroku app, Europe region, Essential-0 PostgreSQL resource and
+Heroku-provided HTTPS hostname are now configured. Do not use the disposable
+local test database for production.
 
-After release blockers are resolved:
+The completed deployment sequence was:
 
 1. Select the supported Python buildpack for the app. The nested Node package
    is verification-only; it is not needed to run ByteBoard in production.
@@ -46,12 +62,11 @@ After release blockers are resolved:
    cache-table command, Redis service or expiry-cleanup job is required.
 5. Create an authorised moderator with `createsuperuser`, entering credentials
    interactively. Do not upload sample community records as real activity.
-6. Run production checks, verify all collected assets and custom error pages,
-   then execute public/member/moderator workflows over the final HTTPS URL.
-7. Check database integrity, cold/warm feed timing, cross-process refresh
-   control, logs and development/production parity on the actual host.
-8. Record the live URL, tested commit, results and genuine screenshots. Only
-   then update deployment-dependent assessment rows.
+6. Run focused production smoke checks over the final HTTPS URL, including
+   collected assets, public/member routes, permissions and draft persistence.
+
+Final security review, performance evidence, production feed timing and a full
+PostgreSQL-backed Django suite remain separate final-verification tasks.
 
 For local static preparation run `python manage.py collectstatic --noinput`.
 For a production-settings check use `python manage.py check --deploy` with

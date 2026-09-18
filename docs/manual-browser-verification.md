@@ -186,6 +186,19 @@ Zoom/reflow therefore remains **blocked by the verification environment**. It
 is neither a pass nor an application failure. All other targeted browser checks
 in this record are complete.
 
+### Hosted smoke check — 18 September 2026
+
+The live Heroku deployment, `byteboard-app` in Europe, was checked at
+[https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/).
+Heroku Postgres Essential-0 was attached and production migrations were applied
+through `news.0005_feedsnapshot`. HTTPS home, Discover, static assets,
+anonymous permission handling and Django Admin reachability passed.
+Registration/login and a disposable owner's draft creation passed; the draft
+persisted after refresh and navigation, was absent from public home and visible
+in the owner's private view. The temporary story and `bb-smoke-918x` account
+were deleted; the permanent `Technology` category was retained. No hosted
+application defect was found; smoke-test cleanup is complete.
+
 ### Current remaining verification gaps
 
 This section supersedes the historical interruption list above.
@@ -202,9 +215,11 @@ This section supersedes the historical interruption list above.
 - Discovery partial/stale/malformed-response browser variants and safe 400
   coverage remain; controlled outage/loading/retry/empty checks are complete.
 - Revalidate changed HTML/CSS. Official CSS service success remains unrecorded.
-  Full PostgreSQL, hosted runtime and release/submission checks remain open.
+  Full PostgreSQL, final security/performance and release/submission checks
+  remain open.
 
 Next Phase 4 task: obtain a browser/session supporting genuine zoom, native
 script disabling, assistive technology and persistent screenshot export; then
 finish those capability-dependent checks and discovery partial/stale variants.
-No deployment, production readiness or accessibility conformance is claimed.
+The hosted smoke check is recorded above; it is not a production-readiness or
+accessibility-conformance claim.
