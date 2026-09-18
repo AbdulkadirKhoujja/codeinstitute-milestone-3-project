@@ -60,17 +60,25 @@ The earlier HTML result predates the changed story-form markup.
 The resumed browser block verified 320px wrapping, further keyboard paths,
 script-blocked form voting and controlled discovery failure/empty recovery.
 CSS correction `3bb151a` fixes category reflow and measured error-link contrast.
-See the same manual record for ratios, fixture limits and remaining gaps;
-genuine zoom, screen-reader use and saved screenshots remain unverified.
+See the same manual record for ratios, fixture limits and remaining gaps; genuine zoom and broader screen-reader interaction remain unverified, while hosted screenshots are recorded.
 
 ## Remaining verification and release decision
 
-- Run the final comprehensive PostgreSQL-backed Django suite.
-- Complete the final Git/remote-sync/live-release check.
+- The final Git/remote-sync/live-release check remains.
 - Genuine browser zoom/reflow remains environment-blocked; broader screen-reader
   coverage is not claimed.
 - Official CSS validation remains externally blocked by HTTP 500, including
   `java.lang.IllegalStateException: Reader used` for known-valid CSS.
+
+
+## Final comprehensive local PostgreSQL verification — 18 September 2026
+
+The full Django suite ran once against a **disposable local PostgreSQL** test
+database, with Heroku production excluded. Django created and destroyed the
+test database successfully; all **212 of 212 tests passed** in **101.521
+seconds**, with zero failures and zero errors, and the Django system check
+reported no issues. The temporary Podman container, session-only
+`DATABASE_URL`, and temporary password variable were removed afterwards.
 
 ## Hosted deployment evidence — 18 September 2026
 
@@ -106,7 +114,7 @@ as a defect. A preceding Windows curl request failed locally before any response
 with Schannel `SEC_E_NO_CREDENTIALS`, which was a client/TLS limitation rather
 than an application performance failure.
 
-**Deployment, hosted smoke, security, performance, formal HTML validation and durable screenshot evidence are recorded.** The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain; CSS validation and genuine zoom/reflow retain their documented limitations.
+**Deployment, hosted smoke, security, performance, formal HTML validation, durable screenshot evidence and the comprehensive disposable-local PostgreSQL suite are recorded.** The final Git/remote-sync/live-release check remains; CSS validation and genuine zoom/reflow retain their documented limitations.
 
 ## Historical baseline — 8 September 2026
 

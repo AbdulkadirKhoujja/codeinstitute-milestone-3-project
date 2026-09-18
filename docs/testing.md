@@ -1,6 +1,16 @@
 # Testing
 
-This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete. The local browser record includes two corrected defects, hosted evidence and durable screenshots; security, performance and formal validation are recorded separately. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain.
+This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete. The local browser record includes two corrected defects, hosted evidence and durable screenshots; security, performance, formal validation and the final disposable-local PostgreSQL suite are recorded separately. The final Git/remote-sync/live-release check remains.
+
+
+## Final comprehensive local PostgreSQL verification — 18 September 2026
+
+The complete Django suite ran once against a **disposable local PostgreSQL** test
+database, never Heroku production. Django created and destroyed its normal test
+database successfully. All **212 of 212 tests passed** in **101.521 seconds**,
+with zero failures and zero errors; Django's system check reported no issues.
+The temporary Podman container, session-only `DATABASE_URL`, and temporary
+password variable were removed afterwards.
 
 ## Current Phase 4 automated result — 11 September 2026
 
@@ -113,4 +123,4 @@ The unexecuted scope includes comment create/edit/delete journeys, vote create/c
 
 ## Later testing
 
-The [manual browser record](manual-browser-verification.md) supersedes the historical unexecuted status for its listed journeys and records the hosted smoke check, durable screenshots, sampled keyboard/contrast evidence and environment-blocked zoom result. Hosted HTTPS, static assets, migration-backed PostgreSQL persistence, authentication and permissions passed. Security, performance and final HTML validation are recorded. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain; broader screen-reader coverage is not claimed.
+The [manual browser record](manual-browser-verification.md) supersedes the historical unexecuted status for its listed journeys and records the hosted smoke check, durable screenshots, sampled keyboard/contrast evidence and environment-blocked zoom result. Hosted HTTPS, static assets, migration-backed PostgreSQL persistence, authentication and permissions passed. Security, performance, final HTML validation and the comprehensive disposable-local PostgreSQL suite are recorded. The final Git/remote-sync/live-release check remains; broader screen-reader coverage is not claimed.

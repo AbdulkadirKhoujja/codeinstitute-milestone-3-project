@@ -80,7 +80,7 @@ Completed Phase 4 work includes explicit security settings, environment-driven P
 
 The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings on 18 September 2026. Official CSS validation remains externally blocked by HTTP 500, including `java.lang.IllegalStateException: Reader used` for known-valid CSS.
 
-The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Hosted smoke checks passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence; durable hosted screenshots are recorded there. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain.
+The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Hosted smoke checks passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence; durable hosted screenshots are recorded there. The final comprehensive disposable-local PostgreSQL suite passed; the final Git/remote-sync/live-release check remains.
 
 ## Data model
 
@@ -267,7 +267,7 @@ A signed-in member can submit and manage stories, add/edit/delete their comments
 
 ## Testing
 
-The 209-test automated Django suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
+The 209-test recovery audit used SQLite; the final comprehensive run passed 212/212 against disposable local PostgreSQL. The automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
 
 Run the quality checks with:
 
@@ -277,7 +277,7 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
 
-The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks are complemented by the recorded browser, hosted deployment, security, performance and formal-validation evidence; they do not replace the final PostgreSQL-backed suite or final release check.
+The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks are complemented by recorded browser, hosted deployment, security, performance, formal-validation and disposable-local PostgreSQL evidence; they do not replace the final release check.
 
 ## Accessibility and responsive design
 
@@ -326,7 +326,7 @@ These choices follow the [Django deployment checklist](https://docs.djangoprojec
 - Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check, current-tree security review and focused security tests, and single live performance observation are recorded. The final comprehensive PostgreSQL-backed suite and final Git/remote-sync/live-release check remain.
+Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check, current-tree security review and focused security tests, single live performance observation, and final disposable-local PostgreSQL suite are recorded. The final Git/remote-sync/live-release check remains.
 
 ## Credits and attribution
 
