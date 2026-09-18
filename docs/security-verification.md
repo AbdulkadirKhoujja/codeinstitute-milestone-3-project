@@ -47,5 +47,21 @@ anonymous permission tests remain recorded above. The hosted smoke check
 separately verifies HTTPS, authentication and the anonymous permission boundary.
 
 No current-state configuration defect was found. Git-history secret scanning
-has not been performed. `check --deploy` and the focused security/release
-settings tests remain recommended before final completion.
+has not been performed and remains a separate review; focused verification
+results are recorded below.
+
+## Focused security verification — 18 September 2026
+
+`python manage.py check --deploy` ran with an ephemeral non-production
+`SECRET_KEY`, `DEBUG=false`, the live host/origin, and Heroku proxy, HTTPS
+redirect and database-SSL flags enabled. It reported two warnings: `security.W004`
+because HSTS remains intentionally deferred pending a final-domain policy, and
+`security.W009` because the deliberately ephemeral review key did not meet
+production key-strength guidance. Neither warning was an application defect in
+this review.
+
+Twenty-nine focused tests passed: release settings, enforced CSRF, safe login
+redirects, login/logout methods, owner-only comments and drafts, post-owner
+actions, proxy handling and database configuration. No security defect was
+found. Current-tree security verification is complete for the approved scope;
+Git-history secret scanning remains a separate, unperformed review.
