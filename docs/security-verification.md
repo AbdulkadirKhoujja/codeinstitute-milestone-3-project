@@ -26,5 +26,26 @@ error-page and release-settings group passed all 20 tests in 0.347 seconds on
 SQLite. The 500 reproduction uses an isolated lazy user that raises a database
 exception; there is no intentional public crash endpoint.
 
-This record does not yet establish browser security behaviour, tracked-history
-secret scanning or hosted HTTPS configuration. Those require separate evidence.
+This 8 September record did not establish browser security behaviour,
+tracked-history secret scanning or hosted HTTPS configuration; the current-state
+review below records the later hosted evidence.
+
+## Current-state review — 18 September 2026
+
+A targeted current-tree review found no tracked private-key or common provider
+token patterns. Database configuration is environment-driven: `SECRET_KEY` is
+required from the environment, and `DATABASE_URL` is parsed only when supplied.
+`.gitignore` excludes local `env.py`, `.env`, local settings and SQLite files.
+The tracked `.env.example` and release-settings test contain configuration
+examples, not deployed secret values.
+
+`DEBUG`, `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` are environment-driven.
+Secure session/CSRF cookies follow non-debug mode; proxy trust is opt-in for
+Heroku, HTTPS redirect is explicitly configured, and PostgreSQL SSL requirement
+is environment-controlled. Existing enforced-CSRF, ownership/privacy and
+anonymous permission tests remain recorded above. The hosted smoke check
+separately verifies HTTPS, authentication and the anonymous permission boundary.
+
+No current-state configuration defect was found. Git-history secret scanning
+has not been performed. `check --deploy` and the focused security/release
+settings tests remain recommended before final completion.
