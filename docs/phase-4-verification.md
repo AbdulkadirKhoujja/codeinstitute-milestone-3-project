@@ -71,8 +71,7 @@ genuine zoom, screen-reader use and saved screenshots remain unverified.
 - CSS validator retry and final HTML coverage after relevant changes.
 - Full current-suite PostgreSQL testing, production feed timing and
   development/production parity checks.
-- Final security-history review, performance evidence, credits and submission
-  documentation.
+- Final security-history review, credits and submission documentation.
 
 ## Hosted deployment evidence — 18 September 2026
 
@@ -87,8 +86,20 @@ after refresh/navigation. Owner-only draft visibility passed; the temporary
 story and disposable `bb-smoke-918x` account were deleted and no hosted
 application defects were found. Hosted smoke-test cleanup is complete.
 
+## Live performance observation — 18 September 2026
+
+One direct, no-proxy Python `urllib` HTTPS request to the live home page
+returned HTTP 200 and received the 4,467-byte HTML response successfully.
+Observed time to first response was 0.561622 seconds and total request time was
+0.562269 seconds; `Content-Type` was `text/html; charset=utf-8`. `Cache-Control`,
+`ETag` and `Expires` were absent. This is one observation, not an average,
+benchmark, SLA or capacity claim; the header absence is recorded factually, not
+as a defect. A preceding Windows curl request failed locally before any response
+with Schannel `SEC_E_NO_CREDENTIALS`, which was a client/TLS limitation rather
+than an application performance failure.
+
 **In progress; deployment is live.** Accessibility conformance, CSS validator
-success, final PostgreSQL-suite, security, performance and submission evidence
+success, final PostgreSQL-suite, security and submission evidence
 are not yet recorded.
 
 ## Historical baseline — 8 September 2026
