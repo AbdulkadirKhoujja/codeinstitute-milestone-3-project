@@ -49,6 +49,9 @@ documented URL-validation request for the already-public committed stylesheet
 also returned HTTP 500. No useful CSS diagnostics or official pass were obtained.
 No third-party Bootstrap CSS is represented as original project CSS.
 
-Retry `python verification/official_validation.py --css --upload` with approval
-when the service is available, correct any genuine findings and retain the
-result for the final stylesheet. CSS formal validation remains an explicit gap.
+On 18 September 2026, one further documented attempt using
+`python verification/official_validation.py --css --upload` returned
+`{"unavailable": "Connection failure or timeout"}`. This is an external
+validator limitation, not a CSS pass or an application finding. CSS formal
+validation remains an explicit gap; retry only with approval when the official
+service is available.
