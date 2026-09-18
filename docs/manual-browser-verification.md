@@ -24,8 +24,7 @@ HTTPS, collected-static or production-parity evidence.
 
 Evidence references below describe browser snapshots, observed interactions
 and read-only DOM measurements from this execution session. They are a durable
-written record, not exported browser traces. Screenshots were displayed in the
-session only; no screenshot image files were saved or committed.
+written record, not exported browser traces. Earlier screenshots were displayed in-session only; the final hosted assessment screenshots are saved as repository PNG artifacts below.
 
 | ID / journey | Viewport | Expected | Actual / evidence | Result |
 | --- | --- | --- | --- | --- |
@@ -145,7 +144,7 @@ complete browser-native JavaScript-disabled behaviour (including noscript).
 | A13 Registration keyboard order | In-app browser, desktop | Fields and actions follow reading order | Focus started on username; Tab sequence password, confirmation, Create account, Cancel, login link | Pass for tab order; account creation was already tested in the initial block |
 | A10 Browser zoom | In-app browser, 1280 × 900 | Zoom changes effective CSS viewport and content reflows | Four Ctrl+plus attempts left measured innerWidth at 1280; no zoom percentage could be verified; Ctrl+0 sent afterward | Unverified; viewport emulation is not zoom evidence |
 | A11 Screen reader | Available browser-control environment | Genuine assistive-technology interaction | No screen-reader interface or native app control available; accessibility tree inspection is not a screen-reader test | Not performed |
-| E01 Persistent screenshots | In-app browser | Save useful screenshot artifacts | Before/after 320px screenshots displayed in session; documented content export returned unsupported; screenshot API exposes bytes/display without a documented repository-save operation | No persistent image files saved |
+| E01 Persistent screenshots | In-app browser | Save useful screenshot artifacts | The in-app browser export was unsupported; this was later resolved for the approved hosted evidence with direct local Chrome capture, recorded below | Resolved for the three hosted assessment artifacts |
 
 Contrast ratios used the rendered foreground/background RGB values and the
 sRGB relative-luminance formula `(Llighter + 0.05)/(Ldarker + 0.05)`. Summary
@@ -199,6 +198,22 @@ in the owner's private view. The temporary story and `bb-smoke-918x` account
 were deleted; the permanent `Technology` category was retained. No hosted
 application defect was found; smoke-test cleanup is complete.
 
+### Durable hosted assessment screenshots — 18 September 2026
+
+Direct local Chrome captures from the live Heroku deployment provide durable
+assessment evidence:
+
+- [`docs/evidence/screenshots/hosted-home.png`](evidence/screenshots/hosted-home.png)
+  shows the anonymous public home page.
+- [`docs/evidence/screenshots/hosted-discover.png`](evidence/screenshots/hosted-discover.png)
+  shows Discover with successfully loaded external results.
+- [`docs/evidence/screenshots/hosted-protected-route-login.png`](evidence/screenshots/hosted-protected-route-login.png)
+  shows anonymous access to story submission redirecting to the login requirement.
+
+These screenshots document the approved hosted states only. Genuine browser
+zoom/reflow remains environment-blocked, and screen-reader interaction was not
+available; this is not an accessibility-conformance claim.
+
 ### Current remaining verification gaps
 
 This section supersedes the historical interruption list above.
@@ -218,8 +233,7 @@ This section supersedes the historical interruption list above.
   Full PostgreSQL, final security/performance and release/submission checks
   remain open.
 
-Next Phase 4 task: obtain a browser/session supporting genuine zoom, native
-script disabling, assistive technology and persistent screenshot export; then
+Next Phase 4 task: obtain a browser/session supporting genuine zoom, native script disabling and assistive technology; then
 finish those capability-dependent checks and discovery partial/stale variants.
 The hosted smoke check is recorded above; it is not a production-readiness or
 accessibility-conformance claim.

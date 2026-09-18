@@ -85,6 +85,15 @@ reachability, registration/login, draft creation and PostgreSQL persistence
 after refresh/navigation. Owner-only draft visibility passed; the temporary
 story and disposable `bb-smoke-918x` account were deleted and no hosted
 application defects were found. Hosted smoke-test cleanup is complete.
+Durable desktop captures from the same deployment are saved as
+[`docs/evidence/screenshots/hosted-home.png`](evidence/screenshots/hosted-home.png)
+(public home),
+[`docs/evidence/screenshots/hosted-discover.png`](evidence/screenshots/hosted-discover.png)
+(loaded Discover results), and
+[`docs/evidence/screenshots/hosted-protected-route-login.png`](evidence/screenshots/hosted-protected-route-login.png)
+(anonymous story-submission access redirected to login). They support the
+approved hosted assessment evidence only; zoom/reflow remains environment-blocked
+and screen-reader interaction was not available.
 
 ## Live performance observation — 18 September 2026
 
