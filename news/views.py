@@ -62,7 +62,7 @@ def post_detail_context(request, post, comment_form=None):
         "comment_form": comment_form,
         "comments": post.comments.filter(visible_comments).select_related(
             "author"
-        ),
+        ).order_by("created_at", "pk"),
         "current_vote": current_vote,
         "post": post,
         "score": post.votes.aggregate(

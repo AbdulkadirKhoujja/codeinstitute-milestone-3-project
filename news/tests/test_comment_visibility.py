@@ -62,9 +62,9 @@ class ApprovedCommentVisibilityTests(TestCase):
             reverse("news:post-detail", args=[self.post.pk])
         )
 
-        self.assertQuerySetEqual(
-            response.context["comments"],
-            [self.approved, self.unapproved],
+        self.assertEqual(
+            list(response.context["comments"].values_list("pk", flat=True)),
+            [self.approved.pk, self.unapproved.pk],
         )
         self.assertContains(response, self.unapproved.body)
         self.assertContains(response, "Awaiting moderation")
