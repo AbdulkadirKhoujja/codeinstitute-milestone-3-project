@@ -39,6 +39,15 @@ Validation applies to these rendered states, not every possible user input,
 browser-generated DOM state or third-party administration screen. It does not
 establish accessibility conformance or browser behaviour.
 
+## Final official HTML validation — 18 September 2026
+
+The environment proxy path was diagnosed as refusing Python `urllib` POSTs.
+Using a direct opener with `ProxyHandler({})`, all 23 prepared, isolated and
+sanitised samples were submitted once to the Nu HTML Checker. Every request
+returned HTTP 200 with **zero errors and zero warnings/info messages**. The
+prepared HTML validation set therefore passes; this remains validation of the
+listed rendered states, not browser-generated DOM or accessibility conformance.
+
 ## Official Jigsaw CSS check — unresolved
 
 The custom `static/css/style.css` was submitted to the official
@@ -49,9 +58,11 @@ documented URL-validation request for the already-public committed stylesheet
 also returned HTTP 500. No useful CSS diagnostics or official pass were obtained.
 No third-party Bootstrap CSS is represented as original project CSS.
 
-On 18 September 2026, one further documented attempt using
-`python verification/official_validation.py --css --upload` returned
-`{"unavailable": "Connection failure or timeout"}`. This is an external
-validator limitation, not a CSS pass or an application finding. CSS formal
-validation remains an explicit gap; retry only with approval when the official
-service is available.
+On 18 September 2026, the environment proxy issue was bypassed with a direct
+`urllib` opener using `ProxyHandler({})`. The official CSS validator remained
+reachable but returned HTTP 500 for both `static/css/style.css` and a
+known-valid documented form submission, `text=body { color: black; }`. The
+validator returned `java.lang.IllegalStateException: Reader used` for the
+known-valid input. This is a validator-service limitation, not a CSS pass or a
+ByteBoard CSS finding. CSS formal validation remains an explicit gap; retry
+only with approval when the official service is functioning.
