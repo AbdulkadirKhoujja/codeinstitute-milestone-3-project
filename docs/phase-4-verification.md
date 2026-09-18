@@ -65,13 +65,12 @@ genuine zoom, screen-reader use and saved screenshots remain unverified.
 
 ## Remaining verification and release decision
 
-- Remaining browser journey variants and viewport coverage listed in the manual
-  record; fuller keyboard/screen-reader checks, measured contrast, zoom/reflow,
-  network inspection, multi-browser coverage and saved assessment screenshots.
-- CSS validator retry and final HTML coverage after relevant changes.
-- Full current-suite PostgreSQL testing, production feed timing and
-  development/production parity checks.
-- Final security-history review, credits and submission documentation.
+- Run the final comprehensive PostgreSQL-backed Django suite.
+- Complete the final Git/remote-sync/live-release check.
+- Genuine browser zoom/reflow remains environment-blocked; broader screen-reader
+  coverage is not claimed.
+- Official CSS validation remains externally blocked by HTTP 500, including
+  `java.lang.IllegalStateException: Reader used` for known-valid CSS.
 
 ## Hosted deployment evidence — 18 September 2026
 
@@ -107,9 +106,7 @@ as a defect. A preceding Windows curl request failed locally before any response
 with Schannel `SEC_E_NO_CREDENTIALS`, which was a client/TLS limitation rather
 than an application performance failure.
 
-**In progress; deployment is live.** Accessibility conformance, CSS validator
-success, final PostgreSQL-suite, security and submission evidence
-are not yet recorded.
+**Deployment, hosted smoke, security, performance, formal HTML validation and durable screenshot evidence are recorded.** The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain; CSS validation and genuine zoom/reflow retain their documented limitations.
 
 ## Historical baseline — 8 September 2026
 

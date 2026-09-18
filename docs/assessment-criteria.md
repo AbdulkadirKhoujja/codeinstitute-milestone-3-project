@@ -1,6 +1,6 @@
 # Assessment Criteria Tracker
 
-This tracker maps the Level 5 Unit 3 Back End Development criteria to ByteBoard. It is project-specific evidence planning rather than a replacement for the qualification specification. A status is marked **Complete** only where the repository contains verifiable evidence; final validation and release evidence remain open.
+This tracker maps the Level 5 Unit 3 Back End Development criteria to ByteBoard. It is project-specific evidence planning rather than a replacement for the qualification specification. A status is marked **Complete** only where the repository contains verifiable evidence; the final PostgreSQL-backed suite and final release check remain.
 
 Status meanings:
 
@@ -19,8 +19,8 @@ Current baseline: Phases 1–3 complete; Phase 4 underway. The 11 September 2026
 | 1.2 Responsive custom HTML and CSS | Template inheritance, semantic HTML, Bootstrap support, substantial original mobile-first CSS | 2; validate in 4 | In progress | `templates/`, `static/css/style.css`; formal viewport matrix remains |
 | 1.3 Database-backed data manipulation | Tested Post and Comment CRUD, voting transitions, profiles, feeds, search, filters, sorting, and pagination | 2–3 | Complete | `news/views.py`, `news/forms.py`, `accounts/views.py`, test packages |
 | 1.4 Relevant relational database design | User, Category, Post, Comment, and Vote relationships with explicit deletion and integrity rules | 1 | Complete | `docs/database-design.md`, `news/models.py`, `news/migrations/` |
-| 1.5 Test procedures | 209 passing Django tests, 8 passing JavaScript interaction tests, mocked upstream responses, documented TDD/results, local browser journeys and a hosted smoke check; final evidence remains | 1–4 | In progress | Test packages, `docs/testing.md`, `docs/manual-browser-verification.md` |
-| 1.6 Styled Python and validated front end | Python style and JavaScript lint pass; 23 HTML samples recorded with zero errors/warnings; CSS validator returned HTTP 500 | 2–4 | In progress | `docs/formal-validation.md`, `docs/testing.md`; CSS and final validation coverage remain open |
+| 1.5 Test procedures | 209 passing Django tests, 8 passing JavaScript interaction tests, mocked upstream responses, documented TDD/results, local/hosted browser evidence and durable screenshots; final PostgreSQL suite/release check remain | 1–4 | In progress | Test packages, `docs/testing.md`, `docs/manual-browser-verification.md` |
+| 1.6 Styled Python and validated front end | Python style and JavaScript lint pass; 23 HTML samples passed with zero errors/warnings; CSS validator is externally blocked by HTTP 500 | 2–4 | In progress | `docs/formal-validation.md`, `docs/testing.md`; CSS limitation remains documented |
 | 1.7 Python proficiency | Views, model forms, ORM filters/aggregation, permissions, validation, pagination, cache use, HTTP/JSON normalization, and controlled exceptions | 2–3 | Complete | `accounts/`, `news/views.py`, `news/forms.py`, `news/services/`, tests |
 | 1.8 Compound Python statements | Request handling, privacy branches, sorting, search, form configuration, and template iteration | 2–3 | Complete | Views, forms, templates, and tests |
 | 1.9 Readable code | Descriptive names, focused functions, conventional app boundaries, and concise docstrings | 1–4 | In progress | Source tree; final audit remains Phase 4 |
@@ -28,13 +28,13 @@ Current baseline: Phases 1–3 complete; Phase 4 underway. The 11 September 2026
 | 2.1 Purposeful data model | Entities and relationships support ownership, moderation-ready discussion, and story ranking | 1 | Complete | `news/models.py`, `docs/database-design.md` |
 | 2.2 Usable relational database | Local SQLite migrations 0001–0005 applied; environment-driven PostgreSQL, local cross-process cache evidence, and deployed Heroku Postgres persistence after refresh/navigation | 1; production in 4 | In progress | `docs/feed-refresh-design.md`, `docs/deployment-preparation.md`; final PostgreSQL-backed suite remains |
 | 3.1 Create, locate, display, edit, and delete records | Full owner-restricted Post and Comment CRUD plus feeds, profiles, discovery, voting, ownership, moderation visibility, and privacy | 2–3 | Complete | News/account views, forms, templates, and tests |
-| 4.1 Cloud deployment and parity | PostgreSQL-backed Heroku deployment in Europe; HTTPS, migrations and focused runtime smoke evidence | 4 | In progress | `docs/deployment-preparation.md`, `docs/phase-4-verification.md`; parity verification remains |
+| 4.1 Cloud deployment and parity | PostgreSQL-backed Heroku deployment in Europe; HTTPS, migrations and focused runtime smoke evidence | 4 | In progress | `docs/deployment-preparation.md`, `docs/phase-4-verification.md`; final PostgreSQL suite/release check remain |
 | 4.2 Clean deployed code and working links | Live HTTPS home, static assets, Discover, access boundary and Admin reachability passed; final release audit remains | 4 | In progress | `docs/manual-browser-verification.md`, deployed application |
-| 4.3 Deployment documentation | Verified app URL, Heroku/Postgres setup, migrations and smoke outcomes recorded; final submission documentation remains | 4 | In progress | README and `docs/deployment-preparation.md` |
+| 4.3 Deployment documentation | Verified app URL, Heroku/Postgres setup, migrations and smoke outcomes recorded | 4 | In progress | README and `docs/deployment-preparation.md`; final release check remains |
 | 5.1 Git and GitHub history | Small descriptive commits independently pushed throughout development | 1–final operation | In progress | Git log and GitHub repository |
-| 5.2 No committed credentials | Ignore rules plus tracked/staged secret and local-database audits | 1–final operation | In progress | `.gitignore` and final security audit |
+| 5.2 No committed credentials | Ignore rules plus tracked-file secret and local-database audits; current-tree security review passed | 1–final operation | In progress | `.gitignore` and `docs/security-verification.md`; final release check remains |
 | 5.3 Environment-managed secrets | `SECRET_KEY` loaded from the environment; local environment files ignored | 1–final operation | Complete | `byteboard/settings.py`, `.gitignore` |
-| 5.4 Production DEBUG disabled | DEBUG defaults off with isolated settings tests; focused hosted HTTPS smoke evidence recorded | 4 and final operation | In progress | `docs/deployment-preparation.md`; final security review remains |
+| 5.4 Production DEBUG disabled | DEBUG defaults off with isolated settings tests; focused hosted HTTPS smoke and security evidence recorded | 4 and final operation | In progress | `docs/deployment-preparation.md`, `docs/security-verification.md`; final release check remains |
 
 ## Merit criteria
 

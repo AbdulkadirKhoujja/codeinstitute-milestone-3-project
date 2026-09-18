@@ -1,4 +1,4 @@
-# Deployed; final verification pending
+# Deployed; focused verification complete
 
 ByteBoard is deployed to Heroku in the Europe region as `byteboard-app` at
 [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/).
@@ -16,8 +16,7 @@ navigation, confirming the deployed PostgreSQL path. The temporary story and
 disposable `bb-smoke-918x` account were deleted afterwards; no hosted
 application defect was found. Hosted smoke-test cleanup is complete.
 
-This is focused deployment evidence, not a final security, performance,
-cross-browser or comprehensive PostgreSQL-suite result.
+This is focused deployment evidence. Security, performance and hosted screenshot evidence are recorded separately; it does not replace the final comprehensive PostgreSQL-backed Django suite or final Git/remote-sync/live-release check.
 
 ## Configuration decisions
 
@@ -65,8 +64,7 @@ The completed deployment sequence was:
 6. Run focused production smoke checks over the final HTTPS URL, including
    collected assets, public/member routes, permissions and draft persistence.
 
-Final security review, performance evidence, production feed timing and a full
-PostgreSQL-backed Django suite remain separate final-verification tasks.
+Security and performance evidence are recorded separately. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain.
 
 For local static preparation run `python manage.py collectstatic --noinput`.
 For a production-settings check use `python manage.py check --deploy` with

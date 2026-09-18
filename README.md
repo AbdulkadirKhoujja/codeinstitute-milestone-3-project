@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phases 1, 2 and 3 are complete. Phase 4 is underway: release configuration, shared feed refresh, corrective tests and validation tooling are implemented. ByteBoard is deployed to Heroku at [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/); final security, performance and submission evidence remains outstanding.
+Phases 1, 2 and 3 are complete. Phase 4 has recorded release configuration, shared feed refresh, corrective tests, formal validation, security, performance and hosted-runtime evidence. ByteBoard is live on Heroku at [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/).
 
 ## Purpose and audience
 
@@ -78,9 +78,9 @@ The core experience supports two goals:
 
 Completed Phase 4 work includes explicit security settings, environment-driven PostgreSQL configuration, Gunicorn/WhiteNoise preparation, the shared database feed snapshot and bounded worker, executable JavaScript tests, guarded disposable sample data, form/error-page corrections, moderation verification and Python style tooling. Local PostgreSQL cross-process cache coordination is recorded with a simulated refresh.
 
-The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records 23 HTML samples with zero errors or warnings on 8 September 2026. CSS validation remains unresolved because the official service returned HTTP 500.
+The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings on 18 September 2026. Official CSS validation remains externally blocked by HTTP 500, including `java.lang.IllegalStateException: Reader used` for known-valid CSS.
 
-The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. A hosted Heroku smoke check also passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence. Remaining browser/accessibility coverage, the final PostgreSQL-backed suite, security review, performance and submission evidence are outstanding.
+The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Hosted smoke checks passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence; durable hosted screenshots are recorded there. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain.
 
 ## Data model
 
@@ -277,13 +277,13 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
 
-The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks do not establish browser, accessibility, production or deployment readiness.
+The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks are complemented by the recorded browser, hosted deployment, security, performance and formal-validation evidence; they do not replace the final PostgreSQL-backed suite or final release check.
 
 ## Accessibility and responsive design
 
 The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, live status announcements, pressed vote states, busy discovery state, descriptive links, machine-readable dates, and text-based moderation/loading/error/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
 
-The interactive browser was unavailable during Phase 3. The [Phase 4 browser record](docs/manual-browser-verification.md) now records sampled viewport, keyboard and console observations; it does not establish comprehensive accessibility coverage. The manual multi-browser, assistive-technology, contrast and zoom matrix remains outstanding in Phase 4. HTML sample validation is recorded separately; official CSS validation remains unresolved. See [accessibility requirements](docs/accessibility-requirements.md).
+The [Phase 4 browser record](docs/manual-browser-verification.md) records sampled viewport, keyboard, contrast, JavaScript-fallback and hosted screenshot evidence; it does not claim comprehensive accessibility conformance. Genuine zoom/reflow remains blocked by the available verification environment, and broader screen-reader coverage was not performed. HTML sample validation is complete; official CSS validation remains externally blocked by the validator service. See [accessibility requirements](docs/accessibility-requirements.md).
 
 ## Documentation
 
@@ -326,7 +326,7 @@ These choices follow the [Django deployment checklist](https://docs.djangoprojec
 - Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check passed; final security-history review, performance evidence and comprehensive PostgreSQL-backed testing remain outstanding.
+Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check, current-tree security review and focused security tests, and single live performance observation are recorded. The final comprehensive PostgreSQL-backed suite and final Git/remote-sync/live-release check remain.
 
 ## Credits and attribution
 

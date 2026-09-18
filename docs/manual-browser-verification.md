@@ -95,8 +95,7 @@ Further interactive work requires a working browser connection.
   404 were checked, but do not imply every error handler was browser-tested.
 - Capture selected screenshots as durable assessment artifacts, record browser
   version, and check other supported browsers/physical devices.
-- Screen-reader checks, measured contrast, fuller focus/tab-order inspection,
-  network inspection and performance evidence remain outstanding.
+- Screen-reader checks, measured contrast, fuller focus/tab-order inspection and network inspection remained unverified at that historical point; performance evidence is now recorded separately.
 - Revalidate changed story-form HTML; earlier HTML validation predates this fix.
   CSS validation remains unresolved after the previously recorded HTTP 500.
 - Full PostgreSQL suite, hosted-runtime/HTTPS/static/migration checks and final
@@ -218,22 +217,13 @@ available; this is not an accessibility-conformance claim.
 
 This section supersedes the historical interruption list above.
 
-- Use a browser with working zoom controls for genuine zoom/text resizing and
-  native JavaScript-disabled navigation/noscript verification. Script-blocked
-  voting and comment-form fallback are now evidenced separately above.
-- Complete broader focus-state and keyboard coverage beyond the exercised
-  journeys, additional landscape layouts and cross-browser/device coverage.
-- Screen-reader interaction and broader measured contrast/focus-state coverage
-  require suitable assistive-technology/browser controls.
-- Save selected screenshots as repository artifacts with a supported capture
-  export workflow; current screenshots remain session-only.
-- Discovery partial/stale/malformed-response browser variants and safe 400
-  coverage remain; controlled outage/loading/retry/empty checks are complete.
-- Revalidate changed HTML/CSS. Official CSS service success remains unrecorded.
-  Full PostgreSQL, final security/performance and release/submission checks
-  remain open.
+- Run the final comprehensive PostgreSQL-backed Django suite and final
+  Git/remote-sync/live-release check.
+- Genuine browser zoom/reflow remains **blocked by the verification environment**;
+  it is neither a pass nor an application failure.
+- Official CSS validation remains externally blocked: the official service returned
+  HTTP 500, including `java.lang.IllegalStateException: Reader used` for known-valid CSS.
+- Broader screen-reader interaction was not performed and is not claimed.
 
-Next Phase 4 task: obtain a browser/session supporting genuine zoom, native script disabling and assistive technology; then
-finish those capability-dependent checks and discovery partial/stale variants.
-The hosted smoke check is recorded above; it is not a production-readiness or
-accessibility-conformance claim.
+The hosted smoke check and durable screenshots above document approved evidence;
+they are not an accessibility-conformance claim.

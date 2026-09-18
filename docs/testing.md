@@ -1,6 +1,6 @@
 # Testing
 
-This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete; Phase 4 is underway. The local browser record includes two corrected defects, and a focused Heroku hosted smoke check is recorded in [manual browser verification](manual-browser-verification.md). Remaining browser/accessibility coverage, performance, final security evidence and the comprehensive PostgreSQL-backed suite are outstanding.
+This document records historical Phase 2/3 testing and the current Phase 4 automated result. Phases 1–3 are complete. The local browser record includes two corrected defects, hosted evidence and durable screenshots; security, performance and formal validation are recorded separately. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain.
 
 ## Current Phase 4 automated result — 11 September 2026
 
@@ -18,7 +18,7 @@ The recovery audit tested commit `4eb7e867cd6ad64a40ad304209d4084f79a3268e` usin
 
 The JavaScript tests execute project scripts in jsdom with simulated DOM/network responses; they are not real-browser evidence. The Django suite mocks upstream HTTP. The audit read local migration records without writing: both existing SQLite databases had news migrations 0001–0005 applied.
 
-Phase 4 adds coverage for release settings, bounded/shared feed refresh, sample-data guards, rendered markup, enforced CSRF, failure pages and staff moderation. See [Phase 4 verification](phase-4-verification.md) for completed work and remaining gaps. The [formal validation record](formal-validation.md) separately records 23 HTML samples with zero errors or warnings on 8 September; CSS validation remains unresolved after service HTTP 500 responses. These are historical validator observations, not a fresh validator run or a conformance claim.
+Phase 4 adds coverage for release settings, bounded/shared feed refresh, sample-data guards, rendered markup, enforced CSRF, failure pages and staff moderation. See [Phase 4 verification](phase-4-verification.md) for completed work and remaining gaps. The [formal validation record](formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings; CSS remains externally blocked after HTTP 500 responses including `java.lang.IllegalStateException: Reader used`.
 
 ## Approach
 
@@ -113,4 +113,4 @@ The unexecuted scope includes comment create/edit/delete journeys, vote create/c
 
 ## Later testing
 
-The [11 September browser record](manual-browser-verification.md) supersedes the historical unexecuted status for its listed journeys. Remaining Phase 4 work includes the unchecked functional variants, browser compatibility, fuller keyboard journeys, screen-reader spot checks, contrast, zoom/reflow, unresolved CSS validation and final HTML coverage after the story-form change. The 18 September hosted smoke check verified Heroku HTTPS, static assets, migration-backed PostgreSQL persistence, authentication and permissions. Development/production parity, performance, final security evidence and the comprehensive PostgreSQL-backed suite remain unverified. Results will be stated only after each check has run.
+The [manual browser record](manual-browser-verification.md) supersedes the historical unexecuted status for its listed journeys and records the hosted smoke check, durable screenshots, sampled keyboard/contrast evidence and environment-blocked zoom result. Hosted HTTPS, static assets, migration-backed PostgreSQL persistence, authentication and permissions passed. Security, performance and final HTML validation are recorded. The final comprehensive PostgreSQL-backed Django suite and final Git/remote-sync/live-release check remain; broader screen-reader coverage is not claimed.
