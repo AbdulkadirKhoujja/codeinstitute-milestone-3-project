@@ -4,12 +4,41 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.core.management import call_command, CommandError
 from django.db import connection
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from news.models import Comment, Post, Vote
 
 
+@override_settings(BYTEBOARD_ALLOW_SAMPLE_TEST_DATABASE=True)
 class SampleDataTests(TestCase):
+    def test_marked_postgres_test_database_is_accepted(self):
+        with (
+            patch.dict(connection.settings_dict,
+                       {"NAME": "test_byteboard_test_host"}),
+            patch.object(connection, "vendor", "postgresql"),
+        ):
+            self.seed(confirm_disposable=True)
+        self.assertTrue(Post.objects.exists())
+
+    @override_settings(BYTEBOARD_ALLOW_SAMPLE_TEST_DATABASE=False)
+    def test_unmarked_postgres_test_database_is_rejected(self):
+        with (
+            patch.dict(connection.settings_dict,
+                       {"NAME": "test_byteboard_test_host"}),
+            patch.object(connection, "vendor", "postgresql"),
+            self.assertRaisesMessage(CommandError, "Refusing a database"),
+        ):
+            self.seed(confirm_disposable=True)
+
+    def test_marked_non_test_postgres_database_is_rejected(self):
+        with (
+            patch.dict(connection.settings_dict,
+                       {"NAME": "byteboard_test_host"}),
+            patch.object(connection, "vendor", "postgresql"),
+            self.assertRaisesMessage(CommandError, "Refusing a database"),
+        ):
+            self.seed(confirm_disposable=True)
+
     def test_unreserved_database_is_rejected_before_writing(self):
         with patch.dict(
             connection.settings_dict, {"NAME": "personal.sqlite3"}

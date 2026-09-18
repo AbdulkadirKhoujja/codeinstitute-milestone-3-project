@@ -11,7 +11,11 @@ from news.error_views import server_error
 from news.models import Comment, Post, Vote
 
 
-@override_settings(DEBUG=False, ALLOWED_HOSTS=["testserver"])
+@override_settings(
+    DEBUG=False,
+    ALLOWED_HOSTS=["testserver"],
+    BYTEBOARD_ALLOW_SAMPLE_TEST_DATABASE=True,
+)
 class SecurityBoundaryTests(TestCase):
     @classmethod
     def setUpTestData(cls):

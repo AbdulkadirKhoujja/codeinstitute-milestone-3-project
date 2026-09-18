@@ -2,12 +2,13 @@ from io import StringIO
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from news.models import Comment
 
 
+@override_settings(BYTEBOARD_ALLOW_SAMPLE_TEST_DATABASE=True)
 class ModerationWorkflowTests(TestCase):
     @classmethod
     def setUpTestData(cls):

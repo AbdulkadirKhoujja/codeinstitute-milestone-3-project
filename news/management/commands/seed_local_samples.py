@@ -5,6 +5,7 @@ from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
@@ -45,11 +46,17 @@ class Command(BaseCommand):
         if not options["confirm_disposable"]:
             raise CommandError("Requires --confirm-disposable.")
         database = str(connection.settings_dict["NAME"])
+        django_postgres_test_database = (
+            getattr(settings, "BYTEBOARD_ALLOW_SAMPLE_TEST_DATABASE", False)
+            and connection.vendor == "postgresql"
+            and database.startswith("test_")
+        )
         safe = (
             database in {"byteboard_phase4",
                          "test_byteboard_phase4", ":memory:"}
             or Path(database).name == "byteboard-phase4.sqlite3"
             or database.startswith("file:memorydb_default?")
+            or django_postgres_test_database
         )
         if not safe:
             raise CommandError("Refusing a database not reserved for samples.")
