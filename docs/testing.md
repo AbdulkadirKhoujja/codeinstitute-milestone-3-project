@@ -28,7 +28,7 @@ The recovery audit tested commit `4eb7e867cd6ad64a40ad304209d4084f79a3268e` usin
 
 The JavaScript tests execute project scripts in jsdom with simulated DOM/network responses; they are not real-browser evidence. The Django suite mocks upstream HTTP. The audit read local migration records without writing: both existing SQLite databases had news migrations 0001–0005 applied.
 
-Phase 4 adds coverage for release settings, bounded/shared feed refresh, sample-data guards, rendered markup, enforced CSRF, failure pages and staff moderation. See [Phase 4 verification](phase-4-verification.md) for completed work and remaining gaps. The [formal validation record](formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings; CSS remains externally blocked after HTTP 500 responses including `java.lang.IllegalStateException: Reader used`.
+Phase 4 adds coverage for release settings, bounded/shared feed refresh, sample-data guards, rendered markup, enforced CSRF, failure pages and staff moderation. See [Phase 4 verification](phase-4-verification.md) for completed work and remaining gaps. The [formal validation record](formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings, and official URI validation of the project-owned stylesheet passed with zero errors and eight warnings.
 
 ## Approach
 

@@ -78,7 +78,7 @@ Status: **Current**. Phases 1–3 are complete. Phase 4 implementation and verif
 
 Completed preparation includes explicit release security settings, PostgreSQL configuration, Gunicorn/WhiteNoise setup, shared database feed coordination and bounded refresh, guarded sample data, executable JavaScript tests, markup/security/moderation corrections and Python style tooling. The 11 September 2026 audit at `4eb7e86` passed 209 Django tests, 8 JavaScript interaction tests, JavaScript lint without errors or warnings, Python style checks, Django system checks, migration drift checks and Git whitespace checks.
 
-Recorded evidence includes local PostgreSQL cross-process feed coordination and 23 HTML samples with zero validator errors or warnings. Official CSS validation remains unresolved after HTTP 500 responses. Manual browser, responsive, accessibility, full current-suite PostgreSQL and hosted-runtime verification remain outstanding. See [Phase 4 verification](phase-4-verification.md) for evidence and limits.
+Recorded evidence includes local PostgreSQL cross-process feed coordination, 23 HTML samples with zero validator errors or warnings, and official URI validation of the project-owned stylesheet with zero errors and eight warnings. Manual browser, responsive, accessibility, full current-suite PostgreSQL and hosted-runtime verification are recorded in later evidence. See [Phase 4 verification](phase-4-verification.md) for evidence and limits.
 
 Scope:
 

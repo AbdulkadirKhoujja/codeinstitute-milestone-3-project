@@ -97,7 +97,7 @@ Further interactive work requires a working browser connection.
   version, and check other supported browsers/physical devices.
 - Screen-reader checks, measured contrast, fuller focus/tab-order inspection and network inspection remained unverified at that historical point; performance evidence is now recorded separately.
 - Revalidate changed story-form HTML; earlier HTML validation predates this fix.
-  CSS validation remains unresolved after the previously recorded HTTP 500.
+  Official CSS URI validation later completed with zero errors and eight warnings.
 - Full PostgreSQL suite, hosted-runtime/HTTPS/static/migration checks and final
   release evidence remain outstanding. No deployment or live URL is recorded.
 
@@ -221,8 +221,8 @@ This section supersedes the historical interruption list above.
   Git/remote-sync/live-release check.
 - Genuine browser zoom/reflow remains **blocked by the verification environment**;
   it is neither a pass nor an application failure.
-- Official CSS validation remains externally blocked: the official service returned
-  HTTP 500, including `java.lang.IllegalStateException: Reader used` for known-valid CSS.
+- Official URI validation of the project-owned stylesheet completed with zero
+  errors and eight warnings.
 - Broader screen-reader interaction was not performed and is not claimed.
 
 The hosted smoke check and durable screenshots above document approved evidence;

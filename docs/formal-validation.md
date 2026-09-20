@@ -48,21 +48,15 @@ returned HTTP 200 with **zero errors and zero warnings/info messages**. The
 prepared HTML validation set therefore passes; this remains validation of the
 listed rendered states, not browser-generated DOM or accessibility conformance.
 
-## Official Jigsaw CSS check — unresolved
+## Official Jigsaw CSS validation — 20 September 2026
 
-The custom `static/css/style.css` was submitted to the official
-[Jigsaw service](https://jigsaw.w3.org/css-validator/validator), following its
-[documented API](https://jigsaw.w3.org/css-validator/manual.html). Direct-input
-POSTs using CSS3/SOAP and CSS3/text responses returned **HTTP 500**. A separate
-documented URL-validation request for the already-public committed stylesheet
-also returned HTTP 500. No useful CSS diagnostics or official pass were obtained.
-No third-party Bootstrap CSS is represented as original project CSS.
+The project-owned `static/css/style.css` was validated by **URI** through the
+official [Jigsaw CSS Validation Service](https://jigsaw.w3.org/css-validator/)
+against the deployed public stylesheet. Using a direct `urllib` opener with
+`ProxyHandler({})`, the validator returned **HTTP 200**, **0 errors**, and
+**8 warnings**. No third-party Bootstrap or CDN stylesheet was submitted.
 
-On 18 September 2026, the environment proxy issue was bypassed with a direct
-`urllib` opener using `ProxyHandler({})`. The official CSS validator remained
-reachable but returned HTTP 500 for both `static/css/style.css` and a
-known-valid documented form submission, `text=body { color: black; }`. The
-validator returned `java.lang.IllegalStateException: Reader used` for the
-known-valid input. This is a validator-service limitation, not a CSS pass or a
-ByteBoard CSS finding. CSS formal validation remains an explicit gap; retry
-only with approval when the official service is functioning.
+Earlier direct-input requests returned HTTP 500, including `Reader used` for a
+known-valid sample. The subsequent official URI validation completed
+successfully, so that earlier service behaviour is historical troubleshooting,
+not a current validation limitation.

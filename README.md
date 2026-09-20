@@ -2,7 +2,7 @@
 
 ByteBoard is a server-rendered community technology news application built for the Code Institute Backend Development milestone. Visitors can discover published stories by category, text search, date, or aggregate rating. Registered members can submit stories, keep private drafts, and safely manage only their own contributions.
 
-Phases 1, 2 and 3 are complete. Phase 4 has recorded release configuration, shared feed refresh, corrective tests, formal validation, security, performance and hosted-runtime evidence. ByteBoard is live on Heroku at [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/).
+ByteBoard is live on Heroku at [https://byteboard-app-69f958f78ff4.herokuapp.com/](https://byteboard-app-69f958f78ff4.herokuapp.com/), with recorded release, deployment, verification, and submission evidence.
 
 ## Purpose and audience
 
@@ -17,14 +17,40 @@ The core experience supports two goals:
 
 The low-fidelity planning wireframes remain available as part of the project evidence:
 
-[![Desktop home-page wireframe](docs/wireframes/home-desktop.svg)](docs/wireframes/home-desktop.svg)
-[![Mobile home-page wireframe](docs/wireframes/home-mobile.svg)](docs/wireframes/home-mobile.svg)
-
-- [Post detail — desktop](docs/wireframes/post-detail-desktop.svg) and [mobile](docs/wireframes/post-detail-mobile.svg)
-- [Story submission form](docs/wireframes/post-form.svg)
-- [Member profile](docs/wireframes/profile.svg)
+![Desktop home-page wireframe: header, category navigation, feed and sidebar](docs/wireframes/home-desktop.svg)
+![Mobile home-page wireframe: compact header, search and stacked feed](docs/wireframes/home-mobile.svg)
+![Desktop post-detail wireframe: article context and discussion](docs/wireframes/post-detail-desktop.svg)
+![Mobile post-detail wireframe: stacked article and comments](docs/wireframes/post-detail-mobile.svg)
+![Story-submission wireframe: labelled member form](docs/wireframes/post-form.svg)
+![Member-profile wireframe: public stories and private-draft context](docs/wireframes/profile.svg)
 
 They established the information hierarchy: header and category navigation, a public story feed, supporting sidebar content, a compact mobile header/search control, and stacked cards and actions on narrow screens. The final application follows those navigation and responsive priorities, while its custom navy/teal visual system, focus states, validation feedback, and responsive wrapping were developed during implementation rather than prescribed by the low-fidelity sketches. In particular, the final category navigation wraps at narrow widths after reflow testing instead of relying on the wireframe's compact horizontal control.
+
+## Final implemented application
+
+The following durable desktop captures were taken from the live Heroku deployment and show the finished application rather than planning artefacts.
+
+![Live ByteBoard public home page](docs/evidence/screenshots/hosted-home.png)
+![Live ByteBoard Discover page with loaded external results](docs/evidence/screenshots/hosted-discover.png)
+![Live ByteBoard protected story-submission route redirecting an anonymous visitor to login](docs/evidence/screenshots/hosted-protected-route-login.png)
+
+## Development Phases
+
+### Phase 1
+
+The initial foundation established the Django project and application structure, relational Category, Post, Comment, and Vote models, migrations, constraints, Django Admin configuration, planning wireframes, and model/admin tests.
+
+### Phase 2
+
+The community experience added authentication, profiles, shared templates and navigation, original responsive styling, owner-restricted story CRUD, draft privacy, category filtering, search, sorting, pagination, feedback, and test-driven development evidence.
+
+### Phase 3
+
+Comment CRUD and moderation visibility, voting with standard-form fallback and progressive enhancement, cached Hacker News discovery, error pages, community UX refinement, and automated evidence completed the feature set.
+
+### Phase 4
+
+Final release work added production settings, PostgreSQL selection and shared feed refresh, JavaScript checks, guarded sample data, static serving, hosted Heroku deployment, formal HTML/CSS validation, browser and accessibility evidence, security and performance evidence, durable screenshots, and the final disposable-local PostgreSQL run of 212/212 passing tests. The [final verification record](docs/phase-4-verification.md) records the completed release evidence and remaining documented tooling limits.
 
 ## Implemented features
 
@@ -87,11 +113,11 @@ They established the information hierarchy: header and category navigation, a pu
 - Bootstrap components used as a responsive foundation, extended by the project's own visual system.
 - Reduced-motion support and flexible layouts without fixed content heights.
 
-## Phase 4 verification and documented limitations
+## Final verification and documented limitations
 
-Completed Phase 4 work includes explicit security settings, environment-driven PostgreSQL configuration, Gunicorn/WhiteNoise preparation, the shared database feed snapshot and bounded worker, executable JavaScript tests, guarded disposable sample data, form/error-page corrections, moderation verification and Python style tooling. Local PostgreSQL cross-process cache coordination is recorded with a simulated refresh.
+Completed release work includes explicit security settings, environment-driven PostgreSQL configuration, Gunicorn/WhiteNoise preparation, the shared database feed snapshot and bounded worker, executable JavaScript tests, guarded disposable sample data, form/error-page corrections, moderation verification and Python style tooling. Local PostgreSQL cross-process cache coordination is recorded with a simulated refresh.
 
-The [Phase 4 verification record](docs/phase-4-verification.md) separates the current automated results from earlier evidence. The [formal validation record](docs/formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings on 18 September 2026. Official CSS validation remains externally blocked by HTTP 500, including `java.lang.IllegalStateException: Reader used` for known-valid CSS.
+The [formal validation record](docs/formal-validation.md) records final official validation: 23 HTML samples passed with zero errors or warnings on 18 September 2026, and the project-owned stylesheet passed W3C URI validation with zero errors and eight warnings.
 
 The [manual browser record](docs/manual-browser-verification.md) covers local CRUD, authentication, moderation, voting, discovery and sampled responsive/keyboard checks, including two corrected feedback defects. Hosted smoke checks passed for HTTPS, authentication, static assets, discovery, permissions and PostgreSQL-backed draft persistence; durable hosted screenshots are recorded there. The final comprehensive disposable-local PostgreSQL suite and final Git/remote-sync/live-release check passed.
 
@@ -155,7 +181,7 @@ A check constraint rejects values outside `-1` and `1`. A composite unique const
 
 ### Operational feed snapshot
 
-Phase 4 adds a separate `FeedSnapshot` table for shared public discovery data.
+The final release work adds a separate `FeedSnapshot` table for shared public discovery data.
 It is not a community post and has no relationship to users or private content.
 
 | Field | Type | Purpose |
@@ -218,7 +244,7 @@ Views use Django ORM filtering, `Q` queries, aggregation, deterministic ordering
 
 Runtime Python package versions are pinned in `requirements.txt`; Python style tools are pinned in `requirements-dev.txt`. PostgreSQL, Gunicorn and WhiteNoise are deployed and received a focused hosted-runtime smoke check. The final comprehensive disposable-local PostgreSQL verification passed 212/212 tests.
 
-Phase 4 adds `dj-database-url` for central URL parsing and Psycopg 3's binary
+Runtime configuration adds `dj-database-url` for central URL parsing and Psycopg 3's binary
 distribution for PostgreSQL connectivity on Windows and Linux. The existing
 Django version is retained. With no `DATABASE_URL`, SQLite remains the default;
 `SQLITE_PATH` can select a disposable local file. Set `DATABASE_SSL_REQUIRE=true`
@@ -288,7 +314,7 @@ A signed-in member can submit and manage stories, add/edit/delete their comments
 
 ## Testing
 
-The 209-test recovery audit used SQLite; the final comprehensive run passed 212/212 against disposable local PostgreSQL. The automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the Phase 2 foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
+The 209-test recovery audit used SQLite; the final comprehensive run passed 212/212 against disposable local PostgreSQL. The automated suite creates isolated records and does not depend on `db.sqlite3`. It covers the core foundation plus comment visibility/CRUD/permissions, all voting transitions and fallbacks, structured asynchronous responses, custom JavaScript organisation, mocked Hacker News requests/normalisation/limits/cache/failures, discovery presentation, and custom error handlers. No automated test contacts the live Hacker News API.
 
 Run the quality checks with:
 
@@ -298,13 +324,13 @@ python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
 
-The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current Phase 4 evidence. These local checks are complemented by recorded browser, hosted deployment, security, performance, formal-validation and disposable-local PostgreSQL evidence, including the completed final release check.
+The recovery audit on 11 September 2026 at commit `4eb7e86` passed all 209 Django tests using isolated settings and an in-memory SQLite database, plus 8 JavaScript interaction tests. JavaScript lint passed with no errors or warnings; Python style checks, Django system checks, migration drift checks and Git whitespace checks also passed. The [testing record](docs/testing.md) preserves historical results and links to the current verification evidence. These local checks are complemented by recorded browser, hosted deployment, security, performance, formal-validation and disposable-local PostgreSQL evidence, including the completed final release check.
 
 ## Accessibility and responsive design
 
 The implemented interface includes semantic landmarks, logical headings, persistent labels, native controls, a skip link, high-visibility keyboard focus, live status announcements, pressed vote states, busy discovery state, descriptive links, machine-readable dates, and text-based moderation/loading/error/empty states. Layouts begin as one column and progressively enhance at wider breakpoints; metadata and actions wrap instead of relying on horizontal scrolling.
 
-The [Phase 4 browser record](docs/manual-browser-verification.md) records sampled viewport, keyboard, contrast, JavaScript-fallback and hosted screenshot evidence; it does not claim comprehensive accessibility conformance. Genuine zoom/reflow remains blocked by the available verification environment, and broader screen-reader coverage was not performed. HTML sample validation is complete; official CSS validation remains externally blocked by the validator service. See [accessibility requirements](docs/accessibility-requirements.md).
+The [manual browser record](docs/manual-browser-verification.md) records sampled viewport, keyboard, contrast, JavaScript-fallback and hosted screenshot evidence; it does not claim comprehensive accessibility conformance. Genuine zoom/reflow remains blocked by the available verification environment, and broader screen-reader coverage was not performed. HTML sample validation is complete; the project-owned stylesheet passed official W3C URI validation with zero errors and eight warnings. See [accessibility requirements](docs/accessibility-requirements.md).
 
 ## Documentation
 
@@ -315,7 +341,6 @@ The [Phase 4 browser record](docs/manual-browser-verification.md) records sample
 - [Database design and ERD](docs/database-design.md)
 - [Accessibility requirements](docs/accessibility-requirements.md)
 - [Testing](docs/testing.md)
-- [Phase 4 verification and remaining gaps](docs/phase-4-verification.md)
 - [Formal HTML/CSS validation](docs/formal-validation.md)
 - [Deployment preparation](docs/deployment-preparation.md)
 - [Assessment criteria tracker](docs/assessment-criteria.md)
@@ -326,11 +351,11 @@ The wireframes are low-fidelity planning artefacts, not final screenshots.
 
 ## Project reflection
 
-The project moved from a relational community-news foundation to a release-ready application through small, tested increments. The main implementation lessons were to keep ownership and moderation decisions explicit in views and tests, use guarded disposable sample data, and verify both local and hosted behaviour. Production-style PostgreSQL testing exposed a tied-comment ordering issue that SQLite had not surfaced; ordering by creation time and primary key made that behaviour deterministic. Browser feedback also improved validation summaries and generated external-link accessible names. Future work would add curated published launch content, complete genuine zoom/reflow verification when a suitable tool is available, broaden screen-reader coverage, and retry official CSS validation when the validator service recovers.
+The project moved from a relational community-news foundation to a release-ready application through small, tested increments. The main implementation lessons were to keep ownership and moderation decisions explicit in views and tests, use guarded disposable sample data, and verify both local and hosted behaviour. Production-style PostgreSQL testing exposed a tied-comment ordering issue that SQLite had not surfaced; ordering by creation time and primary key made that behaviour deterministic. Browser feedback also improved validation summaries and generated external-link accessible names. Future work would add curated published launch content, complete genuine zoom/reflow verification when a suitable tool is available, and broaden screen-reader coverage.
 
 ## Security
 
-Phase 4 configuration uses explicit hosts and trusted CSRF origins, secure
+Production configuration uses explicit hosts and trusted CSRF origins, secure
 session/CSRF cookies when debug is off, and no trusted proxy header by default.
 Set `TRUST_HEROKU_PROXY=true` only behind Heroku's router, and enable
 `SECURE_SSL_REDIRECT=true` for production. Local HTTP verification leaves that
@@ -351,7 +376,7 @@ These choices follow the [Django deployment checklist](https://docs.djangoprojec
 - Hacker News request limits are server-controlled, upstream responses are normalized, unsafe URLs fall back safely, exception details are not exposed, and untrusted text is inserted with DOM `textContent`.
 - `env.py`, `.env`, `db.sqlite3`, credentials, and generated static output are ignored.
 
-Phase 4 has added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check, current-tree security review and focused security tests, single live performance observation, and final disposable-local PostgreSQL suite are recorded. The final Git/remote-sync/live-release check remains.
+Final release work added and tested explicit `DEBUG`, host, database and static settings. The Heroku HTTPS smoke check, current-tree security review and focused security tests, single live performance observation, and final disposable-local PostgreSQL suite are recorded. The final Git/remote-sync/live-release check passed.
 
 ## Credits and attribution
 
@@ -360,6 +385,6 @@ Phase 4 has added and tested explicit `DEBUG`, host, database and static setting
 - [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/) informs the responsive component foundation. Bootstrap is loaded from jsDelivr with integrity attributes and is distributed under the MIT licence.
 - [Official Hacker News API](https://github.com/HackerNews/API) supplies top-story identifiers and item metadata for the separate discovery feed. The application caches normalized public metadata in `FeedSnapshot`, does not create ByteBoard posts from those records, and requires no API key.
 - Django project and application scaffolding supplied the conventional starting file structure.
-- No third-party images, icon sets, or fonts are included in Phase 3.
+- No third-party images, icon sets, or fonts are included in the implementation.
 
 Any later external code, media, data, or learning resource must be credited with its source and licence where required.

@@ -39,9 +39,9 @@ establish browser behaviour, accessibility conformance or hosted readiness.
 | Python style tooling and formatting | `4eb7e86` | `requirements-dev.txt`, `setup.cfg`; fresh style check passed |
 
 The formal validation record reports 23 rendered HTML samples with zero errors
-or warnings on 8 September 2026. This applies to the sampled states at that
-time, not all current/future markup or browser-generated DOM. Official CSS
-validation remains unresolved: the service returned HTTP 500, not a pass.
+or warnings on 8 September 2026 and official URI validation of the project-owned
+stylesheet with zero errors and eight warnings. This applies to the sampled
+states at that time, not all current/future markup or browser-generated DOM.
 The recorded PostgreSQL check uses separate processes and real local database
 connections with a simulated refresh; it is not full-suite, load or hosted
 verification.
@@ -69,8 +69,6 @@ clean, synchronized `main` branch and a live ByteBoard HTTPS response.
 
 - Genuine browser zoom/reflow remains environment-blocked; broader screen-reader
   coverage is not claimed.
-- Official CSS validation remains externally blocked by HTTP 500, including
-  `java.lang.IllegalStateException: Reader used` for known-valid CSS.
 
 
 ## Final comprehensive local PostgreSQL verification — 18 September 2026
@@ -116,7 +114,7 @@ as a defect. A preceding Windows curl request failed locally before any response
 with Schannel `SEC_E_NO_CREDENTIALS`, which was a client/TLS limitation rather
 than an application performance failure.
 
-**Deployment, hosted smoke, security, performance, formal HTML validation, durable screenshot evidence, the comprehensive disposable-local PostgreSQL suite, and the final Git/remote-sync/live-release check are recorded.** CSS validation and genuine zoom/reflow retain their documented limitations.
+**Deployment, hosted smoke, security, performance, formal HTML/CSS validation, durable screenshot evidence, the comprehensive disposable-local PostgreSQL suite, and the final Git/remote-sync/live-release check are recorded.** Genuine zoom/reflow retains its documented environment limitation.
 
 ## Historical baseline — 8 September 2026
 
