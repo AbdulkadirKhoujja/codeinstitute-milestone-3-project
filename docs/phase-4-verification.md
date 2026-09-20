@@ -62,9 +62,11 @@ script-blocked form voting and controlled discovery failure/empty recovery.
 CSS correction `3bb151a` fixes category reflow and measured error-link contrast.
 See the same manual record for ratios, fixture limits and remaining gaps; genuine zoom and broader screen-reader interaction remain unverified, while hosted screenshots are recorded.
 
-## Remaining verification and release decision
+## Phase 4 completion and documented limitations
 
-- The final Git/remote-sync/live-release check remains.
+Phase 4 is complete. The final Git/remote-sync/live-release check passed with a
+clean, synchronized `main` branch and a live ByteBoard HTTPS response.
+
 - Genuine browser zoom/reflow remains environment-blocked; broader screen-reader
   coverage is not claimed.
 - Official CSS validation remains externally blocked by HTTP 500, including
@@ -114,7 +116,7 @@ as a defect. A preceding Windows curl request failed locally before any response
 with Schannel `SEC_E_NO_CREDENTIALS`, which was a client/TLS limitation rather
 than an application performance failure.
 
-**Deployment, hosted smoke, security, performance, formal HTML validation, durable screenshot evidence and the comprehensive disposable-local PostgreSQL suite are recorded.** The final Git/remote-sync/live-release check remains; CSS validation and genuine zoom/reflow retain their documented limitations.
+**Deployment, hosted smoke, security, performance, formal HTML validation, durable screenshot evidence, the comprehensive disposable-local PostgreSQL suite, and the final Git/remote-sync/live-release check are recorded.** CSS validation and genuine zoom/reflow retain their documented limitations.
 
 ## Historical baseline — 8 September 2026
 
