@@ -13,26 +13,77 @@ The core experience supports two goals:
 - visitors can locate relevant reporting quickly and understand who submitted it; and
 - members can publish, revise, privately draft, or remove their own story records without gaining control of another member's content.
 
-## Design and wireframes
+## Design and Wireframes
 
-The low-fidelity planning wireframes remain available as part of the project evidence:
+The original low-fidelity planning assets and real hosted captures are organised below by page. The wireframes establish layout and navigation intent; the final captures demonstrate the implemented interface.
 
-![Desktop home-page wireframe: header, category navigation, feed and sidebar](docs/wireframes/home-desktop.svg)
-![Mobile home-page wireframe: compact header, search and stacked feed](docs/wireframes/home-mobile.svg)
-![Desktop post-detail wireframe: article context and discussion](docs/wireframes/post-detail-desktop.svg)
-![Mobile post-detail wireframe: stacked article and comments](docs/wireframes/post-detail-mobile.svg)
-![Story-submission wireframe: labelled member form](docs/wireframes/post-form.svg)
-![Member-profile wireframe: public stories and private-draft context](docs/wireframes/profile.svg)
+### Home Page
 
-They established the information hierarchy: header and category navigation, a public story feed, supporting sidebar content, a compact mobile header/search control, and stacked cards and actions on narrow screens. The final application follows those navigation and responsive priorities, while its custom navy/teal visual system, focus states, validation feedback, and responsive wrapping were developed during implementation rather than prescribed by the low-fidelity sketches. In particular, the final category navigation wraps at narrow widths after reflow testing instead of relying on the wireframe's compact horizontal control.
+#### Desktop wireframe
 
-## Final implemented application
+![Home Page — desktop wireframe: header, category navigation, feed and sidebar](docs/wireframes/home-desktop.svg)
 
-The following durable desktop captures were taken from the live Heroku deployment and show the finished application rather than planning artefacts.
+#### Mobile wireframe
 
-![Live ByteBoard public home page](docs/evidence/screenshots/hosted-home.png)
-![Live ByteBoard Discover page with loaded external results](docs/evidence/screenshots/hosted-discover.png)
-![Live ByteBoard protected story-submission route redirecting an anonymous visitor to login](docs/evidence/screenshots/hosted-protected-route-login.png)
+![Home Page — mobile wireframe: compact header, search and stacked feed](docs/wireframes/home-mobile.svg)
+
+#### Final desktop implementation
+
+![Home Page — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/hosted-home.png)
+
+The final page keeps the planned header, category navigation and feed hierarchy. Its custom navy/teal visual system, focus states, validation feedback and wrapping behaviour were developed during implementation; narrow category navigation wraps rather than relying on a fixed horizontal control.
+
+### Discover Page
+
+#### Original planning evidence
+
+No separate original Discover wireframe was created; the final page extends the planned public-feed navigation pattern.
+
+#### Final desktop implementation
+
+![Discover Page — final desktop implementation with loaded Hacker News results](docs/evidence/screenshots/hosted-discover.png)
+
+Discover preserves the public navigation and card hierarchy while adding a separate loading/result state for external stories.
+
+### Story Submission
+
+#### Original wireframe
+
+![Story Submission — original wireframe: labelled member form](docs/wireframes/post-form.svg)
+
+#### Final desktop implementation
+
+![Story Submission — final anonymous protected-route implementation redirects to login](docs/evidence/screenshots/hosted-protected-route-login.png)
+
+The planned labelled form remains the signed-in member journey; the final unauthenticated route deliberately redirects to login before a story can be submitted.
+
+### Story Detail
+
+#### Desktop wireframe
+
+![Story Detail — desktop wireframe: article context and discussion](docs/wireframes/post-detail-desktop.svg)
+
+#### Mobile wireframe
+
+![Story Detail — mobile wireframe: stacked article and comments](docs/wireframes/post-detail-mobile.svg)
+
+No final live detail capture is included because the production site intentionally has no published demonstration story.
+
+### Member Profile
+
+#### Original wireframe
+
+![Member Profile — original wireframe: public stories and private-draft context](docs/wireframes/profile.svg)
+
+No separate original mobile profile wireframe was created. No final live profile capture is included because the evidence scope does not use production member data.
+
+### Login
+
+No original login wireframe was created. The protected-route capture above demonstrates the final anonymous login requirement without exposing credentials; a dedicated final login capture is not included in the existing evidence.
+
+### Registration
+
+No original registration wireframe was created. A dedicated final registration capture is not included in the existing evidence because this documentation scope does not create production accounts.
 
 ## Development Phases
 
