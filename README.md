@@ -15,75 +15,213 @@ The core experience supports two goals:
 
 ## Design and Wireframes
 
-The original low-fidelity planning assets and real hosted captures are organised below by page. The wireframes establish layout and navigation intent; the final captures demonstrate the implemented interface.
+The wireframes show the original low-fidelity design intent, while the final captures show the deployed implementation. Desktop and mobile evidence is included where it is available. Where no original wireframe was created, the section states that fact rather than reconstructing planning artefacts retrospectively.
 
-### Home Page
+| Page | Desktop Wireframe | Mobile Wireframe | Final Desktop | Final Mobile |
+| --- | --- | --- | --- | --- |
+| Home | Yes | Yes | Yes | Yes |
+| Discover | No | No | Yes | Yes |
+| Login | No | No | Yes | Yes |
+| Registration | No | No | Yes | Yes |
+| Story Submission | Yes | No | Yes | Yes |
+| Story Detail | Yes | Yes | Yes | Yes |
+| Member Profile | Yes | No | Yes | Yes |
 
-#### Desktop wireframe
+### Home
 
-![Home Page — desktop wireframe: header, category navigation, feed and sidebar](docs/wireframes/home-desktop.svg)
+The public landing page introduces the technology-news community and its story feed.
 
-#### Mobile wireframe
+#### Planning evidence
 
-![Home Page — mobile wireframe: compact header, search and stacked feed](docs/wireframes/home-mobile.svg)
+**Desktop wireframe**
 
-#### Final desktop implementation
+![Home — desktop wireframe showing header, category navigation, feed and sidebar](docs/wireframes/home-desktop.svg)
 
-![Home Page — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/hosted-home.png)
+**Mobile wireframe**
 
-The final page keeps the planned header, category navigation and feed hierarchy. Its custom navy/teal visual system, focus states, validation feedback and wrapping behaviour were developed during implementation; narrow category navigation wraps rather than relying on a fixed horizontal control.
+![Home — mobile wireframe showing compact header, search and stacked feed](docs/wireframes/home-mobile.svg)
 
-### Discover Page
+#### Final implementation
 
-#### Original planning evidence
+**Desktop**
 
-No separate original Discover wireframe was created; the final page extends the planned public-feed navigation pattern.
+![Home — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/hosted-home.png)
 
-#### Final desktop implementation
+**Mobile**
 
-![Discover Page — final desktop implementation with loaded Hacker News results](docs/evidence/screenshots/hosted-discover.png)
+![Home — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/home-mobile.png)
 
-Discover preserves the public navigation and card hierarchy while adding a separate loading/result state for external stories.
+#### Design outcome
 
-### Story Submission
+The final page retains the planned header, navigation and feed hierarchy. On narrow screens, controls and metadata stack or wrap; the custom visual system, focus states and feedback states refine the original low-fidelity intent.
 
-#### Original wireframe
+### Discover
 
-![Story Submission — original wireframe: labelled member form](docs/wireframes/post-form.svg)
+This public page presents validated Hacker News results separately from community stories.
 
-#### Final desktop implementation
+#### Planning evidence
 
-![Story Submission — final anonymous protected-route implementation redirects to login](docs/evidence/screenshots/hosted-protected-route-login.png)
+**Desktop wireframe**
 
-The planned labelled form remains the signed-in member journey; the final unauthenticated route deliberately redirects to login before a story can be submitted.
+> No separate original desktop wireframe was created for this page.
 
-### Story Detail
+**Mobile wireframe**
 
-#### Desktop wireframe
+> No separate original mobile wireframe was created for this page.
 
-![Story Detail — desktop wireframe: article context and discussion](docs/wireframes/post-detail-desktop.svg)
+#### Final implementation
 
-#### Mobile wireframe
+**Desktop**
 
-![Story Detail — mobile wireframe: stacked article and comments](docs/wireframes/post-detail-mobile.svg)
+![Discover — final desktop implementation with loaded Hacker News results](docs/evidence/screenshots/hosted-discover.png)
 
-No final live detail capture is included because the production site intentionally has no published demonstration story.
+**Mobile**
 
-### Member Profile
+![Discover — final mobile implementation with loaded Hacker News results](docs/evidence/screenshots/discover-mobile.png)
 
-#### Original wireframe
+#### Design outcome
 
-![Member Profile — original wireframe: public stories and private-draft context](docs/wireframes/profile.svg)
-
-No separate original mobile profile wireframe was created. No final live profile capture is included because the evidence scope does not use production member data.
+Discover extends the established public navigation and card pattern while adding clear loading, result, partial-result and failure states for external content.
 
 ### Login
 
-No original login wireframe was created. The protected-route capture above demonstrates the final anonymous login requirement without exposing credentials; a dedicated final login capture is not included in the existing evidence.
+This page starts the authentication journey for returning members and protected-route visitors.
+
+#### Planning evidence
+
+**Desktop wireframe**
+
+> No separate original desktop wireframe was created for this page.
+
+**Mobile wireframe**
+
+> No separate original mobile wireframe was created for this page.
+
+#### Final implementation
+
+**Desktop**
+
+![Login — final desktop implementation reached from the protected story-submission route](docs/evidence/screenshots/hosted-protected-route-login.png)
+
+**Mobile**
+
+![Login — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/login-mobile.png)
+
+#### Design outcome
+
+The final login experience provides a concise labelled form that remains usable at narrow widths; protected routes redirect unauthenticated visitors into this same journey.
 
 ### Registration
 
-No original registration wireframe was created. A dedicated final registration capture is not included in the existing evidence because this documentation scope does not create production accounts.
+This page allows new visitors to create a ByteBoard account.
+
+#### Planning evidence
+
+**Desktop wireframe**
+
+> No separate original desktop wireframe was created for this page.
+
+**Mobile wireframe**
+
+> No separate original mobile wireframe was created for this page.
+
+#### Final implementation
+
+**Desktop**
+
+![Registration — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/registration-desktop.png)
+
+**Mobile**
+
+![Registration — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/registration-mobile.png)
+
+#### Design outcome
+
+The final registration form uses persistent labels, clear validation feedback and a single-column layout that remains practical at both desktop and mobile widths.
+
+### Story Submission
+
+This authenticated page lets a member submit a community story.
+
+#### Planning evidence
+
+**Desktop wireframe**
+
+![Story Submission — desktop wireframe showing the labelled member form](docs/wireframes/post-form.svg)
+
+**Mobile wireframe**
+
+> No separate original mobile wireframe was created for this page.
+
+#### Final implementation
+
+**Desktop**
+
+![Story Submission — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/story-submit-desktop.png)
+
+**Mobile**
+
+![Story Submission — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/story-submit-mobile.png)
+
+#### Design outcome
+
+The planning artefact establishes the labelled form and its information hierarchy; the final implementation preserves that structure with persistent labels and a single-column responsive form without treating the anonymous login redirect as the submission interface.
+
+### Story Detail
+
+This page presents a published story, its context and its approved discussion.
+
+#### Planning evidence
+
+**Desktop wireframe**
+
+![Story Detail — desktop wireframe showing article context and discussion](docs/wireframes/post-detail-desktop.svg)
+
+**Mobile wireframe**
+
+![Story Detail — mobile wireframe showing stacked article and comments](docs/wireframes/post-detail-mobile.svg)
+
+#### Final implementation
+
+**Desktop**
+
+![Story Detail — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/story-detail-desktop.png)
+
+**Mobile**
+
+![Story Detail — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/story-detail-mobile.png)
+
+#### Design outcome
+
+The original design places article context before discussion and stacks those areas on small screens; the final captures show that hierarchy in the deployed responsive layout.
+
+### Member Profile
+
+This page displays a member's public submissions and owner-only draft context.
+
+#### Planning evidence
+
+**Desktop wireframe**
+
+![Member Profile — desktop wireframe showing public stories and private-draft context](docs/wireframes/profile.svg)
+
+**Mobile wireframe**
+
+> No separate original mobile wireframe was created for this page.
+
+#### Final implementation
+
+**Desktop**
+
+![Member Profile — final desktop implementation from the live ByteBoard deployment](docs/evidence/screenshots/profile-desktop.png)
+
+**Mobile**
+
+![Member Profile — final mobile implementation from the live ByteBoard deployment](docs/evidence/screenshots/profile-mobile.png)
+
+#### Design outcome
+
+The planning artefact separates public profile content from private draft management; the final captures demonstrate the implemented responsive owner-only context.
 
 ## Development Phases
 
